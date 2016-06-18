@@ -10,6 +10,7 @@
 
 /* ////////////////////////////////////////////////////////////////////////// */
 /* use  ===================================================================== */
+use ::std::ffi::{ CString, };
 use ::std::vec::{ Vec, };
 use ::std::string::{ String, };
 use ::gl::types::*;
@@ -52,16 +53,15 @@ impl Shader {
         } }).expect("Shader::new: CreateShader");
 
         {
-            let mut v = ::std::vec::Vec::new();
-            let mut l = ::std::vec::Vec::new();
-            for i in src.srcs.iter() {
-                v.push(i.as_ptr());
-                l.push(i.len());
-            }
+            let mut s   = String::new();
+            for i in src.srcs.iter() { s.push_str(i); }
+            let cs      = unwrap!(CString::new(s));
             gl_result(|| -> Result<(), ()> { unsafe {
-                Ok(::gl::ShaderSource(id, v.len() as GLsizei,
-                                      v.as_ptr() as *const *const GLchar,
-                                      l.as_ptr() as *const GLint))
+                Ok(::gl::ShaderSource(
+                    id,
+                    1,
+                    &(cs.as_ptr()) as *const *const GLchar,
+                    ::std::mem::transmute(&(cs.as_bytes().len()))))
             } }).expect("Shader::new: ShaderSource");
         }
 
