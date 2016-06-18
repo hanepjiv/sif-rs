@@ -1,0 +1,15 @@
+# -*- mode:toml; coding:utf-8-unix; -*-
+# ==============================================================================
+[package]
+name            = "sif"
+version         = "0.1.0"
+authors         = ["hanepjiv <hanepjiv@gmail.com>"]
+license         = "MIT/Apache-2.0"
+# ==============================================================================
+[dependencies]
+gl              = "^0.6.0"
+image           = "^0.10.0"
+libc            = "^0.2.12"
+log             = "^0.3.6"
+num             = "^0.1.32"
+uuid            = { version = "^0.2.2", features = ["v4"] }
