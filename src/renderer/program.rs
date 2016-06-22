@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2016/06/08
+//  @date 2016/06/20
 
 /* ////////////////////////////////////////////////////////////////////////// */
 /* use  ===================================================================== */
@@ -149,17 +149,17 @@ impl Program {
         gl_result(|| -> Result<(), ()> { unsafe {
             Ok(::gl::EnableVertexAttribArray(location as GLuint))
         } }).expect("Program::set_attribute: EnableVertexAttribArray");
-    {
-        let buffer_binder = buffer.binder();
-        gl_result(|| -> Result<(), ()> { unsafe {
-            Ok(::gl::VertexAttribPointer(location as GLuint,
-                                         size_ as GLint,
-                                         type_,
-                                         normalized,
-                                         stride as GLsizei,
-                                         pointer as *const GLvoid))
-        } }).expect("Program::set_attribute: VertexAttribPointer");
-}
+        {
+            let buffer_binder = buffer.binder();
+            gl_result(|| -> Result<(), ()> { unsafe {
+                Ok(::gl::VertexAttribPointer(location as GLuint,
+                                             size_ as GLint,
+                                             type_,
+                                             normalized,
+                                             stride as GLsizei,
+                                             pointer as *const GLvoid))
+            } }).expect("Program::set_attribute: VertexAttribPointer");
+        }
     }
     /* ====================================================================== */
     /// set_uniform1i

@@ -6,13 +6,14 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2016/06/18
+//  @date 2016/06/21
 
 /* ////////////////////////////////////////////////////////////////////////// */
 /* use  ===================================================================== */
 use ::std::os::raw::{ c_void, };
 /* -------------------------------------------------------------------------- */
 use ::gl::types::*;
+/* -------------------------------------------------------------------------- */
 use ::uuid::{ Uuid, };
 /* -------------------------------------------------------------------------- */
 use super::{ gl_result, GLError, TBind, };
@@ -91,6 +92,14 @@ impl Texture {
                     width:      GLsizei,        height:         GLsizei,
                     pixels:     *const c_void) {
         debug_assert_eq!(::gl::TEXTURE_2D, self.target);
+
+        let mut pxs = pixels;
+        let buffer: Box<Vec<u32>>;
+        if pxs == ::std::ptr::null() {
+            buffer = Box::new(vec![0; width as usize * height as usize]);
+            pxs = buffer.as_ptr() as *const c_void;
+        }
+
         let binder = self.binder();
         gl_result(|| -> Result<(), ()> { unsafe {
             ::gl::TexParameteri(::gl::TEXTURE_2D, ::gl::TEXTURE_WRAP_S,
@@ -106,7 +115,7 @@ impl Texture {
         gl_result(|| -> Result<(), ()> { unsafe {
             Ok(::gl::TexImage2D(self.target, 0, self.format as GLint,
                                 width, height, 0,
-                                self.format, self.type_, pixels))
+                                self.format, self.type_, pxs))
         } }).expect("Texture::tex_image_2d: TexImage2D");
         if mipmap {
             gl_result(|| -> Result<(), ()> { unsafe {

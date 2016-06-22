@@ -6,13 +6,11 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2016/06/18
+//  @date 2016/06/20
 
 /* ////////////////////////////////////////////////////////////////////////// */
 /* use  ===================================================================== */
 use ::std::ffi::{ CString, };
-use ::std::vec::{ Vec, };
-use ::std::string::{ String, };
 use ::gl::types::*;
 /* -------------------------------------------------------------------------- */
 use super::{ gl_result, info_log, };
@@ -58,8 +56,7 @@ impl Shader {
             let cs      = unwrap!(CString::new(s));
             gl_result(|| -> Result<(), ()> { unsafe {
                 Ok(::gl::ShaderSource(
-                    id,
-                    1,
+                    id, 1,
                     &(cs.as_ptr()) as *const *const GLchar,
                     ::std::mem::transmute(&(cs.as_bytes().len()))))
             } }).expect("Shader::new: ShaderSource");

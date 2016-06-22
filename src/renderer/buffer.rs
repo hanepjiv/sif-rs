@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2016/05/28
+//  @date 2016/06/21
 
 /* ////////////////////////////////////////////////////////////////////////// */
 /* use  ===================================================================== */
@@ -61,7 +61,7 @@ impl Buffer {
         }
     }
     /* ====================================================================== */
-    /// newVertices
+    /// new_Vertices
     pub fn new_vertices<T: ?Sized + AsRef<[GLfloat]>>(data: &T, usage: GLenum)
                                                       -> Result<Self, String> {
         Buffer::new(::gl::ARRAY_BUFFER,
@@ -69,7 +69,7 @@ impl Buffer {
                     data.as_ref() as *const _ as *const GLvoid, usage)
     }
     /* ====================================================================== */
-    /// newIndices
+    /// new_indices
     pub fn new_indices<T: ?Sized + AsRef<[GLuint]>>(data: &T, usage: GLenum)
                                                     -> Result<Self, String> {
         Buffer::new(::gl::ELEMENT_ARRAY_BUFFER,
@@ -79,7 +79,7 @@ impl Buffer {
     /* ====================================================================== */
     /// sub_data
     #[allow(unused_variables)]
-    pub fn sub_data<T>(&self, offset: isize, size: usize, data: *const T){
+    pub fn sub_data<T>(&self, offset: isize, size: usize, data: *const T) {
         let binder = self.binder();
         gl_result(|| -> Result<(), ()> { unsafe {
             Ok(::gl::BufferSubData(self.target, offset as GLintptr,
