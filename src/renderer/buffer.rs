@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2016/06/21
+//  @date 2016/06/27
 
 /* ////////////////////////////////////////////////////////////////////////// */
 /* use  ===================================================================== */
@@ -61,7 +61,7 @@ impl Buffer {
         }
     }
     /* ====================================================================== */
-    /// new_Vertices
+    /// new_vertices
     pub fn new_vertices<T: ?Sized + AsRef<[GLfloat]>>(data: &T, usage: GLenum)
                                                       -> Result<Self, String> {
         Buffer::new(::gl::ARRAY_BUFFER,
