@@ -2,15 +2,21 @@
 # ==============================================================================
 [package]
 name            = "sif"
-version         = "0.1.0"
+version         = "0.1.1"
 authors         = ["hanepjiv <hanepjiv@gmail.com>"]
 license         = "MIT/Apache-2.0"
+keywords        = ["subsystem", "game", "math", "graphics"]
+description     = "Game libraries"
+readme          = "README.md"
+documentation   = "https://github.com/hanepjiv/sif-rs/wiki"
+homepage        = "https://github.com/hanepjiv/sif-rs"
+repository      = "https://github.com/hanepjiv/sif-rs.git"
 # ==============================================================================
 [dependencies]
 ffi             = "^0.0.2"
 gl              = "^0.6.1"
 image           = "^0.10.1"
-libc            = "^0.2.13"
+libc            = "^0.2.14"
 log             = "^0.3.6"
-num             = "^0.1.32"
+num             = "^0.1.34"
 uuid            = { version = "^0.2.2", features = ["v4"] }
