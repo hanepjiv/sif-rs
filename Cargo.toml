@@ -2,7 +2,7 @@
 # ==============================================================================
 [package]
 name            = "sif"
-version         = "0.1.2"
+version         = "0.1.3"
 authors         = ["hanepjiv <hanepjiv@gmail.com>"]
 license         = "MIT/Apache-2.0"
 keywords        = ["subsystem", "game", "math", "graphics"]
@@ -16,7 +16,7 @@ repository      = "https://github.com/hanepjiv/sif-rs.git"
 ffi             = "^0.0.2"
 gl              = "^0.6.1"
 image           = "^0.10.1"
-libc            = "^0.2.14"
+libc            = "^0.2.15"
 log             = "^0.3.6"
 num             = "^0.1.34"
 uuid            = { version = "^0.3.0", features = ["v4"] }
