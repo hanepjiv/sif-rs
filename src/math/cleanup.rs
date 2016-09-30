@@ -6,20 +6,20 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/22
-//  @date 2016/06/18
+//  @date 2016/09/30
 
 /* ////////////////////////////////////////////////////////////////////////// */
 /* ========================================================================== */
 /// struct Cleanup
 #[derive( Debug, )]
 pub struct Cleanup< V, >
-    where V: super::Epsilon, {
+    where V: ::num::Float, {
     /// max
     max:        V,
 }
 /* ========================================================================== */
 impl < V, > Cleanup< V, >
-    where V: super::Epsilon, {
+    where V: ::num::Float, {
     /* ====================================================================== */
     /// new
     pub fn new() -> Self { Cleanup {

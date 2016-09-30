@@ -2,7 +2,7 @@
 # ==============================================================================
 [package]
 name            = "sif"
-version         = "0.1.3"
+version         = "0.1.4"
 authors         = ["hanepjiv <hanepjiv@gmail.com>"]
 license         = "MIT/Apache-2.0"
 keywords        = ["subsystem", "game", "math", "graphics"]
@@ -18,5 +18,5 @@ gl              = "^0.6.1"
 image           = "^0.10.3"
 libc            = "^0.2.16"
 log             = "^0.3.6"
-num             = "^0.1.35"
+num             = "^0.1.36"
 uuid            = { version = "^0.3.1", features = ["v4"] }

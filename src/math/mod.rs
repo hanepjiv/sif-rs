@@ -6,13 +6,12 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2016/06/18
+//  @date 2016/09/30
 
 /* ////////////////////////////////////////////////////////////////////////// */
 /* ========================================================================== */
 pub use self::number::{ Number, };
 pub use self::error::{ MathError, };
-pub use self::epsilon::{ Epsilon, };
 pub use self::cleanup::{ Cleanup, };
 pub use self::vector::{ Vector2, Vector3, Vector4, };
 pub use self::matrix::{ Matrix4x4, };
@@ -20,7 +19,6 @@ pub use self::quaternion::{ Quaternion, };
 /* ========================================================================== */
 pub mod number;
 pub mod error;
-pub mod epsilon;
 pub mod cleanup;
 pub mod vector;
 pub mod matrix;

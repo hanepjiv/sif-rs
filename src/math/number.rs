@@ -6,11 +6,8 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/08
-//  @date 2016/06/18
+//  @date 2016/09/30
 
-/* ////////////////////////////////////////////////////////////////////////// */
-/* ========================================================================== */
-use super::{ Epsilon, };
 /* ////////////////////////////////////////////////////////////////////////// */
 /* ========================================================================== */
 /// trait Number
@@ -20,7 +17,7 @@ pub trait Number
     ::std::ops::Sub + ::std::ops::SubAssign +
     ::std::ops::Mul + ::std::ops::MulAssign +
     ::std::ops::Div + ::std::ops::DivAssign +
-    Epsilon {}
+    ::num::Float {}
 /* ========================================================================== */
 impl < T > Number for T
     where T:    ::std::default::Default + ::std::ops::Neg +
@@ -28,4 +25,4 @@ impl < T > Number for T
     ::std::ops::Sub + ::std::ops::SubAssign +
     ::std::ops::Mul + ::std::ops::MulAssign +
     ::std::ops::Div + ::std::ops::DivAssign +
-    Epsilon {}
+    ::num::Float {}
