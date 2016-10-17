@@ -1,4 +1,4 @@
-/* -*- mode:rust; coding:utf-8-unix; -*- */
+// -*- mode:rust; coding:utf-8-unix; -*-
 
 //! number.rs
 
@@ -6,10 +6,10 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/08
-//  @date 2016/09/30
+//  @date 2016/10/10
 
-/* ////////////////////////////////////////////////////////////////////////// */
-/* ========================================================================== */
+// ////////////////////////////////////////////////////////////////////////////
+// ============================================================================
 /// trait Number
 pub trait Number
     where Self: ::std::default::Default + ::std::ops::Neg +
@@ -18,7 +18,7 @@ pub trait Number
     ::std::ops::Mul + ::std::ops::MulAssign +
     ::std::ops::Div + ::std::ops::DivAssign +
     ::num::Float {}
-/* ========================================================================== */
+// ============================================================================
 impl < T > Number for T
     where T:    ::std::default::Default + ::std::ops::Neg +
     ::std::ops::Add + ::std::ops::AddAssign +

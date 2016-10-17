@@ -1,4 +1,4 @@
-/* -*- mode:rust; coding:utf-8-unix; -*- */
+// -*- mode:rust; coding:utf-8-unix; -*-
 
 //! mod.rs
 
@@ -6,17 +6,17 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2016/09/30
+//  @date 2016/10/10
 
-/* ////////////////////////////////////////////////////////////////////////// */
-/* ========================================================================== */
+// ////////////////////////////////////////////////////////////////////////////
+// ============================================================================
 pub use self::number::{ Number, };
 pub use self::error::{ MathError, };
 pub use self::cleanup::{ Cleanup, };
 pub use self::vector::{ Vector2, Vector3, Vector4, };
 pub use self::matrix::{ Matrix4x4, };
 pub use self::quaternion::{ Quaternion, };
-/* ========================================================================== */
+// ============================================================================
 pub mod number;
 pub mod error;
 pub mod cleanup;
