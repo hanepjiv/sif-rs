@@ -16,7 +16,7 @@ repository      = "https://github.com/hanepjiv/sif-rs.git"
 ffi             = "^0.0.2"
 gl              = "^0.6.1"
 image           = "^0.10.3"
-libc            = "^0.2.16"
+libc            = "^0.2.17"
 log             = "^0.3.6"
 num             = "^0.1.36"
 uuid            = { version = "^0.3.1", features = ["v4"] }
