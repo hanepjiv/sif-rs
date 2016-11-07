@@ -6,16 +6,16 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/12
-//  @date 2016/10/10
+//  @date 2016/11/07
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use super::super::math::{ Number, Vector3, };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// struct Capsulee
+/// struct Capsule
 #[derive( Debug, Clone, )]
-pub struct Capsulee<V>
+pub struct Capsule<V>
     where V:    Number,         {
     /// center
     pub center: Vector3<V>,
@@ -23,20 +23,20 @@ pub struct Capsulee<V>
     pub radius: V,
 }
 // ============================================================================
-impl <V> Default for Capsulee<V>
+impl <V> Default for Capsule<V>
     where V:    Number,         {
     // ========================================================================
-    fn default() -> Self { Capsulee {
+    fn default() -> Self { Capsule {
         center: Vector3::<V>::default(),
         radius: V::zero(),
     } }
 }
 // ============================================================================
-impl <V> Capsulee<V>
+impl <V> Capsule<V>
     where V:    Number,         {
     // ========================================================================
     /// new
-    pub fn new(center: Vector3<V>, radius: V) -> Self { Capsulee::<V> {
+    pub fn new(center: Vector3<V>, radius: V) -> Self { Capsule::<V> {
         center: center,
         radius: radius,
     } }
