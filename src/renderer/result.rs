@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2016/10/10
+//  @date 2016/12/07
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -24,14 +24,13 @@ pub enum GLError< R, E, > {
 // ============================================================================
 /// gl_result
 pub fn gl_result< R, E, F, >(f: F) -> Result< R, GLError< R, E, >, >
-    where F: Fn() -> Result< R, E, > {
+    where F: Fn() -> Result< R, E, >,   {
     let result = f();
     match unsafe { ::gl::GetError() } {
-        ::gl::NO_ERROR          => {
+        ::gl::NO_ERROR  => {
             result.map_err(|e| -> GLError< R, E, > { GLError::Function(e) })
         },
-        e                       =>  {
-            error!("::gl::GetError {:#06x}", e);
+        e               => {
             Err(GLError::GL(e, result))
         },
     }

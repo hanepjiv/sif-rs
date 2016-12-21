@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2016/10/10
+//  @date 2016/12/20
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -19,7 +19,7 @@ macro_rules! vector_define {
         // ////////////////////////////////////////////////////////////////////
         // ====================================================================
         /// struct $name
-        #[derive( Debug, Default, Clone, Copy, PartialEq, Eq, )]
+        #[derive( Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd, )]
         pub struct $name<V: Number>([V; $number]);
         // ====================================================================
         impl <V> From< [V; $number] > for $name<V>
@@ -28,6 +28,16 @@ macro_rules! vector_define {
                 let mut m = $name(inner);
                 m.cleanup();
                 m
+            }
+        }
+        // ====================================================================
+        impl <V> From< Vec<V> > for $name<V>
+            where V: Number {
+            fn from(inner: Vec<V>) -> Self {
+                assert_eq!($number, inner.len(), "{}({})", file!(), line!());
+                let mut v = [V::zero(); $number];
+                for i in 0 .. $number { v[i] = inner[i]; }
+                Self::from(v)
             }
         }
         // ====================================================================
@@ -227,7 +237,7 @@ macro_rules! vector_define {
             /// # Examples
             ///
             /// ```
-            /// use ::sif::math::{ Vector3, };
+            /// use ::sif::math::Vector3;
             ///
             /// assert_eq!(Vector3::from([1.0f32, 0.0, 0.0]).
             ///            dot(&Vector3::from([0.0f32, 1.0, 0.0])),
@@ -257,47 +267,87 @@ macro_rules! vector_define {
     };
 }
 // ============================================================================
-/// vector_define_inner!
-macro_rules! vector_define_inner {
-    (Vector2)                   => {
-    };
-    (Vector3)                   => {
-        // ====================================================================
-        /// cross
-        ///
-        /// # Examples
-        ///
-        /// ```
-        /// use ::sif::math::{ Vector3, };
-        ///
-        /// assert_eq!(Vector3::from([1.0f32, 0.0, 0.0]).
-        ///            cross(&Vector3::from([0.0f32, 1.0, 0.0])),
-        ///            Vector3::from([0.0f32, 0.0, 1.0]));
-        /// ```
-        pub fn cross(&self, r: &Self) -> Self {
-            Vector3::from([ self[1] * r[2] - self[2] * r[1],
-                            self[2] * r[0] - self[0] * r[2],
-                            self[0] * r[1] - self[1] * r[0] ])
-        }
-    };
-    (Vector4)                   => {
-        // ====================================================================
-        /// from_vector3
-        pub fn from_vector3(src: &Vector3<V>, w: V) -> Self {
-            Vector4::from([ src[0], src[1], src[2], w, ])
-        }
-    };
-    ($name: ident)              => {
-    };
-}
-// ============================================================================
 /// vector_define_impl!
 macro_rules! vector_define_impl {
     (Vector2)                   => {
     };
     (Vector3)                   => {
+        // ====================================================================
+        /// # Examples
+        ///
+        /// ```
+        /// use ::sif::math::{ Vector2, Vector3, };
+        ///
+        /// let v3 = Vector3::from([0.0f32, 1.0, 4.0]);
+        /// {
+        ///   let v2_ref: &Vector2<f32> = v3.as_ref();
+        ///   assert_eq!(v3[0], v2_ref[0]);
+        ///   assert_eq!(v3[1], v2_ref[1]);
+        /// }
+        /// ```
+        impl <V: Number> AsRef<Vector2<V>> for Vector3<V> {
+            fn as_ref(&self) -> &Vector2<V> { unsafe {
+                ::std::mem::transmute(self)
+            } }
+        }
+        // --------------------------------------------------------------------
+        /// # Examples
+        ///
+        /// ```
+        /// use ::sif::math::{ Vector2, Vector3, };
+        ///
+        /// let mut v3 = Vector3::from([0.0f32, 1.0, 4.0]);
+        /// {
+        ///   let v2_mut: &mut Vector2<f32> = v3.as_mut();
+        ///   v2_mut[0] = 1.0; v2_mut[1] = 2.0;
+        /// }
+        /// assert_eq!(v3[0], 1.0);
+        /// assert_eq!(v3[1], 2.0);
+        /// ```
+        impl <V: Number> AsMut<Vector2<V>> for Vector3<V> {
+            fn as_mut(&mut self) -> &mut Vector2<V> { unsafe {
+                ::std::mem::transmute(self)
+            } }
+        }
     };
     (Vector4)                   => {
+        // ====================================================================
+        /// # Examples
+        ///
+        /// ```
+        /// use ::sif::math::{ Vector2, Vector4, };
+        ///
+        /// let v4 = Vector4::from([0.0f32, 1.0, 4.0, 0.0]);
+        /// {
+        ///   let v2_ref: &Vector2<f32> = v4.as_ref();
+        ///   assert_eq!(v4[0], v2_ref[0]);
+        ///   assert_eq!(v4[1], v2_ref[1]);
+        /// }
+        /// ```
+        impl <V: Number> AsRef<Vector2<V>> for Vector4<V> {
+            fn as_ref(&self) -> &Vector2<V> { unsafe {
+                ::std::mem::transmute(self)
+            } }
+        }
+        // --------------------------------------------------------------------
+        /// # Examples
+        ///
+        /// ```
+        /// use ::sif::math::{ Vector2, Vector4, };
+        ///
+        /// let mut v4 = Vector4::from([0.0f32, 1.0, 4.0, 0.0]);
+        /// {
+        ///   let v2_mut: &mut Vector2<f32> = v4.as_mut();
+        ///   v2_mut[0] = 1.0; v2_mut[1] = 2.0;
+        /// }
+        /// assert_eq!(v4[0], 1.0);
+        /// assert_eq!(v4[1], 2.0);
+        /// ```
+        impl <V: Number> AsMut<Vector2<V>> for Vector4<V> {
+            fn as_mut(&mut self) -> &mut Vector2<V> { unsafe {
+                ::std::mem::transmute(self)
+            } }
+        }
         // ====================================================================
         /// # Examples
         ///
@@ -336,6 +386,61 @@ macro_rules! vector_define_impl {
             fn as_mut(&mut self) -> &mut Vector3<V> { unsafe {
                 ::std::mem::transmute(self)
             } }
+        }
+    };
+    ($name: ident)              => {
+    };
+}
+// ============================================================================
+/// vector_define_inner!
+macro_rules! vector_define_inner {
+    (Vector2)                   => {
+        // ====================================================================
+        /// new
+        pub fn new(x: V, y: V) -> Self { Vector2::<V>([x, y]) }
+    };
+    (Vector3)                   => {
+        // ====================================================================
+        /// new
+        pub fn new(x: V, y: V, z: V) -> Self { Vector3::<V>([x, y, z]) }
+        // ====================================================================
+        /// from_vector2
+        pub fn from_vector2(src: &Vector2<V>, z: V) -> Self {
+            Vector3::from([ src[0], src[1], z, ])
+        }
+        // ====================================================================
+        /// cross
+        ///
+        /// # Examples
+        ///
+        /// ```
+        /// use ::sif::math::Vector3;
+        ///
+        /// assert_eq!(Vector3::from([1.0f32, 0.0, 0.0]).
+        ///            cross(&Vector3::from([0.0f32, 1.0, 0.0])),
+        ///            Vector3::from([0.0f32, 0.0, 1.0]));
+        /// ```
+        pub fn cross(&self, r: &Self) -> Self {
+            Vector3::from([ self[1] * r[2] - self[2] * r[1],
+                            self[2] * r[0] - self[0] * r[2],
+                            self[0] * r[1] - self[1] * r[0] ])
+        }
+    };
+    (Vector4)                   => {
+        // ====================================================================
+        /// new
+        pub fn new(x: V, y: V, z: V, w: V) -> Self {
+            Vector4::<V>([x, y, z, w])
+        }
+        // ====================================================================
+        /// from_vector2
+        pub fn from_vector2(src: &Vector2<V>, z: V, w: V) -> Self {
+            Vector4::from([ src[0], src[1], z, w, ])
+        }
+        // ====================================================================
+        /// from_vector3
+        pub fn from_vector3(src: &Vector3<V>, w: V) -> Self {
+            Vector4::from([ src[0], src[1], src[2], w, ])
         }
     };
     ($name: ident)              => {

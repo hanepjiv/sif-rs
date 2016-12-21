@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2016/10/13
+//  @date 2016/12/04
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -16,6 +16,7 @@ use ::gl::types::*;
 // ----------------------------------------------------------------------------
 use ::uuid::{ Uuid, };
 // ----------------------------------------------------------------------------
+use super::super::error::Error;
 use super::{ gl_result, GLError, TBind, };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -43,13 +44,15 @@ impl Texture {
                   mipmap:       bool,
                   format:       GLenum,         type_:          GLenum,
                   width:        GLsizei,        height:         GLsizei,
-                  pixels:       *const c_void) -> Self {
+                  pixels:       *const c_void) -> Result<Self, Error> {
         match gl_result(|| -> Result<GLuint, ()> { unsafe {
             let mut id = 0;
             ::gl::GenTextures(1, &mut id);
             Ok(id)
         } }) {
-            Err(_)      => panic!("Texture::new_2d"),
+            Err(_)      => {
+                Err(Error::SifError(String::from("Texture::new_2d")))
+            },
             Ok(id)      => {
                 let texture = Texture {
                     uuid:       uuid,
@@ -61,7 +64,7 @@ impl Texture {
                 texture.tex_image_2d(wrap_s, wrap_t, filter_mag, filter_min,
                                      mipmap,
                                      width, height, pixels);
-                texture
+                Ok(texture)
             },
         }
     }
@@ -70,7 +73,8 @@ impl Texture {
     pub fn open_2d<P>(uuid:             Uuid,
                       wrap_s:           GLenum, wrap_t:         GLenum,
                       filter_mag:       GLenum, filter_min:     GLenum,
-                      mipmap:           bool,   path:           P) -> Self
+                      mipmap:           bool,   path:           P)
+                      -> Result<Self, Error>
         where P: AsRef<::std::path::Path> {
         let i = ::image::imageops::flip_vertical(
             &::image::open(path).expect("Texture::open_2d").to_rgba());
@@ -80,7 +84,7 @@ impl Texture {
                         ::gl::RGBA, ::gl::UNSIGNED_BYTE,
                         i.width() as GLint, i.height() as GLint,
                         i.into_raw().as_ptr() as *const _ as
-                        *const ::std::os::raw::c_void)
+                        *const c_void)
     }
     // ========================================================================
     /// tex_image_2d

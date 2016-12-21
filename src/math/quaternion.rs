@@ -6,17 +6,17 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2016/10/10
+//  @date 2016/12/20
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 use super::{ MathError, Number, Vector4, };
 // ============================================================================
-use ::num::{ Float, };
+use ::num::Float;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Quaternion
-#[derive( Debug, Clone, Copy, PartialEq, Eq, )]
+#[derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd,  )]
 pub struct Quaternion< V: Number >(Vector4< V >);
 // ============================================================================
 impl <V> Default for Quaternion<V>
