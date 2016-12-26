@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2016/12/20
+//  @date 2016/12/22
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -272,6 +272,7 @@ macro_rules! vector_define_impl {
     (Vector2)                   => {
     };
     (Vector3)                   => {
+        /*
         // ====================================================================
         /// # Examples
         ///
@@ -309,8 +310,10 @@ macro_rules! vector_define_impl {
                 ::std::mem::transmute(self)
             } }
         }
+         */
     };
     (Vector4)                   => {
+        /*
         // ====================================================================
         /// # Examples
         ///
@@ -348,6 +351,8 @@ macro_rules! vector_define_impl {
                 ::std::mem::transmute(self)
             } }
         }
+         */
+        /*
         // ====================================================================
         /// # Examples
         ///
@@ -387,6 +392,7 @@ macro_rules! vector_define_impl {
                 ::std::mem::transmute(self)
             } }
         }
+        */
     };
     ($name: ident)              => {
     };

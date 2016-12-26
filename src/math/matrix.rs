@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2016/12/20
+//  @date 2016/12/21
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -300,7 +300,7 @@ macro_rules! matrix_define_inner {
                 ]),
                 $vector::from_no_clean([
                     V::zero(), V::zero(),
-                    V::from(2).unwrap() * near * far * c,        V::zero()
+                    V::from(2).unwrap() * near * far * c,         V::zero()
                 ]),
             ])
         }

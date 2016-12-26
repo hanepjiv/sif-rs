@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2016/10/15
+//  @date 2016/12/26
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -449,9 +449,9 @@ impl TBind for Program {
     }
 }
 // ============================================================================
-/// renderer_program_location!
+/// sif_renderer_program_location!
 #[macro_export]
-macro_rules! renderer_program_location {
+macro_rules! sif_renderer_program_location {
     ($e:expr, $name:expr)               => {
         unwrap!($e.location($name))
     };
