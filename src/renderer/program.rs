@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2016/12/26
+//  @date 2016/12/29
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -84,6 +84,7 @@ impl Program {
                     Ok(::gl::GetUniformLocation(id, name.as_ptr()
                                                 as *const GLchar))
                 } }).expect("Program::new: GetUniformLocation");
+                info!("Program::new: location: {:?} = {:?}", name, location);
                 let _ = location_map.insert(name, location);
             }
         }

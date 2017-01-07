@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2016/12/21
+//  @date 2017/01/03
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -47,6 +47,78 @@ macro_rules! matrix_define {
             }
         }
         // ====================================================================
+        impl <V> ::std::ops::Add<V> for $name<V>
+            where V: Number {
+            type Output = Self;
+            fn add(self, rhs: V) -> Self::Output {
+                let mut inner = [$vector::<V>::default(); $i];
+                for i in 0 .. $i { inner[i] = self[i] + rhs; }
+                Self::from(inner)
+            }
+        }
+        // --------------------------------------------------------------------
+        impl <V> ::std::ops::AddAssign<V> for $name<V>
+            where V: Number {
+            fn add_assign(&mut self, rhs: V) {
+                let &mut $name(ref mut inner) = self;
+                for i in 0 .. $i { inner[i] += rhs; }
+            }
+        }
+        // ====================================================================
+        impl <V> ::std::ops::Sub<V> for $name<V>
+            where V: Number {
+            type Output = Self;
+            fn sub(self, rhs: V) -> Self::Output {
+                let mut inner = [$vector::<V>::default(); $i];
+                for i in 0 .. $i { inner[i] = self[i] - rhs; }
+                Self::from(inner)
+            }
+        }
+        // --------------------------------------------------------------------
+        impl <V> ::std::ops::SubAssign<V> for $name<V>
+            where V: Number {
+            fn sub_assign(&mut self, rhs: V) {
+                let &mut $name(ref mut inner) = self;
+                for i in 0 .. $i { inner[i] -= rhs; }
+            }
+        }
+        // ====================================================================
+        impl <V> ::std::ops::Mul<V> for $name<V>
+            where V: Number {
+            type Output = Self;
+            fn mul(self, rhs: V) -> Self::Output {
+                let mut inner = [$vector::<V>::default(); $i];
+                for i in 0 .. $i { inner[i] = self[i] * rhs; }
+                Self::from(inner)
+            }
+        }
+        // --------------------------------------------------------------------
+        impl <V> ::std::ops::MulAssign<V> for $name<V>
+            where V: Number {
+            fn mul_assign(&mut self, rhs: V) {
+                let &mut $name(ref mut inner) = self;
+                for i in 0 .. $i { inner[i] *= rhs; }
+            }
+        }
+        // ====================================================================
+        impl <V> ::std::ops::Div<V> for $name<V>
+            where V: Number {
+            type Output = Self;
+            fn div(self, rhs: V) -> Self::Output {
+                let mut inner = [$vector::<V>::default(); $i];
+                for i in 0 .. $i { inner[i] = self[i] / rhs; }
+                Self::from(inner)
+            }
+        }
+        // --------------------------------------------------------------------
+        impl <V> ::std::ops::DivAssign<V> for $name<V>
+            where V: Number {
+            fn div_assign(&mut self, rhs: V) {
+                let &mut $name(ref mut inner) = self;
+                for i in 0 .. $i { inner[i] /= rhs; }
+            }
+        }
+        // ====================================================================
         matrix_define_impl!($name($vector; $i));
         // ====================================================================
         impl <V> $name< V, >
@@ -60,28 +132,24 @@ macro_rules! matrix_define {
             /// as_ptr
             pub fn as_ptr(&self) -> *const V {
                 let &$name(ref inner) = self;
-                inner as *const _ as *const V
+                inner[0].as_ptr()
             }
             // ================================================================
             /// as_mut_ptr
             pub fn as_mut_ptr(&mut self) -> *mut V {
                 let &mut $name(ref mut inner) = self;
-                inner as *mut _ as *mut V
+                inner[0].as_mut_ptr()
             }
             // ================================================================
             /// cleanup
             pub fn cleanup(&mut self) {
                 let mut c = Cleanup::new();
-                for i in 0 .. $i {
-                    for j in 0 .. $vector::<V>::size() {
-                        c.collect(self[i][j]);
-                    }
-                }
-                for i in 0 .. $i {
-                    for j in 0 .. $vector::<V>::size() {
-                        self[i][j] = c.check(self[i][j]);
-                    }
-                }
+                for i in 0 .. $i { for j in 0 .. $vector::<V>::size() {
+                    c.collect(self[i][j]);
+                } }
+                for i in 0 .. $i { for j in 0 .. $vector::<V>::size() {
+                    self[i][j] = c.check(self[i][j]);
+                } }
             }
             // ================================================================
             matrix_define_inner!($name($vector; $i));
@@ -95,71 +163,67 @@ macro_rules! matrix_define_impl {
         // ====================================================================
         impl <V> Default for Matrix4x4<V>
             where V: Number {
-            fn default() -> Self {
-                Matrix4x4::from_no_clean([
-                    $vector::from_no_clean([
-                        V::one(), V::zero(), V::zero(), V::zero(),
-                    ]),
-                    $vector::from_no_clean([
-                        V::zero(), V::one(), V::zero(), V::zero(),
-                    ]),
-                    $vector::from_no_clean([
-                        V::zero(), V::zero(), V::one(), V::zero(),
-                    ]),
-                    $vector::from_no_clean([
-                        V::zero(), V::zero(), V::zero(), V::one(),
-                    ]),
-                ])
-            }
+            fn default() -> Self { Matrix4x4::from_no_clean([
+                $vector::from_no_clean([
+                    V::one(), V::zero(), V::zero(), V::zero(),
+                ]),
+                $vector::from_no_clean([
+                    V::zero(), V::one(), V::zero(), V::zero(),
+                ]),
+                $vector::from_no_clean([
+                    V::zero(), V::zero(), V::one(), V::zero(),
+                ]),
+                $vector::from_no_clean([
+                    V::zero(), V::zero(), V::zero(), V::one(),
+                ]),
+            ]) }
         }
         // ====================================================================
         impl <V> ::std::ops::Mul<Matrix4x4<V>> for Matrix4x4<V>
             where V: Number {
             type Output = Self;
-            fn mul(self, rhs: Matrix4x4<V>) -> Self::Output {
-                Matrix4x4::from([
-                    $vector::from_no_clean([
-                        (self[0][0] * rhs[0][0] + self[1][0] * rhs[0][1] +
-                         self[2][0] * rhs[0][2] + self[3][0] * rhs[0][3]),
-                        (self[0][1] * rhs[0][0] + self[1][1] * rhs[0][1] +
-                         self[2][1] * rhs[0][2] + self[3][1] * rhs[0][3]),
-                        (self[0][2] * rhs[0][0] + self[1][2] * rhs[0][1] +
-                         self[2][2] * rhs[0][2] + self[3][2] * rhs[0][3]),
-                        (self[0][3] * rhs[0][0] + self[1][3] * rhs[0][1] +
-                         self[2][3] * rhs[0][2] + self[3][3] * rhs[0][3]),
-                    ]),
-                    $vector::from_no_clean([
-                        (self[0][0] * rhs[1][0] + self[1][0] * rhs[1][1] +
-                         self[2][0] * rhs[1][2] + self[3][0] * rhs[1][3]),
-                        (self[0][1] * rhs[1][0] + self[1][1] * rhs[1][1] +
-                         self[2][1] * rhs[1][2] + self[3][1] * rhs[1][3]),
-                        (self[0][2] * rhs[1][0] + self[1][2] * rhs[1][1] +
-                         self[2][2] * rhs[1][2] + self[3][2] * rhs[1][3]),
-                        (self[0][3] * rhs[1][0] + self[1][3] * rhs[1][1] +
-                         self[2][3] * rhs[1][2] + self[3][3] * rhs[1][3]),
-                    ]),
-                    $vector::from_no_clean([
-                        (self[0][0] * rhs[2][0] + self[1][0] * rhs[2][1] +
-                         self[2][0] * rhs[2][2] + self[3][0] * rhs[2][3]),
-                        (self[0][1] * rhs[2][0] + self[1][1] * rhs[2][1] +
-                         self[2][1] * rhs[2][2] + self[3][1] * rhs[2][3]),
-                        (self[0][2] * rhs[2][0] + self[1][2] * rhs[2][1] +
-                         self[2][2] * rhs[2][2] + self[3][2] * rhs[2][3]),
-                        (self[0][3] * rhs[2][0] + self[1][3] * rhs[2][1] +
-                         self[2][3] * rhs[2][2] + self[3][3] * rhs[2][3]),
-                    ]),
-                    $vector::from_no_clean([
-                        (self[0][0] * rhs[3][0] + self[1][0] * rhs[3][1] +
-                         self[2][0] * rhs[3][2] + self[3][0] * rhs[3][3]),
-                        (self[0][1] * rhs[3][0] + self[1][1] * rhs[3][1] +
-                         self[2][1] * rhs[3][2] + self[3][1] * rhs[3][3]),
-                        (self[0][2] * rhs[3][0] + self[1][2] * rhs[3][1] +
-                         self[2][2] * rhs[3][2] + self[3][2] * rhs[3][3]),
-                        (self[0][3] * rhs[3][0] + self[1][3] * rhs[3][1] +
-                         self[2][3] * rhs[3][2] + self[3][3] * rhs[3][3]),
-                    ]),
-                ])
-            }
+            fn mul(self, rhs: Matrix4x4<V>) -> Self::Output { Matrix4x4::from([
+                $vector::from_no_clean([
+                    (self[0][0] * rhs[0][0] + self[1][0] * rhs[0][1] +
+                     self[2][0] * rhs[0][2] + self[3][0] * rhs[0][3]),
+                    (self[0][1] * rhs[0][0] + self[1][1] * rhs[0][1] +
+                     self[2][1] * rhs[0][2] + self[3][1] * rhs[0][3]),
+                    (self[0][2] * rhs[0][0] + self[1][2] * rhs[0][1] +
+                     self[2][2] * rhs[0][2] + self[3][2] * rhs[0][3]),
+                    (self[0][3] * rhs[0][0] + self[1][3] * rhs[0][1] +
+                     self[2][3] * rhs[0][2] + self[3][3] * rhs[0][3]),
+                ]),
+                $vector::from_no_clean([
+                    (self[0][0] * rhs[1][0] + self[1][0] * rhs[1][1] +
+                     self[2][0] * rhs[1][2] + self[3][0] * rhs[1][3]),
+                    (self[0][1] * rhs[1][0] + self[1][1] * rhs[1][1] +
+                     self[2][1] * rhs[1][2] + self[3][1] * rhs[1][3]),
+                    (self[0][2] * rhs[1][0] + self[1][2] * rhs[1][1] +
+                     self[2][2] * rhs[1][2] + self[3][2] * rhs[1][3]),
+                    (self[0][3] * rhs[1][0] + self[1][3] * rhs[1][1] +
+                     self[2][3] * rhs[1][2] + self[3][3] * rhs[1][3]),
+                ]),
+                $vector::from_no_clean([
+                    (self[0][0] * rhs[2][0] + self[1][0] * rhs[2][1] +
+                     self[2][0] * rhs[2][2] + self[3][0] * rhs[2][3]),
+                    (self[0][1] * rhs[2][0] + self[1][1] * rhs[2][1] +
+                     self[2][1] * rhs[2][2] + self[3][1] * rhs[2][3]),
+                    (self[0][2] * rhs[2][0] + self[1][2] * rhs[2][1] +
+                     self[2][2] * rhs[2][2] + self[3][2] * rhs[2][3]),
+                    (self[0][3] * rhs[2][0] + self[1][3] * rhs[2][1] +
+                     self[2][3] * rhs[2][2] + self[3][3] * rhs[2][3]),
+                ]),
+                $vector::from_no_clean([
+                    (self[0][0] * rhs[3][0] + self[1][0] * rhs[3][1] +
+                     self[2][0] * rhs[3][2] + self[3][0] * rhs[3][3]),
+                    (self[0][1] * rhs[3][0] + self[1][1] * rhs[3][1] +
+                     self[2][1] * rhs[3][2] + self[3][1] * rhs[3][3]),
+                    (self[0][2] * rhs[3][0] + self[1][2] * rhs[3][1] +
+                     self[2][2] * rhs[3][2] + self[3][2] * rhs[3][3]),
+                    (self[0][3] * rhs[3][0] + self[1][3] * rhs[3][1] +
+                     self[2][3] * rhs[3][2] + self[3][3] * rhs[3][3]),
+                ]),
+            ]) }
         }
         // --------------------------------------------------------------------
         impl <V> ::std::ops::MulAssign<Matrix4x4<V>> for Matrix4x4<V>
@@ -172,18 +236,16 @@ macro_rules! matrix_define_impl {
         impl <V> ::std::ops::Mul<$vector<V>> for Matrix4x4<V>
             where V: Number {
             type Output = $vector<V>;
-            fn mul(self, rhs: $vector<V>) -> Self::Output {
-                $vector::from([
-                    (self[0][0] * rhs[0] + self[1][0] * rhs[1] +
-                     self[2][0] * rhs[2] + self[3][0] * rhs[3]),
-                    (self[0][1] * rhs[0] + self[1][1] * rhs[1] +
-                     self[2][1] * rhs[2] + self[3][1] * rhs[3]),
-                    (self[0][2] * rhs[0] + self[1][2] * rhs[1] +
-                     self[2][2] * rhs[2] + self[3][2] * rhs[3]),
-                    (self[0][3] * rhs[0] + self[1][3] * rhs[1] +
-                     self[2][3] * rhs[2] + self[3][3] * rhs[3]),
-                ])
-            }
+            fn mul(self, rhs: $vector<V>) -> Self::Output { $vector::from([
+                (self[0][0] * rhs[0] + self[1][0] * rhs[1] +
+                 self[2][0] * rhs[2] + self[3][0] * rhs[3]),
+                (self[0][1] * rhs[0] + self[1][1] * rhs[1] +
+                 self[2][1] * rhs[2] + self[3][1] * rhs[3]),
+                (self[0][2] * rhs[0] + self[1][2] * rhs[1] +
+                 self[2][2] * rhs[2] + self[3][2] * rhs[3]),
+                (self[0][3] * rhs[0] + self[1][3] * rhs[1] +
+                 self[2][3] * rhs[2] + self[3][3] * rhs[3]),
+            ]) }
         }
     };
     ($name:ident($vector:ident; $i:expr))       => {
@@ -196,66 +258,78 @@ macro_rules! matrix_define_inner {
         // ====================================================================
         /// mul
         pub fn mul(lhs: &Matrix4x4< V, >, rhs: &Matrix4x4< V, >)
-                   -> Matrix4x4< V, > {
-            Matrix4x4::from([
-                $vector::from_no_clean([
-                    (lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] +
-                     lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3]),
-                    (lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] +
-                     lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3]),
-                    (lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] +
-                     lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3]),
-                    (lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] +
-                     lhs[2][3] * rhs[0][2] + lhs[3][3] * rhs[0][3]),
-                ]),
-                $vector::from_no_clean([
-                    (lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] +
-                     lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3]),
-                    (lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] +
-                     lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3]),
-                    (lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] +
-                     lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3]),
-                    (lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] +
-                     lhs[2][3] * rhs[1][2] + lhs[3][3] * rhs[1][3]),
-                ]),
-                $vector::from_no_clean([
-                    (lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] +
-                     lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3]),
-                    (lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] +
-                     lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3]),
-                    (lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] +
-                     lhs[2][2] * rhs[2][2] + lhs[3][2] * rhs[2][3]),
-                    (lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1] +
-                     lhs[2][3] * rhs[2][2] + lhs[3][3] * rhs[2][3]),
-                ]),
-                $vector::from_no_clean([
-                    (lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] +
-                     lhs[2][0] * rhs[3][2] + lhs[3][0] * rhs[3][3]),
-                    (lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] +
-                     lhs[2][1] * rhs[3][2] + lhs[3][1] * rhs[3][3]),
-                    (lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1] +
-                     lhs[2][2] * rhs[3][2] + lhs[3][2] * rhs[3][3]),
-                    (lhs[0][3] * rhs[3][0] + lhs[1][3] * rhs[3][1] +
-                     lhs[2][3] * rhs[3][2] + lhs[3][3] * rhs[3][3]),
-                ])
-            ])
+                   -> Matrix4x4< V, > { Matrix4x4::from([
+            $vector::from_no_clean([
+                (lhs[0][0] * rhs[0][0] + lhs[1][0] * rhs[0][1] +
+                 lhs[2][0] * rhs[0][2] + lhs[3][0] * rhs[0][3]),
+                (lhs[0][1] * rhs[0][0] + lhs[1][1] * rhs[0][1] +
+                 lhs[2][1] * rhs[0][2] + lhs[3][1] * rhs[0][3]),
+                (lhs[0][2] * rhs[0][0] + lhs[1][2] * rhs[0][1] +
+                 lhs[2][2] * rhs[0][2] + lhs[3][2] * rhs[0][3]),
+                (lhs[0][3] * rhs[0][0] + lhs[1][3] * rhs[0][1] +
+                 lhs[2][3] * rhs[0][2] + lhs[3][3] * rhs[0][3]),
+            ]),
+            $vector::from_no_clean([
+                (lhs[0][0] * rhs[1][0] + lhs[1][0] * rhs[1][1] +
+                 lhs[2][0] * rhs[1][2] + lhs[3][0] * rhs[1][3]),
+                (lhs[0][1] * rhs[1][0] + lhs[1][1] * rhs[1][1] +
+                 lhs[2][1] * rhs[1][2] + lhs[3][1] * rhs[1][3]),
+                (lhs[0][2] * rhs[1][0] + lhs[1][2] * rhs[1][1] +
+                 lhs[2][2] * rhs[1][2] + lhs[3][2] * rhs[1][3]),
+                (lhs[0][3] * rhs[1][0] + lhs[1][3] * rhs[1][1] +
+                 lhs[2][3] * rhs[1][2] + lhs[3][3] * rhs[1][3]),
+            ]),
+            $vector::from_no_clean([
+                (lhs[0][0] * rhs[2][0] + lhs[1][0] * rhs[2][1] +
+                 lhs[2][0] * rhs[2][2] + lhs[3][0] * rhs[2][3]),
+                (lhs[0][1] * rhs[2][0] + lhs[1][1] * rhs[2][1] +
+                 lhs[2][1] * rhs[2][2] + lhs[3][1] * rhs[2][3]),
+                (lhs[0][2] * rhs[2][0] + lhs[1][2] * rhs[2][1] +
+                 lhs[2][2] * rhs[2][2] + lhs[3][2] * rhs[2][3]),
+                (lhs[0][3] * rhs[2][0] + lhs[1][3] * rhs[2][1] +
+                 lhs[2][3] * rhs[2][2] + lhs[3][3] * rhs[2][3]),
+            ]),
+            $vector::from_no_clean([
+                (lhs[0][0] * rhs[3][0] + lhs[1][0] * rhs[3][1] +
+                 lhs[2][0] * rhs[3][2] + lhs[3][0] * rhs[3][3]),
+                (lhs[0][1] * rhs[3][0] + lhs[1][1] * rhs[3][1] +
+                 lhs[2][1] * rhs[3][2] + lhs[3][1] * rhs[3][3]),
+                (lhs[0][2] * rhs[3][0] + lhs[1][2] * rhs[3][1] +
+                 lhs[2][2] * rhs[3][2] + lhs[3][2] * rhs[3][3]),
+                (lhs[0][3] * rhs[3][0] + lhs[1][3] * rhs[3][1] +
+                 lhs[2][3] * rhs[3][2] + lhs[3][3] * rhs[3][3]),
+            ]) ])
         }
         // ====================================================================
         /// tra
-        pub fn tra(tx: V, ty: V, tz: V) -> Matrix4x4< V, > {
-            Matrix4x4::from([
-                $vector::from_no_clean([
-                    V::one(), V::zero(), V::zero(), V::zero(),
-                ]),
-                $vector::from_no_clean([
-                    V::zero(), V::one(), V::zero(), V::zero(),
-                ]),
-                $vector::from_no_clean([
-                    V::zero(), V::zero(), V::one(), V::zero(),
-                ]),
-                $vector::from_no_clean([ tx, ty, tz, V::one(), ]),
-            ])
-        }
+        pub fn tra(tx: V, ty: V, tz: V) -> Matrix4x4< V, > { Matrix4x4::from([
+            $vector::from_no_clean([
+                V::one(), V::zero(), V::zero(), V::zero(),
+            ]),
+            $vector::from_no_clean([
+                V::zero(), V::one(), V::zero(), V::zero(),
+            ]),
+            $vector::from_no_clean([
+                V::zero(), V::zero(), V::one(), V::zero(),
+            ]),
+            $vector::from_no_clean([ tx, ty, tz, V::one(), ]),
+        ]) }
+        // ====================================================================
+        /// sca
+        pub fn sca(sx: V, sy: V, sz: V) -> Matrix4x4< V, > { Matrix4x4::from([
+            $vector::from_no_clean([
+                sx,        V::zero(), V::zero(), V::zero(),
+            ]),
+            $vector::from_no_clean([
+                V::zero(), sy,        V::zero(), V::zero(),
+            ]),
+            $vector::from_no_clean([
+                V::zero(), V::zero(), sz,        V::zero(),
+            ]),
+            $vector::from_no_clean([
+                V::zero(), V::zero(), V::zero(), V::one(),
+            ]),
+        ]) }
         // ====================================================================
         /// trarotsca
         pub fn trarotsca(tx: V, ty: V, tz: V,
