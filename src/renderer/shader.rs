@@ -6,11 +6,11 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2016/10/15
+//  @date 2017/01/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use ::std::ffi::{ CString, };
+use ::std::ffi::CString;
 use ::gl::types::*;
 // ----------------------------------------------------------------------------
 use super::{ gl_result, info_log, };

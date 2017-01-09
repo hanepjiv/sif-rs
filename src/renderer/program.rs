@@ -6,11 +6,11 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2016/12/29
+//  @date 2017/01/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use ::std::collections::{ BTreeMap, };
+use ::std::collections::BTreeMap;
 use ::gl::types::*;
 // ----------------------------------------------------------------------------
 use super::{ gl_result, info_log,

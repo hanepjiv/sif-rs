@@ -6,15 +6,13 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2017/01/05
+//  @date 2017/01/07
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use ::std::os::raw::{ c_void, };
+use ::std::os::raw::c_void;
 // ----------------------------------------------------------------------------
 use ::gl::types::*;
-// ----------------------------------------------------------------------------
-use ::uuid::{ Uuid, };
 // ----------------------------------------------------------------------------
 use super::super::error::Error;
 use super::{ gl_result, GLError, TBind, };
@@ -33,8 +31,6 @@ pub fn max_texture_size() -> Result<GLint, GLError<GLint, ()>> {
 /// struct Texture
 #[derive( Debug, Clone, )]
 pub struct Texture {
-    /// uuid
-    uuid:               Uuid,
     /// id
     id:                 GLuint,
     /// target
@@ -48,8 +44,7 @@ pub struct Texture {
 impl Texture {
     // ========================================================================
     /// new_2d
-    pub fn new_2d(uuid:         Uuid,
-                  wrap_s:       GLenum,         wrap_t:         GLenum,
+    pub fn new_2d(wrap_s:       GLenum,         wrap_t:         GLenum,
                   filter_mag:   GLenum,         filter_min:     GLenum,
                   mipmap:       bool,
                   format:       GLenum,         type_:          GLenum,
@@ -65,7 +60,6 @@ impl Texture {
             },
             Ok(id)      => {
                 let texture = Texture {
-                    uuid:       uuid,
                     id:         id,
                     target:     ::gl::TEXTURE_2D,
                     format:     format,
@@ -80,16 +74,14 @@ impl Texture {
     }
     // ========================================================================
     /// open_2d
-    pub fn open_2d<P>(uuid:             Uuid,
-                      wrap_s:           GLenum, wrap_t:         GLenum,
+    pub fn open_2d<P>(wrap_s:           GLenum, wrap_t:         GLenum,
                       filter_mag:       GLenum, filter_min:     GLenum,
                       mipmap:           bool,   path:           P)
                       -> Result<Self, Error>
         where P: AsRef<::std::path::Path> {
         let i = ::image::imageops::flip_vertical(
             &::image::open(path).expect("Texture::open_2d").to_rgba());
-        Texture::new_2d(uuid,
-                        wrap_s, wrap_t, filter_mag, filter_min,
+        Texture::new_2d(wrap_s, wrap_t, filter_mag, filter_min,
                         mipmap,
                         ::gl::RGBA, ::gl::UNSIGNED_BYTE,
                         i.width() as GLint, i.height() as GLint,
@@ -154,10 +146,6 @@ impl Texture {
                                    self.format, self.type_, pixels))
         } })
     }
-}
-// ============================================================================
-impl AsRef<Uuid> for Texture {
-    fn as_ref(&self) -> &Uuid { &self.uuid }
 }
 // ============================================================================
 impl Drop for Texture {

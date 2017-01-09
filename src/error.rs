@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/11/27
-//  @date 2016/11/27
+//  @date 2017/01/07
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -24,7 +24,12 @@ impl ::std::fmt::Display for Error {
 }
 // ============================================================================
 impl ::std::error::Error for Error {
-    fn description(&self) -> &str { match self {
-        &Error::SifError(ref m)            => m.as_str(),
+    // ========================================================================
+    fn description(&self) -> &str { match *self {
+        Error::SifError(ref m)          => m.as_str(),
+    } }
+    // ========================================================================
+    fn cause(&self) -> Option<&::std::error::Error> { match *self {
+        Error::SifError(_)              => None,
     } }
 }

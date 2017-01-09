@@ -6,17 +6,17 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/02/23
-//  @date 2016/10/10
+//  @date 2017/01/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 pub use self::result::{ GLError, gl_result, info_log };
 pub use self::bind::{ TBind, Binder, };
-pub use self::buffer::{ Buffer, };
-pub use self::texture::{ Texture, };
-pub use self::frame::{ Frame, };
+pub use self::buffer::Buffer;
+pub use self::texture::Texture;
+pub use self::frame::Frame;
 pub use self::shader::{ ShaderSrc, Shader, };
-pub use self::program::{ Program, };
+pub use self::program::Program;
 // mod  =======================================================================
 pub mod result;
 pub mod bind;
