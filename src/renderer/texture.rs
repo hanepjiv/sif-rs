@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2017/01/07
+//  @date 2017/01/10
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -66,8 +66,7 @@ impl Texture {
                     type_:      type_,
                 };
                 texture.tex_image_2d(wrap_s, wrap_t, filter_mag, filter_min,
-                                     mipmap,
-                                     width, height, pixels);
+                                     mipmap, width, height, pixels);
                 Ok(texture)
             },
         }
