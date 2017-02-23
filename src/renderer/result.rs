@@ -6,34 +6,68 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2016/12/28
+//  @date 2017/01/17
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
+use ::std::fmt::Debug;
+// ----------------------------------------------------------------------------
 use ::gl::types::*;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum GLError
 #[derive( Debug, Clone, )]
-pub enum GLError< R, E, > {
+pub enum GLError< R, E, >
+    where R: Debug,
+          E: Debug, {
     /// Function
     Function(E),
     /// GL
     GL(GLenum, Result< R, E, >),
 }
 // ============================================================================
+impl <R, E> ::std::fmt::Display for GLError<R, E>
+    where R: Debug,
+          E: Debug, {
+    // ========================================================================
+    fn fmt(&self, f: &mut ::std::fmt::Formatter)
+           -> ::std::fmt::Result { match *self {
+        ref e@GLError::Function(_)      |
+        ref e@GLError::GL(_, _)         => write!(f, "{:?}", e),
+    } }
+}
+// ============================================================================
+impl <R, E> ::std::error::Error for GLError<R, E>
+    where R: Debug,
+          E: Debug, {
+    // ========================================================================
+    fn description(&self) -> &str { match *self {
+        GLError::Function(_)    => "::sif::renderer::GLError::Function",
+        GLError::GL(_, _)       => "::sif::renderer::GLError::GL",
+    } }
+    // ========================================================================
+    fn cause(&self) -> Option<&::std::error::Error> { match *self {
+        GLError::Function(_)    => None,
+        GLError::GL(_, _)       => None,
+    } }
+}
+// ============================================================================
 /// gl_result
 pub fn gl_result< R, E, F, >(f: F) -> Result< R, GLError< R, E, >, >
-    where F: FnOnce() -> Result< R, E, >,       {
+    where R: Debug,
+          E: Debug,
+          F: FnOnce() -> Result< R, E, >,       {
     let result = f();
+    // if cfg!(debug_assertions) {
     match unsafe { ::gl::GetError() } {
-        ::gl::NO_ERROR  => {
-            result.map_err(|e| -> GLError< R, E, > { GLError::Function(e) })
+        ::gl::NO_ERROR      => {
+            result.map_err(|e| -> GLError<R, E> { GLError::Function(e) })
         },
-        e               => {
-            Err(GLError::GL(e, result))
-        },
+        e                   => Err(GLError::GL(e, result)),
     }
+    //} else {
+    //    result.map_err(|e| -> GLError<R, E> { GLError::Function(e) })
+    //}
 }
 // ============================================================================
 /// get_iv

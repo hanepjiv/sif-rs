@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2017/01/03
+//  @date 2017/02/24
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -34,16 +34,14 @@ macro_rules! matrix_define {
             where V: Number {
             type Output = $vector<V>;
             fn index(&self, index: usize) -> &Self::Output {
-                let &$name(ref inner) = self;
-                &inner[index]
+                &self.0[index]
             }
         }
         // ====================================================================
         impl <V> ::std::ops::IndexMut< usize, > for $name<V>
             where V: Number {
             fn index_mut(&mut self, index: usize) -> &mut Self::Output {
-                let &mut $name(ref mut inner) = self;
-                &mut inner[index]
+                &mut self.0[index]
             }
         }
         // ====================================================================
@@ -60,8 +58,7 @@ macro_rules! matrix_define {
         impl <V> ::std::ops::AddAssign<V> for $name<V>
             where V: Number {
             fn add_assign(&mut self, rhs: V) {
-                let &mut $name(ref mut inner) = self;
-                for i in 0 .. $i { inner[i] += rhs; }
+                for i in 0 .. $i { self.0[i] += rhs; }
             }
         }
         // ====================================================================
@@ -78,8 +75,7 @@ macro_rules! matrix_define {
         impl <V> ::std::ops::SubAssign<V> for $name<V>
             where V: Number {
             fn sub_assign(&mut self, rhs: V) {
-                let &mut $name(ref mut inner) = self;
-                for i in 0 .. $i { inner[i] -= rhs; }
+                for i in 0 .. $i { self.0[i] -= rhs; }
             }
         }
         // ====================================================================
@@ -96,8 +92,7 @@ macro_rules! matrix_define {
         impl <V> ::std::ops::MulAssign<V> for $name<V>
             where V: Number {
             fn mul_assign(&mut self, rhs: V) {
-                let &mut $name(ref mut inner) = self;
-                for i in 0 .. $i { inner[i] *= rhs; }
+                for i in 0 .. $i { self.0[i] *= rhs; }
             }
         }
         // ====================================================================
@@ -114,8 +109,7 @@ macro_rules! matrix_define {
         impl <V> ::std::ops::DivAssign<V> for $name<V>
             where V: Number {
             fn div_assign(&mut self, rhs: V) {
-                let &mut $name(ref mut inner) = self;
-                for i in 0 .. $i { inner[i] /= rhs; }
+                for i in 0 .. $i { self.0[i] /= rhs; }
             }
         }
         // ====================================================================
@@ -131,14 +125,12 @@ macro_rules! matrix_define {
             // ================================================================
             /// as_ptr
             pub fn as_ptr(&self) -> *const V {
-                let &$name(ref inner) = self;
-                inner[0].as_ptr()
+                self.0[0].as_ptr()
             }
             // ================================================================
             /// as_mut_ptr
             pub fn as_mut_ptr(&mut self) -> *mut V {
-                let &mut $name(ref mut inner) = self;
-                inner[0].as_mut_ptr()
+                self.0[0].as_mut_ptr()
             }
             // ================================================================
             /// cleanup

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2017/01/10
+//  @date 2017/02/19
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -29,7 +29,7 @@ pub fn max_texture_size() -> Result<GLint, GLError<GLint, ()>> {
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Texture
-#[derive( Debug, Clone, )]
+#[derive( Debug, )]
 pub struct Texture {
     /// id
     id:                 GLuint,

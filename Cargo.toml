@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name            = "sif"
-version         = "0.1.6"
+version         = "0.1.7"
 authors         = ["hanepjiv <hanepjiv@gmail.com>"]
 license         = "MIT/Apache-2.0"
 keywords        = ["subsystem", "game", "math", "graphics"]
@@ -19,5 +19,5 @@ num             = { default-features = false, version = "^0.1.36" }
 # -----------------------------------------------------------------------------
 [dependencies.image]
 default-features = false
-version = "^0.12.1"
+version = "^0.12.3"
 features = ["png_codec"]

@@ -6,13 +6,13 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2016/10/13
+//  @date 2017/01/17
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use ::gl::types::*;
 // ----------------------------------------------------------------------------
-use super::{ gl_result, GLError, TBind, };
+use super::{ gl_result, GLError, TBind, Texture, Render, };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Frame
@@ -38,12 +38,31 @@ impl Frame {
         }
     }
     // ========================================================================
-    /// attach
-    pub fn attach(&self, att: GLenum, id: GLuint, level: GLint)
-                  -> Result<(), GLError<(), GLenum>>{
+    /// attach_2d
+    pub fn attach_2d(&self,
+                    attatchment: GLenum, textarget: GLenum, texture: &Texture)
+                    -> Result<(), GLError<(), GLenum>> {
         let _binder = self.binder();
         unwrap!(gl_result(|| -> Result<(), ()> { unsafe {
-            Ok(::gl::FramebufferTexture(::gl::FRAMEBUFFER, att, id, level))
+            Ok(::gl::FramebufferTexture2D(::gl::FRAMEBUFFER, attatchment,
+                                             textarget, texture.id(), 0))
+        } }));
+        gl_result(|| -> Result<(), GLenum> { unsafe {
+            match ::gl::CheckFramebufferStatus(::gl::FRAMEBUFFER) {
+                ::gl::FRAMEBUFFER_COMPLETE      => Ok(()),
+                x                               => Err(x),
+            }
+        } })
+    }
+    // ========================================================================
+    /// attach_render
+    pub fn attach_render(&self, attatchment: GLenum, renderbuffer: &Render)
+                         -> Result<(), GLError<(), GLenum>> {
+        let _binder = self.binder();
+        unwrap!(gl_result(|| -> Result<(), ()> { unsafe {
+            Ok(::gl::FramebufferRenderbuffer(::gl::FRAMEBUFFER, attatchment,
+                                             ::gl::RENDERBUFFER,
+                                             renderbuffer.id()))
         } }));
         gl_result(|| -> Result<(), GLenum> { unsafe {
             match ::gl::CheckFramebufferStatus(::gl::FRAMEBUFFER) {

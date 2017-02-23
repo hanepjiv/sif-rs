@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2016/12/20
+//  @date 2017/02/24
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -46,16 +46,14 @@ impl <V> ::std::ops::Index< usize, > for Quaternion<V>
     where V: Number {
     type Output         = V;
     fn index(&self, index: usize) -> &Self::Output {
-        let &Quaternion(ref inner) = self;
-        &inner[index]
+        &self.0[index]
     }
 }
 // ============================================================================
 impl <V> ::std::ops::IndexMut< usize, > for Quaternion<V>
     where V: Number {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
-        let &mut Quaternion(ref mut inner) = self;
-        &mut inner[index]
+        &mut self.0[index]
     }
 }
 // ============================================================================
@@ -64,20 +62,17 @@ impl < V, > Quaternion< V, >
     // ========================================================================
     /// as_ptr
     pub fn as_ptr(&self) -> *const V {
-        let &Quaternion(ref inner) = self;
-        inner.as_ptr()
+        self.0.as_ptr()
     }
     // ========================================================================
     /// as_mut_ptr
     pub fn as_mut_ptr(&mut self) -> *mut V {
-        let &mut Quaternion(ref mut inner) = self;
-        inner.as_mut_ptr()
+        self.0.as_mut_ptr()
     }
     // ========================================================================
     /// cleanup
     pub fn cleanup(&mut self) {
-        let &mut Quaternion(ref mut inner) = self;
-        inner.cleanup();
+        self.0.cleanup();
     }
     // ========================================================================
     /// rot
