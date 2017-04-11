@@ -6,9 +6,12 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/11/27
-//  @date 2017/01/07
+//  @date 2017/03/09
 
 // ////////////////////////////////////////////////////////////////////////////
+// ============================================================================
+/// type Result
+pub type Result<T> = ::std::result::Result<T, Box<::std::error::Error>>;
 // ============================================================================
 /// enum Error
 #[derive( Debug, Clone, )]

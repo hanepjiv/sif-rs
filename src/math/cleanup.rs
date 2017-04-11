@@ -6,19 +6,19 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/22
-//  @date 2016/10/10
+//  @date 2017/04/12
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Cleanup
 #[derive( Debug, )]
-pub struct Cleanup< V, >
+pub struct Cleanup<V>
     where V: ::num::Float, {
     /// max
     max:        V,
 }
 // ============================================================================
-impl < V, > Cleanup< V, >
+impl <V> Cleanup<V>
     where V: ::num::Float, {
     // ========================================================================
     /// new
@@ -28,11 +28,15 @@ impl < V, > Cleanup< V, >
     // ========================================================================
     /// collect
     pub fn collect(& mut self, n: V) {
-        if V::abs(n) > self.max { self.max = V::abs(n); }
+        if self.max < V::abs(n) { self.max = V::abs(n); }
     }
     // ========================================================================
     /// check
     pub fn check(&self, n: V) -> V {
-        if (V::abs(n) / self.max) < V::epsilon() { V::zero() } else { n }
+        if (V::abs(n) / self.max) < V::epsilon() {
+            V::zero()
+        } else {
+            n
+        }
     }
 }

@@ -6,35 +6,30 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2017/02/24
+//  @date 2017/04/10
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-use super::{ MathError, Number, Vector4, };
-// ============================================================================
-use ::num::Float;
+use super::{ Number, Vector4, };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Quaternion
 #[derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd,  )]
 pub struct Quaternion< V: Number >(Vector4< V >);
 // ============================================================================
-impl <V> Default for Quaternion<V>
-    where V: Number {
+impl <V> Default for Quaternion<V> where V: Number {
     fn default() -> Self {
         Quaternion(Vector4::from([V::zero(), V::zero(), V::zero(), V::one()]))
     }
 }
 // ============================================================================
-impl <V> From< [V; 4] > for Quaternion<V>
-    where V: Number {
+impl <V> From< [V; 4] > for Quaternion<V> where V: Number {
     fn from(inner: [V; 4]) -> Self {
         Quaternion::from(Vector4::from(inner))
     }
 }
 // ============================================================================
-impl <V> From< Vector4< V > > for Quaternion<V>
-    where V: Number {
+impl <V> From< Vector4< V > > for Quaternion<V> where V: Number {
     fn from(inner: Vector4< V >) -> Self {
         let mut q = Quaternion(inner);
         q.cleanup();
@@ -42,50 +37,27 @@ impl <V> From< Vector4< V > > for Quaternion<V>
     }
 }
 // ============================================================================
-impl <V> ::std::ops::Index< usize, > for Quaternion<V>
-    where V: Number {
+impl <V> ::std::ops::Index< usize, > for Quaternion<V> where V: Number {
     type Output         = V;
     fn index(&self, index: usize) -> &Self::Output {
         &self.0[index]
     }
 }
 // ============================================================================
-impl <V> ::std::ops::IndexMut< usize, > for Quaternion<V>
-    where V: Number {
+impl <V> ::std::ops::IndexMut< usize, > for Quaternion<V> where V: Number {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         &mut self.0[index]
     }
 }
 // ============================================================================
-impl < V, > Quaternion< V, >
-    where V: Number, {
+impl <V> Quaternion<V> where V: Number {
     // ========================================================================
     /// as_ptr
-    pub fn as_ptr(&self) -> *const V {
-        self.0.as_ptr()
-    }
-    // ========================================================================
+    pub fn as_ptr(&self) -> *const V { self.0.as_ptr() }
+    // ------------------------------------------------------------------------
     /// as_mut_ptr
-    pub fn as_mut_ptr(&mut self) -> *mut V {
-        self.0.as_mut_ptr()
-    }
+    pub fn as_mut_ptr(&mut self) -> *mut V { self.0.as_mut_ptr() }
     // ========================================================================
     /// cleanup
-    pub fn cleanup(&mut self) {
-        self.0.cleanup();
-    }
-    // ========================================================================
-    /// rot
-    pub fn rot(theata: V, x: V, y: V, z: V)
-               -> Result< Quaternion< V, >, MathError > {
-        let n = Float::sqrt((x * x) + (y * y) + (z * z));
-        if n < V::epsilon() {
-            return Err(MathError::InvaridArguments(
-                String::from("math::Quaternion_::rot")));
-        }
-        let m = Float::sin(theata / V::from(2).unwrap()) / n;
-        Ok(Quaternion::from([
-            x*m, y*m, z*m, Float::cos(theata / V::from(2).unwrap())
-        ]))
-    }
+    pub fn cleanup(&mut self) { self.0.cleanup(); }
 }

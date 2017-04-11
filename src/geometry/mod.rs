@@ -6,18 +6,22 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/12
-//  @date 2016/10/10
+//  @date 2017/03/17
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-pub use self::plane::*;
+pub use self::ray::*;
+pub use self::segment::*;
 pub use self::sphere::*;
+pub use self::capsule::*;
+pub use self::plane::*;
 pub use self::cube::*;
 pub use self::cuboid::*;
-pub use self::capsule::*;
 // mod  =======================================================================
-pub mod plane;
+pub mod ray;
+pub mod segment;
 pub mod sphere;
+pub mod capsule;
+pub mod plane;
 pub mod cube;
 pub mod cuboid;
-pub mod capsule;

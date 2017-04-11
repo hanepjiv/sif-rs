@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/11
-//  @date 2016/10/10
+//  @date 2017/03/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -26,7 +26,7 @@ pub trait TBind: ::std::fmt::Debug {
     fn unbind(&self);
     // ========================================================================
     /// binder
-    fn binder< 'a, >(&'a self) -> Binder< 'a, >
+    fn binder<'a>(&'a self) -> Binder<'a>
         where Self: Sized {
         Binder::new(self)
     }
@@ -35,20 +35,20 @@ pub trait TBind: ::std::fmt::Debug {
 // ============================================================================
 /// struct Binder
 #[derive( Debug, )]
-pub struct Binder< 'a, > {
+pub struct Binder<'a> {
     /// bind
     bind:       &'a TBind,
 }
 // ============================================================================
-impl < 'a, > Binder< 'a, > {
+impl <'a> Binder<'a> {
     // ========================================================================
     /// new
     pub fn new(bind: &'a TBind) -> Self {
-        bind.bind();
-        Binder { bind: bind, }
-    }
+    bind.bind();
+    Binder { bind: bind, }
+}
 }
 // ============================================================================
-impl < 'a, > Drop for Binder< 'a, > {
+impl <'a> Drop for Binder<'a> {
     fn drop(&mut self) { self.bind.unbind(); }
 }

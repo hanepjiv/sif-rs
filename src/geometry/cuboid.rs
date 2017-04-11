@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/19
-//  @date 2016/10/10
+//  @date 2017/03/17
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -16,29 +16,39 @@ use super::super::math::{ Number, Vector3, };
 /// struct Cuboid
 #[derive( Debug, Clone, )]
 pub struct Cuboid<V>
-    where V:    Number,         {
+    where V: Number,            {
     /// center
     pub center: Vector3<V>,
+    /// radius
+    pub radius: Vector3<V>,
 }
 // ============================================================================
 impl <V> Default for Cuboid<V>
-    where V:    Number,         {
+    where V: Number,            {
     // ========================================================================
-    fn default() -> Self { Cuboid {
+    fn default() -> Self        { Cuboid {
         center: Vector3::<V>::default(),
+        radius: Vector3::<V>::from_no_clean([V::one(), V::one(), V::one()]),
     } }
 }
 // ============================================================================
 impl <V> Cuboid<V>
-    where V:    Number,         {
+    where V: Number,            {
     // ========================================================================
     /// new
-    pub fn new() -> Self { Cuboid {
-        center: Vector3::<V>::default(),
+    pub fn new(center: Vector3<V>, radius: Vector3<V>) -> Self { Cuboid {
+        center: center,
+        radius: radius,
     } }
     // ========================================================================
     /// is_cube
-    pub fn is_cube(&self) -> bool {
-        false  // TODO(hanepjiv): UNDERCONSTRUCT
+    pub fn is_cube(&self) -> Option<V> {
+        if        V::epsilon() < V::abs(self.radius[0] - self.radius[1]) {
+            None
+        } else if V::epsilon() < V::abs(self.radius[0] - self.radius[2]) {
+            None
+        } else {
+            Some(self.radius[0])
+        }
     }
 }
