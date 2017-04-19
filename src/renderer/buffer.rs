@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2016/12/15
+//  @date 2017/04/20
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -87,13 +87,22 @@ impl Buffer {
         } }).expect("Buffer::sub_data");
     }
     // ========================================================================
-    /// draw
-    pub fn draw(&self, mode: GLenum, count: GLsizei)
+    /// draw_elements
+    pub fn draw_elements(&self, mode: GLenum, count: GLsizei)
                 -> Result<(), GLError<(), ()>> {
         let _binder = self.binder();
         gl_result(|| -> Result<(), ()> { unsafe {
             Ok(::gl::DrawElements(mode, count, ::gl::UNSIGNED_INT,
                                   ::std::ptr::null()))
+        } })
+    }
+    // ========================================================================
+    /// draw_arrays
+    pub fn draw_arrays(&self, mode: GLenum, first: GLint, count: GLsizei)
+                -> Result<(), GLError<(), ()>> {
+        let _binder = self.binder();
+        gl_result(|| -> Result<(), ()> { unsafe {
+            Ok(::gl::DrawArrays(mode, first, count))
         } })
     }
 }

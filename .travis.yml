@@ -1,15 +1,16 @@
 language: rust
 sudo: false
 cache:
-  - apt
-  - cargo
+- apt
+- cargo
 rust:
-  - stable
-  - beta
-  - nightly
+- stable
+- beta
+- nightly
 matrix:
   allow_failures:
-    - rust: nightly
+  - rust: nightly
 notifications:
   slack:
-    secure: vynUjLVuCZIH9mdUPSfttixq/GlnfWzdD5w8TS9QO+sj0sw5DP0JN1myh/meNhTyK6oVu5WzKcqYwkJTaX/ZTwN9OmIQHlh45XBClF8Ho68DgTZi1B5stmjuJXFKXlzlpIDEuaEsr5Wre6xinNSZbIEOto5T+h4fZLL+TTB5zM6xLGHcfgIzEn0pd4KAbU6QW54vWe61bbDkB6uTOwWRen+y5lst0ClGKZVlRvlnqjCukSaH1XTaA8eBukJI9q2oSC3zOY6YuoEWCK8jqjA/w1CbPgoTWoqBJpG/6AQgH/eFzxbhtNa6/mIXGz4K1GHk8ib5ppZX+/RBcPEBV3QGLNf5JuyZ6A37rA5tXQePHjOFCV0poXSCMBxVmuQqRl4FRGvGhIlgf32Q4HBySDpU1vYLLuK98hcmjQisy2/vgPun63mx3aRjSmb0hQA8J9gAuRrcwQctECDLuRAkC4RH3n0K8wx+EfyvBH0RT5u8qHT6XHQS1ceRuu2ceScBs1eCgfqUECgLSpSSi50mntqNuKaPzNK2hBdFA/BOnga4LAKH8qGbWs51YLccH6Nfj7uWAkw9U4hMKc8UfQdguvpO/IN7YLYAohPRLIhBpy4ExmLMR5LHnaSdGlxCUaW140GZAsTc31h6X//j6BY3ybBToLmx1oemYXm0vcXO9MNNBSA=
+    rooms:
+      secure: Bwlor4yN9N0yNSC2c1e6tR93ZMYkf1340/T7kAKsKIUGhxaXIcmLfXL5AGMrYCo3zZy+fQ86sEOImveipIYRU9jcFZXtCfWPX3aad1Cw5NrfxNHrSyU37j23boGec8yqv4pmhgS5ELlPtP7IjMkaE2NBIQOzhKU5kmLjTwL0eh0U5+bmw8Y9DIVMIz5ql1QW3x5qd1YFbcnrFDd+k6I4a+OVxO46HZKMV/mbvnj/FpsQYAf4U1Mb2ypugL1uOszNj5Cu6wt/qMsKJVMm7HcYKmYFsjzws7zAAWW5h0vlRLoIz6Duur8AobxuWiJFb0LfPzYE2xZYsYt52nvCfX5OJJEyDzjAXdDbDPHzANUumuvjTpYWfSTbGHFUjjNpjylPMcYzXtfxMPj474deV9veMWYYOOUpjcYVRzH6AU1bEPzSmXGcbCeRM7PfANyRLZ5X0EK8draX8M69rcaswUdUCfLB9wCuLZE6G2m1qpNr9CinaT0oOKBeJleizhlJXam4jbTxdOmAq6F+P7OaOHEY8lbUyPjLhVhgOMXuGUZiYaqiUzl2Yc0BvjJ0nlXo3BsazVBA+OlQeeiWMz4GFJxWWacudRQfLJbQ8uHcVv0wNXHOliAb0LJJDVq7j+AgQq3xedchL1nXAfHA05VI1xP5JDb1/KQLykqDw/u0XtVOE1U=
