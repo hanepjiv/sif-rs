@@ -13,11 +13,11 @@ homepage        = "https://github.com/hanepjiv/sif-rs"
 repository      = "https://github.com/hanepjiv/sif-rs.git"
 # =============================================================================
 [dependencies]
-gl              = { default-features = false, version = "^0.6.1" }
-log             = { default-features = false, version = "^0.3.7" }
-num             = { default-features = false, version = "^0.1.37" }
+gl              = { default-features = false, version = "^0.6.3" }
+log             = { default-features = false, version = "^0.3.8" }
+num             = { default-features = false, version = "^0.1.40" }
 # -----------------------------------------------------------------------------
 [dependencies.image]
-default-features = false
-version = "^0.12.3"
+#default-features = false
+version = "^0.15.0"
 features = ["png_codec"]

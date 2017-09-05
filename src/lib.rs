@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/06/18
-//  @date 2017/04/07
+//  @date 2017/07/21
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -59,15 +59,9 @@
     unused_variables,
     while_true,
     exceeding_bitshifts,
-    hr_lifetime_in_assoc_type,
-    illegal_floating_point_constant_pattern,
-    illegal_struct_or_enum_constant_pattern,
-    inaccessible_extern_crate,
     invalid_type_param_default,
-    lifetime_underscore,
     mutable_transmutes,
     no_mangle_const_items,
-    super_or_self_in_global_path,
     unknown_crate_types,
 )]
 #![warn(

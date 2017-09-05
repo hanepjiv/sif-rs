@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2017/03/09
+//  @date 2017/04/26
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -176,13 +176,13 @@ impl Program {
         gl_result(|| -> StdResult<(), ()> { unsafe {
             Ok(::gl::Uniform1iv(l, c, v))
         } }).expect("Program::set_uniform1iv");
-}
-// ----------------------------------------------------------------------------
-/// set_uniform1ui
-pub fn set_uniform1ui(l: GLint, v0: GLuint) {
-    gl_result(|| -> StdResult<(), ()> { unsafe {
-        Ok(::gl::Uniform1ui(l, v0))
-    } }).expect("Program::set_uniform1ui");
+    }
+    // ------------------------------------------------------------------------
+    /// set_uniform1ui
+    pub fn set_uniform1ui(l: GLint, v0: GLuint) {
+        gl_result(|| -> StdResult<(), ()> { unsafe {
+            Ok(::gl::Uniform1ui(l, v0))
+        } }).expect("Program::set_uniform1ui");
     }
     // ------------------------------------------------------------------------
     /// set_uniform1uiv
@@ -338,7 +338,7 @@ pub fn set_uniform1ui(l: GLint, v0: GLuint) {
     // ========================================================================
     /// set_uniform_matrix2fv
     pub fn set_uniform_matrix2fv(l: GLint,
-                                 c: GLsizei, t:GLboolean, v: *const GLfloat) {
+                                 c: GLsizei, t: GLboolean, v: *const GLfloat) {
         gl_result(|| -> StdResult<(), ()> { unsafe {
             Ok(::gl::UniformMatrix2fv(l, c, t, v))
         } }).expect("Program::set_uniform_matrix2fv");
@@ -346,7 +346,7 @@ pub fn set_uniform1ui(l: GLint, v0: GLuint) {
     // ------------------------------------------------------------------------
     /// set_uniform_matrix3fv
     pub fn set_uniform_matrix3fv(l: GLint,
-                                 c: GLsizei, t:GLboolean, v: *const GLfloat) {
+                                 c: GLsizei, t: GLboolean, v: *const GLfloat) {
         gl_result(|| -> StdResult<(), ()> { unsafe {
             Ok(::gl::UniformMatrix3fv(l, c, t, v))
         } }).expect("Program::set_uniform_matrix3fv");
@@ -354,7 +354,7 @@ pub fn set_uniform1ui(l: GLint, v0: GLuint) {
     // ------------------------------------------------------------------------
     /// set_uniform_matrix4fv
     pub fn set_uniform_matrix4fv(l: GLint,
-                                 c: GLsizei, t:GLboolean, v: *const GLfloat) {
+                                 c: GLsizei, t: GLboolean, v: *const GLfloat) {
         gl_result(|| -> StdResult<(), ()> { unsafe {
             Ok(::gl::UniformMatrix4fv(l, c, t, v))
         } }).expect("Program::set_uniform_matrix4fv");
@@ -362,7 +362,7 @@ pub fn set_uniform1ui(l: GLint, v0: GLuint) {
     // ------------------------------------------------------------------------
     /// set_uniform_matrix2x3fv
     pub fn set_uniform_matrix2x3fv(l: GLint,
-                                   c: GLsizei, t:GLboolean,
+                                   c: GLsizei, t: GLboolean,
                                    v: *const GLfloat) {
         gl_result(|| -> StdResult<(), ()> { unsafe {
             Ok(::gl::UniformMatrix2x3fv(l, c, t, v))
@@ -371,7 +371,7 @@ pub fn set_uniform1ui(l: GLint, v0: GLuint) {
     // ------------------------------------------------------------------------
     /// set_uniform_matrix3x2fv
     pub fn set_uniform_matrix3x2fv(l: GLint,
-                                   c: GLsizei, t:GLboolean,
+                                   c: GLsizei, t: GLboolean,
                                    v: *const GLfloat) {
         gl_result(|| -> StdResult<(), ()> { unsafe {
             Ok(::gl::UniformMatrix3x2fv(l, c, t, v))
@@ -380,7 +380,7 @@ pub fn set_uniform1ui(l: GLint, v0: GLuint) {
     // ------------------------------------------------------------------------
     /// set_uniform_matrix2x4fv
     pub fn set_uniform_matrix2x4fv(l: GLint,
-                                   c: GLsizei, t:GLboolean,
+                                   c: GLsizei, t: GLboolean,
                                    v: *const GLfloat) {
         gl_result(|| -> StdResult<(), ()> { unsafe {
             Ok(::gl::UniformMatrix2x4fv(l, c, t, v))
@@ -389,7 +389,7 @@ pub fn set_uniform1ui(l: GLint, v0: GLuint) {
     // ------------------------------------------------------------------------
     /// set_uniform_matrix4x2fv
     pub fn set_uniform_matrix4x2fv(l: GLint,
-                                   c: GLsizei, t:GLboolean,
+                                   c: GLsizei, t: GLboolean,
                                    v: *const GLfloat) {
         gl_result(|| -> StdResult<(), ()> { unsafe {
             Ok(::gl::UniformMatrix4x2fv(l, c, t, v))
@@ -398,7 +398,7 @@ pub fn set_uniform1ui(l: GLint, v0: GLuint) {
     // ------------------------------------------------------------------------
     /// set_uniform_matrix3x4fv
     pub fn set_uniform_matrix3x4fv(l: GLint,
-                                   c: GLsizei, t:GLboolean,
+                                   c: GLsizei, t: GLboolean,
                                    v: *const GLfloat) {
         gl_result(|| -> StdResult<(), ()> { unsafe {
             Ok(::gl::UniformMatrix3x4fv(l, c, t, v))
@@ -407,7 +407,7 @@ pub fn set_uniform1ui(l: GLint, v0: GLuint) {
     // ------------------------------------------------------------------------
     /// set_uniform_matrix4x3fv
     pub fn set_uniform_matrix4x3fv(l: GLint,
-                                   c: GLsizei, t:GLboolean,
+                                   c: GLsizei, t: GLboolean,
                                    v: *const GLfloat) {
         gl_result(|| -> StdResult<(), ()> { unsafe {
             Ok(::gl::UniformMatrix4x3fv(l, c, t, v))

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2017/02/19
+//  @date 2017/04/25
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -80,12 +80,10 @@ impl Texture {
         where P: AsRef<::std::path::Path> {
         let i = ::image::imageops::flip_vertical(
             &::image::open(path).expect("Texture::open_2d").to_rgba());
-        Texture::new_2d(wrap_s, wrap_t, filter_mag, filter_min,
-                        mipmap,
+        Texture::new_2d(wrap_s, wrap_t, filter_mag, filter_min, mipmap,
                         ::gl::RGBA, ::gl::UNSIGNED_BYTE,
                         i.width() as GLint, i.height() as GLint,
-                        i.into_raw().as_ptr() as *const _ as
-                        *const c_void)
+                        i.into_raw().as_ptr() as *const _ as *const c_void)
     }
     // ========================================================================
     /// tex_image_2d
@@ -96,14 +94,6 @@ impl Texture {
                     width:      GLsizei,        height:         GLsizei,
                     pixels:     *const c_void) {
         debug_assert_eq!(::gl::TEXTURE_2D, self.target);
-
-        let mut pxs = pixels;
-        let buffer: Box<Vec<u32>>;
-        if pxs == ::std::ptr::null() {
-            buffer = Box::new(vec![0; width as usize * height as usize]);
-            pxs = buffer.as_ptr() as *const c_void;
-        }
-
         let _binder = self.binder();
         gl_result(|| -> Result<(), ()> { unsafe {
             ::gl::TexParameteri(::gl::TEXTURE_2D, ::gl::TEXTURE_WRAP_S,
@@ -119,7 +109,7 @@ impl Texture {
         gl_result(|| -> Result<(), ()> { unsafe {
             Ok(::gl::TexImage2D(self.target, 0, self.format as GLint,
                                 width, height, 0,
-                                self.format, self.type_, pxs))
+                                self.format, self.type_, pixels))
         } }).expect("Texture::tex_image_2d: TexImage2D");
         if mipmap {
             gl_result(|| -> Result<(), ()> { unsafe {

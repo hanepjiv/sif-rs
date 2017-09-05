@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2017/04/12
+//  @date 2017/05/05
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -220,8 +220,8 @@ macro_rules! matrix_define {
                     }
                 }
 
-                let o = Self::from_order(&ord);
-                Ok(*o.clone().transpose() * r * o)  // tensor
+                let piv = Self::from_order(&ord);
+                Ok(*piv.clone().transpose() * r * piv)  // tensor
             }
             // ================================================================
             /// new_decomposition
@@ -241,9 +241,7 @@ macro_rules! matrix_define {
                         { let t = m[o]; m[o] = m[d]; m[d]= t; }
                     }
 
-                    if m[o][o].abs() < V::epsilon().sqrt() {
-                        continue;
-                    }
+                    if m[o][o].abs() < V::epsilon().sqrt() { continue; }
 
                     for j in o+1..$vector::<V>::size() {
                         m[o][j] /= m[o][o];
