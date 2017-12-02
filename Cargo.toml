@@ -13,9 +13,9 @@ homepage        = "https://github.com/hanepjiv/sif-rs"
 repository      = "https://github.com/hanepjiv/sif-rs.git"
 # =============================================================================
 [dependencies]
-gl              = { default-features = false, version = "^0.6.3" }
+gl              = { default-features = false, version = "^0.7.0" }
 log             = { default-features = false, version = "^0.3.8" }
-num             = { default-features = false, version = "^0.1.40" }
+num             = { default-features = false, version = "^0.1.41" }
 # -----------------------------------------------------------------------------
 [dependencies.image]
 #default-features = false
