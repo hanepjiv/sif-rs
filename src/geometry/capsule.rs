@@ -10,39 +10,52 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use super::super::math::{ Number, Vector3, };
+use super::super::math::{Number, Vector3};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Capsule
-#[derive( Debug, Clone, )]
+#[derive(Debug, Clone)]
 pub struct Capsule<V>
-    where V: Number,         {
+where
+    V: Number,
+{
     /// start
-    pub start:  Vector3<V>,
+    pub start: Vector3<V>,
     /// end
-    pub end:    Vector3<V>,
+    pub end: Vector3<V>,
     /// radius
     pub radius: V,
 }
 // ============================================================================
-impl <V> Default for Capsule<V>
-    where V: Number,         {
+impl<V> Default for Capsule<V>
+where
+    V: Number,
+{
     // ========================================================================
-    fn default() -> Self { Capsule {
-        start:  Vector3::<V>::from_no_clean([V::zero(), V::zero(), V::zero()]),
-        end:    Vector3::<V>::from_no_clean([V::zero(), V::zero(), V::one()]),
-        radius: V::one(),
-    } }
+    fn default() -> Self {
+        Capsule {
+            start: Vector3::<V>::from_no_clean([
+                V::zero(),
+                V::zero(),
+                V::zero(),
+            ]),
+            end: Vector3::<V>::from_no_clean([V::zero(), V::zero(), V::one()]),
+            radius: V::one(),
+        }
+    }
 }
 // ============================================================================
-impl <V> Capsule<V>
-    where V: Number,         {
+impl<V> Capsule<V>
+where
+    V: Number,
+{
     // ========================================================================
     /// new
-    pub fn new(start: Vector3<V>, end: Vector3<V>, radius: V)
-               -> Self { Capsule::<V> {
-        start:  start,
-        end:    end,
-        radius: radius,
-    } }
+    pub fn new(start: Vector3<V>, end: Vector3<V>, radius: V) -> Self {
+        Capsule::<V> {
+            start: start,
+            end: end,
+            radius: radius,
+        }
+    }
 }

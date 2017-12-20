@@ -10,13 +10,13 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-pub use self::result::{ GLError, gl_result, info_log };
-pub use self::bind::{ TBind, Binder, };
+pub use self::result::{gl_result, info_log, GLError};
+pub use self::bind::{Binder, TBind};
 pub use self::buffer::Buffer;
 pub use self::texture::Texture;
 pub use self::frame::Frame;
 pub use self::render::Render;
-pub use self::shader::{ ShaderSrc, Shader, };
+pub use self::shader::{Shader, ShaderSrc};
 pub use self::program::Program;
 // mod  =======================================================================
 pub mod result;
@@ -26,4 +26,5 @@ pub mod texture;
 pub mod frame;
 pub mod render;
 pub mod shader;
-#[macro_use] pub mod program;
+#[macro_use]
+pub mod program;

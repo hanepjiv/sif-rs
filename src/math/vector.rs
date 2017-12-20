@@ -10,7 +10,7 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-use super::{ Number, Cleanup, };
+use super::{Cleanup, Number};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// vector_define!
@@ -234,27 +234,35 @@ macro_rules! vector_define {
 // ============================================================================
 vector_define!(Vector2, 2);
 // ============================================================================
-impl <V: Number> Vector2<V> {
+impl<V: Number> Vector2<V> {
     // ========================================================================
     /// new
-    pub fn new(x: V, y: V) -> Self { Vector2::<V>([x, y]) }
+    pub fn new(x: V, y: V) -> Self {
+        Vector2::<V>([x, y])
+    }
 }
 // ============================================================================
-impl <V: Number> From<Vector3<V>> for Vector2<V> {
-    fn from(src: Vector3<V>) -> Self { Vector2::new(src[0], src[1]) }
+impl<V: Number> From<Vector3<V>> for Vector2<V> {
+    fn from(src: Vector3<V>) -> Self {
+        Vector2::new(src[0], src[1])
+    }
 }
 // ============================================================================
-impl <V: Number> From<Vector4<V>> for Vector2<V> {
-    fn from(src: Vector4<V>) -> Self { Vector2::new(src[0], src[1]) }
+impl<V: Number> From<Vector4<V>> for Vector2<V> {
+    fn from(src: Vector4<V>) -> Self {
+        Vector2::new(src[0], src[1])
+    }
 }
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 vector_define!(Vector3, 3);
 // ============================================================================
-impl <V: Number> Vector3<V> {
+impl<V: Number> Vector3<V> {
     // ========================================================================
     /// new
-    pub fn new(x: V, y: V, z: V) -> Self { Vector3::<V>([x, y, z]) }
+    pub fn new(x: V, y: V, z: V) -> Self {
+        Vector3::<V>([x, y, z])
+    }
     // ========================================================================
     /// from_vector2
     pub fn from_vector2(src: &Vector2<V>, z: V) -> Self {
@@ -273,23 +281,29 @@ impl <V: Number> Vector3<V> {
     ///            Vector3::from([0.0f32, 0.0, 1.0]));
     /// ```
     pub fn cross(&self, r: &Self) -> Self {
-        Vector3::new(self[1] * r[2] - self[2] * r[1],
-                     self[2] * r[0] - self[0] * r[2],
-                     self[0] * r[1] - self[1] * r[0])
+        Vector3::new(
+            self[1] * r[2] - self[2] * r[1],
+            self[2] * r[0] - self[0] * r[2],
+            self[0] * r[1] - self[1] * r[0],
+        )
     }
 }
 // ============================================================================
-impl <V: Number> From<Vector4<V>> for Vector3<V> {
-    fn from(src: Vector4<V>) -> Self { Vector3::new(src[0], src[1], src[2]) }
+impl<V: Number> From<Vector4<V>> for Vector3<V> {
+    fn from(src: Vector4<V>) -> Self {
+        Vector3::new(src[0], src[1], src[2])
+    }
 }
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 vector_define!(Vector4, 4);
 // ============================================================================
-impl <V: Number> Vector4<V> {
+impl<V: Number> Vector4<V> {
     // ========================================================================
     /// new
-    pub fn new(x: V, y: V, z: V, w: V) -> Self { Vector4::<V>([x, y, z, w]) }
+    pub fn new(x: V, y: V, z: V, w: V) -> Self {
+        Vector4::<V>([x, y, z, w])
+    }
     // ========================================================================
     /// from_vector2
     pub fn from_vector2(src: &Vector2<V>, z: V, w: V) -> Self {

@@ -10,42 +10,49 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use ::gl::types::*;
+use gl::types::*;
 // ----------------------------------------------------------------------------
-use super::{ gl_result, GLError, TBind, };
+use super::{gl_result, GLError, TBind};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Render
-#[derive( Debug, )]
+#[derive(Debug)]
 pub struct Render {
     /// id
-    id:         GLuint,
+    id: GLuint,
 }
 // ============================================================================
 impl Render {
     // ========================================================================
     /// new
-    pub fn new(internalformat: GLenum,  width: GLsizei, height: GLsizei)
-               -> Result<Self, GLError<GLuint, ()>> {
-        match gl_result(|| -> Result<GLuint, ()> { unsafe {
-            let mut id = 0;
-            ::gl::GenRenderbuffers(1, &mut id);
-            Ok(id)
-        } }) {
-            Err(e)      => Err(e),
-            Ok(id)      => {
-                match gl_result(|| -> Result<GLuint, ()> { unsafe {
+    pub fn new(
+        internalformat: GLenum,
+        width: GLsizei,
+        height: GLsizei,
+    ) -> Result<Self, GLError<GLuint, ()>> {
+        match gl_result(|| -> Result<GLuint, ()> {
+            unsafe {
+                let mut id = 0;
+                ::gl::GenRenderbuffers(1, &mut id);
+                Ok(id)
+            }
+        }) {
+            Err(e) => Err(e),
+            Ok(id) => match gl_result(|| -> Result<GLuint, ()> {
+                unsafe {
                     ::gl::BindRenderbuffer(::gl::RENDERBUFFER, id);
-                    ::gl::RenderbufferStorage(::gl::RENDERBUFFER,
-                                              internalformat, width, height);
+                    ::gl::RenderbufferStorage(
+                        ::gl::RENDERBUFFER,
+                        internalformat,
+                        width,
+                        height,
+                    );
                     ::gl::BindRenderbuffer(::gl::RENDERBUFFER, 0);
                     Ok(id)
-                } }) {
-                    Err(e)      => Err(e),
-                    Ok(id_)     => Ok(Render {
-                        id:     id_,
-                    })
                 }
+            }) {
+                Err(e) => Err(e),
+                Ok(id_) => Ok(Render { id: id_ }),
             },
         }
     }
@@ -53,27 +60,31 @@ impl Render {
 // ============================================================================
 impl Drop for Render {
     fn drop(&mut self) {
-        gl_result(|| -> Result<(), ()> { unsafe {
-            Ok(::gl::DeleteRenderbuffers(1, &self.id))
-        } }).expect("Render::drop");
+        gl_result(|| -> Result<(), ()> {
+            unsafe { Ok(::gl::DeleteRenderbuffers(1, &self.id)) }
+        }).expect("Render::drop");
     }
 }
 // ============================================================================
 impl TBind for Render {
     // ========================================================================
-    fn id(&self) -> GLuint { self.id }
+    fn id(&self) -> GLuint {
+        self.id
+    }
     // ========================================================================
     /// bind
     fn bind(&self) {
-        gl_result(|| -> Result<(), ()> { unsafe {
-            Ok(::gl::BindRenderbuffer(::gl::RENDERBUFFER, self.id))
-        } }).expect("Render::bind");
+        gl_result(|| -> Result<(), ()> {
+            unsafe {
+                Ok(::gl::BindRenderbuffer(::gl::RENDERBUFFER, self.id))
+            }
+        }).expect("Render::bind");
     }
     // ========================================================================
     /// unbind
     fn unbind(&self) {
-        gl_result(|| -> Result<(), ()> { unsafe {
-            Ok(::gl::BindRenderbuffer(::gl::RENDERBUFFER, 0))
-        } }).expect("Render::unbind");
+        gl_result(|| -> Result<(), ()> {
+            unsafe { Ok(::gl::BindRenderbuffer(::gl::RENDERBUFFER, 0)) }
+        }).expect("Render::unbind");
     }
 }

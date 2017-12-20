@@ -10,34 +10,44 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use super::super::math::{ Number, Vector3, };
+use super::super::math::{Number, Vector3};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Cube
-#[derive( Debug, Clone, )]
+#[derive(Debug, Clone)]
 pub struct Cube<V>
-    where V: Number,            {
+where
+    V: Number,
+{
     /// center
     pub center: Vector3<V>,
     /// radius
     pub radius: V,
 }
 // ============================================================================
-impl <V> Default for Cube<V>
-    where V: Number,            {
+impl<V> Default for Cube<V>
+where
+    V: Number,
+{
     // ========================================================================
-    fn default() -> Self        { Cube {
-        center: Vector3::<V>::default(),
-        radius: V::one(),
-    } }
+    fn default() -> Self {
+        Cube {
+            center: Vector3::<V>::default(),
+            radius: V::one(),
+        }
+    }
 }
 // ============================================================================
-impl <V> Cube<V>
-    where V: Number,            {
+impl<V> Cube<V>
+where
+    V: Number,
+{
     // ========================================================================
     /// new
-    pub fn new(center: Vector3<V>, radius: V) -> Self { Cube {
-        center: center,
-        radius: radius,
-    } }
+    pub fn new(center: Vector3<V>, radius: V) -> Self {
+        Cube {
+            center: center,
+            radius: radius,
+        }
+    }
 }

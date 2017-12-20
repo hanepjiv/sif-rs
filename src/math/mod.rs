@@ -11,11 +11,11 @@
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 pub use self::number::Number;
-pub use self::error::{ Result, Error, };
+pub use self::error::{Error, Result};
 pub use self::cleanup::Cleanup;
-pub use self::vector::{ Vector2, Vector3, Vector4, };
-pub use self::matrix::{ Matrix2x2, Matrix2x3, Matrix3x2, Matrix3x3,
-                        Matrix3x4, Matrix4x3, Matrix4x4, };
+pub use self::vector::{Vector2, Vector3, Vector4};
+pub use self::matrix::{Matrix2x2, Matrix2x3, Matrix3x2, Matrix3x3, Matrix3x4,
+                       Matrix4x3, Matrix4x4};
 pub use self::quaternion::Quaternion;
 // ============================================================================
 pub mod number;

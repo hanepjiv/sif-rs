@@ -10,7 +10,7 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use super::{ Result, Error, Number, Cleanup, Vector2, Vector3, Vector4, };
+use super::{Cleanup, Error, Number, Result, Vector2, Vector3, Vector4};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// matrix_define!
@@ -285,12 +285,17 @@ matrix_define!(Matrix3x2(Vector2; 3));
 // ============================================================================
 matrix_define!(Matrix3x3(Vector3; 3));
 // ============================================================================
-impl <V> Default for Matrix3x3<V> where V: Number {
-    fn default() -> Self { Matrix3x3::from_no_clean([
-        Vector3::<V>::from_no_clean([V::one(),  V::zero(), V::zero(),]),
-        Vector3::<V>::from_no_clean([V::zero(), V::one(),  V::zero(),]),
-        Vector3::<V>::from_no_clean([V::zero(), V::zero(), V::one(),]),
-    ]) }
+impl<V> Default for Matrix3x3<V>
+where
+    V: Number,
+{
+    fn default() -> Self {
+        Matrix3x3::from_no_clean([
+            Vector3::<V>::from_no_clean([V::one(), V::zero(), V::zero()]),
+            Vector3::<V>::from_no_clean([V::zero(), V::one(), V::zero()]),
+            Vector3::<V>::from_no_clean([V::zero(), V::zero(), V::one()]),
+        ])
+    }
 }
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -302,35 +307,57 @@ matrix_define!(Matrix4x3(Vector3; 4));
 // ============================================================================
 matrix_define!(Matrix4x4(Vector4; 4));
 // ============================================================================
-impl <V> Default for Matrix4x4<V> where V: Number {
-    fn default() -> Self { Matrix4x4::from_no_clean([
-        Vector4::<V>::from_no_clean([
-            V::one(),  V::zero(), V::zero(), V::zero(),
-        ]),
-        Vector4::<V>::from_no_clean([
-            V::zero(), V::one(),  V::zero(), V::zero(),
-        ]),
-        Vector4::<V>::from_no_clean([
-            V::zero(), V::zero(), V::one(),  V::zero(),
-        ]),
-        Vector4::<V>::from_no_clean([
-            V::zero(), V::zero(), V::zero(), V::one(),
-        ]),
-    ]) }
+impl<V> Default for Matrix4x4<V>
+where
+    V: Number,
+{
+    fn default() -> Self {
+        Matrix4x4::from_no_clean([
+            Vector4::<V>::from_no_clean([
+                V::one(),
+                V::zero(),
+                V::zero(),
+                V::zero(),
+            ]),
+            Vector4::<V>::from_no_clean([
+                V::zero(),
+                V::one(),
+                V::zero(),
+                V::zero(),
+            ]),
+            Vector4::<V>::from_no_clean([
+                V::zero(),
+                V::zero(),
+                V::one(),
+                V::zero(),
+            ]),
+            Vector4::<V>::from_no_clean([
+                V::zero(),
+                V::zero(),
+                V::zero(),
+                V::one(),
+            ]),
+        ])
+    }
 }
 // ============================================================================
-impl <V> ::std::ops::Mul<Vector4<V>> for Matrix4x4<V> where V: Number {
+impl<V> ::std::ops::Mul<Vector4<V>> for Matrix4x4<V>
+where
+    V: Number,
+{
     type Output = Vector4<V>;
-    fn mul(self, rhs: Vector4<V>) -> Self::Output { Vector4::<V>::from([
-        (self[0][0] * rhs[0] + self[1][0] * rhs[1] +
-         self[2][0] * rhs[2] + self[3][0] * rhs[3]),
-        (self[0][1] * rhs[0] + self[1][1] * rhs[1] +
-         self[2][1] * rhs[2] + self[3][1] * rhs[3]),
-        (self[0][2] * rhs[0] + self[1][2] * rhs[1] +
-         self[2][2] * rhs[2] + self[3][2] * rhs[3]),
-        (self[0][3] * rhs[0] + self[1][3] * rhs[1] +
-         self[2][3] * rhs[2] + self[3][3] * rhs[3]),
-    ]) }
+    fn mul(self, rhs: Vector4<V>) -> Self::Output {
+        Vector4::<V>::from([
+            (self[0][0] * rhs[0] + self[1][0] * rhs[1] + self[2][0] * rhs[2]
+                + self[3][0] * rhs[3]),
+            (self[0][1] * rhs[0] + self[1][1] * rhs[1] + self[2][1] * rhs[2]
+                + self[3][1] * rhs[3]),
+            (self[0][2] * rhs[0] + self[1][2] * rhs[1] + self[2][2] * rhs[2]
+                + self[3][2] * rhs[3]),
+            (self[0][3] * rhs[0] + self[1][3] * rhs[1] + self[2][3] * rhs[2]
+                + self[3][3] * rhs[3]),
+        ])
+    }
 }
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -341,11 +368,11 @@ mod tests {
     // ========================================================================
     #[test]
     fn inverse() {
-        let m           = Matrix4x4::from([
-            Vector4::from_no_clean([ 1.0f32,     1.0,  1.0, -1.0,]),
-            Vector4::from_no_clean([ 1.0,        1.0, -1.0,  1.0,]),
-            Vector4::from_no_clean([ 1.0,       -1.0,  1.0,  1.0,]),
-            Vector4::from_no_clean([-1.0,        1.0,  1.0,  1.0,]),
+        let m = Matrix4x4::from([
+            Vector4::from_no_clean([1.0f32, 1.0, 1.0, -1.0]),
+            Vector4::from_no_clean([1.0, 1.0, -1.0, 1.0]),
+            Vector4::from_no_clean([1.0, -1.0, 1.0, 1.0]),
+            Vector4::from_no_clean([-1.0, 1.0, 1.0, 1.0]),
         ]);
         let im = m.new_inverse().unwrap();
         assert_eq!(Matrix4x4::<f32>::new_identity(), m * im);
@@ -354,16 +381,16 @@ mod tests {
     // ========================================================================
     #[test]
     fn decomposition() {
-        let m           = Matrix4x4::from([
-            Vector4::from_no_clean([ 10.0f32,    0.0,  5.0,  0.0,]),
-            Vector4::from_no_clean([ 2.1,        1.0,  0.0,  0.0,]),
-            Vector4::from_no_clean([ 3.0,        2.0,  1.0,  0.0,]),
-            Vector4::from_no_clean([ 0.0,        1.0,  0.0,  1.0,]),
+        let m = Matrix4x4::from([
+            Vector4::from_no_clean([10.0f32, 0.0, 5.0, 0.0]),
+            Vector4::from_no_clean([2.1, 1.0, 0.0, 0.0]),
+            Vector4::from_no_clean([3.0, 2.0, 1.0, 0.0]),
+            Vector4::from_no_clean([0.0, 1.0, 0.0, 1.0]),
         ]);
-        let (lu, ord)   = m.new_decomposition().unwrap();
-        let l           = lu.new_lower();
-        let u           = lu.new_upper();
-        let io          = *Matrix4x4::<f32>::from_order(&ord).transpose();
-        assert_eq!(m, l*u*io);
+        let (lu, ord) = m.new_decomposition().unwrap();
+        let l = lu.new_lower();
+        let u = lu.new_upper();
+        let io = *Matrix4x4::<f32>::from_order(&ord).transpose();
+        assert_eq!(m, l * u * io);
     }
 }

@@ -10,34 +10,44 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use super::super::math::{ Number, Vector3, };
+use super::super::math::{Number, Vector3};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Sphere
-#[derive( Debug, Clone, )]
+#[derive(Debug, Clone)]
 pub struct Sphere<V>
-    where V: Number,            {
+where
+    V: Number,
+{
     /// center
     pub center: Vector3<V>,
     /// radius
     pub radius: V,
 }
 // ============================================================================
-impl <V> Default for Sphere<V>
-    where V: Number,            {
+impl<V> Default for Sphere<V>
+where
+    V: Number,
+{
     // ========================================================================
-    fn default() -> Self        { Sphere {
-        center: Vector3::<V>::default(),
-        radius: V::one(),
-    } }
+    fn default() -> Self {
+        Sphere {
+            center: Vector3::<V>::default(),
+            radius: V::one(),
+        }
+    }
 }
 // ============================================================================
-impl <V> Sphere<V>
-    where V: Number,            {
+impl<V> Sphere<V>
+where
+    V: Number,
+{
     // ========================================================================
     /// new
-    pub fn new(center: Vector3<V>, radius: V) -> Self { Sphere::<V> {
-        center: center,
-        radius: radius,
-    } }
+    pub fn new(center: Vector3<V>, radius: V) -> Self {
+        Sphere::<V> {
+            center: center,
+            radius: radius,
+        }
+    }
 }

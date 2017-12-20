@@ -11,24 +11,32 @@
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Cleanup
-#[derive( Debug, )]
+#[derive(Debug)]
 pub struct Cleanup<V>
-    where V: ::num::Float, {
+where
+    V: ::num::Float,
+{
     /// max
-    max:        V,
+    max: V,
 }
 // ============================================================================
-impl <V> Cleanup<V>
-    where V: ::num::Float, {
+impl<V> Cleanup<V>
+where
+    V: ::num::Float,
+{
     // ========================================================================
     /// new
-    pub fn new() -> Self { Cleanup {
-        max:    ::num::Float::neg_infinity(),
-    } }
+    pub fn new() -> Self {
+        Cleanup {
+            max: ::num::Float::neg_infinity(),
+        }
+    }
     // ========================================================================
     /// collect
-    pub fn collect(& mut self, n: V) {
-        if self.max < V::abs(n) { self.max = V::abs(n); }
+    pub fn collect(&mut self, n: V) {
+        if self.max < V::abs(n) {
+            self.max = V::abs(n);
+        }
     }
     // ========================================================================
     /// check

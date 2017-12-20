@@ -10,34 +10,48 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use super::super::math::{ Number, Vector3, };
+use super::super::math::{Number, Vector3};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Ray
-#[derive( Debug, Clone, )]
+#[derive(Debug, Clone)]
 pub struct Ray<V>
-    where V: Number,         {
+where
+    V: Number,
+{
     /// start
-    pub start:  Vector3<V>,
+    pub start: Vector3<V>,
     /// end
-    pub end:    Vector3<V>,
+    pub end: Vector3<V>,
 }
 // ============================================================================
-impl <V> Default for Ray<V>
-    where V: Number,         {
+impl<V> Default for Ray<V>
+where
+    V: Number,
+{
     // ========================================================================
-    fn default() -> Self { Ray {
-        start:  Vector3::<V>::from_no_clean([V::zero(), V::zero(), V::zero()]),
-        end:    Vector3::<V>::from_no_clean([V::zero(), V::zero(), V::one()]),
-    } }
+    fn default() -> Self {
+        Ray {
+            start: Vector3::<V>::from_no_clean([
+                V::zero(),
+                V::zero(),
+                V::zero(),
+            ]),
+            end: Vector3::<V>::from_no_clean([V::zero(), V::zero(), V::one()]),
+        }
+    }
 }
 // ============================================================================
-impl <V> Ray<V>
-    where V: Number,         {
+impl<V> Ray<V>
+where
+    V: Number,
+{
     // ========================================================================
     /// new
-    pub fn new(start: Vector3<V>, end: Vector3<V>) -> Self { Ray::<V> {
-        start:  start,
-        end:    end,
-    } }
+    pub fn new(start: Vector3<V>, end: Vector3<V>) -> Self {
+        Ray::<V> {
+            start: start,
+            end: end,
+        }
+    }
 }

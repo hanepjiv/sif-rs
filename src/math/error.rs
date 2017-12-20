@@ -15,7 +15,7 @@ pub type Result<T> = ::std::result::Result<T, Box<::std::error::Error>>;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum Error
-#[derive( Debug, )]
+#[derive(Debug)]
 pub enum Error {
     /// InvalidArguments
     InvalidArguments(String),
@@ -23,22 +23,29 @@ pub enum Error {
 // ============================================================================
 impl ::std::fmt::Display for Error {
     // ========================================================================
-    fn fmt(&self, f: &mut ::std::fmt::Formatter)
-           -> ::std::fmt::Result { match *self {
-        ref e@Error::InvalidArguments(_)        => write!(f, "{:?}", e),
-        //Error::SomeError(ref e)               => e.fmt(f),
-    } }
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        match *self {
+            ref e @ Error::InvalidArguments(_) => write!(f, "{:?}", e),
+            //Error::SomeError(ref e)               => e.fmt(f),
+        }
+    }
 }
 // ============================================================================
 impl ::std::error::Error for Error {
     // ========================================================================
-    fn description(&self) -> &str { match *self {
-        Error::InvalidArguments(_) => "::sif::math::Error::invalidArguments",
-        // Error::SomeError(ref e) => e.description(),
-    } }
+    fn description(&self) -> &str {
+        match *self {
+            Error::InvalidArguments(_) => {
+                "::sif::math::Error::invalidArguments"
+            }
+            // Error::SomeError(ref e) => e.description(),
+        }
+    }
     // ========================================================================
-    fn cause(&self) -> Option<&::std::error::Error> { match *self {
-        Error::InvalidArguments(_)              => None,
-        // Error::SomeError(ref e)              => Some(e),
-    } }
+    fn cause(&self) -> Option<&::std::error::Error> {
+        match *self {
+            Error::InvalidArguments(_) => None,
+            // Error::SomeError(ref e)              => Some(e),
+        }
+    }
 }

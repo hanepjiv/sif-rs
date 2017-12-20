@@ -14,7 +14,7 @@
 pub type Result<T> = ::std::result::Result<T, Box<::std::error::Error>>;
 // ============================================================================
 /// enum Error
-#[derive( Debug, Clone, )]
+#[derive(Debug, Clone)]
 pub enum Error {
     /// SifError
     SifError(String),
@@ -28,11 +28,15 @@ impl ::std::fmt::Display for Error {
 // ============================================================================
 impl ::std::error::Error for Error {
     // ========================================================================
-    fn description(&self) -> &str { match *self {
-        Error::SifError(ref m)          => m.as_str(),
-    } }
+    fn description(&self) -> &str {
+        match *self {
+            Error::SifError(ref m) => m.as_str(),
+        }
+    }
     // ========================================================================
-    fn cause(&self) -> Option<&::std::error::Error> { match *self {
-        Error::SifError(_)              => None,
-    } }
+    fn cause(&self) -> Option<&::std::error::Error> {
+        match *self {
+            Error::SifError(_) => None,
+        }
+    }
 }

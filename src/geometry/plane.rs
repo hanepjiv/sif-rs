@@ -10,40 +10,55 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use super::super::math::{ Number, Vector3, };
+use super::super::math::{Number, Vector3};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Plane
-#[derive( Debug, Clone, )]
+#[derive(Debug, Clone)]
 pub struct Plane<V>
-    where V: Number,            {
+where
+    V: Number,
+{
     /// normal
-    normal:             Vector3<V>,
+    normal: Vector3<V>,
     /// distance
-    distance:           V,
+    distance: V,
 }
 // ============================================================================
-impl <V> Default for Plane<V>
-    where V: Number,            {
+impl<V> Default for Plane<V>
+where
+    V: Number,
+{
     // ========================================================================
-    fn default() -> Self { Plane {
-        normal:         Vector3::<V>::from_no_clean([V::zero(), V::zero(),
-                                                     V::one()]),
-        distance:       V::zero(),
-    } }
+    fn default() -> Self {
+        Plane {
+            normal: Vector3::<V>::from_no_clean([
+                V::zero(),
+                V::zero(),
+                V::one(),
+            ]),
+            distance: V::zero(),
+        }
+    }
 }
 // ============================================================================
-impl <V> Plane<V>
-    where V: Number,            {
+impl<V> Plane<V>
+where
+    V: Number,
+{
     // ========================================================================
     /// new
-    pub fn new(normal: Vector3<V>, distance: V) -> Self { Plane {
-        normal:         *normal.clone().normalize(),
-        distance:       distance,
-    } }
+    pub fn new(normal: Vector3<V>, distance: V) -> Self {
+        Plane {
+            normal: *normal.clone().normalize(),
+            distance: distance,
+        }
+    }
     // ========================================================================
     /// as_normal
-    pub fn as_normal(&self) -> &Vector3<V> { &self.normal }
+    pub fn as_normal(&self) -> &Vector3<V> {
+        &self.normal
+    }
     // ------------------------------------------------------------------------
     /// set_normal
     pub fn set_normal(&mut self, src: Vector3<V>) -> &mut Self {
@@ -53,7 +68,9 @@ impl <V> Plane<V>
     }
     // ========================================================================
     /// as_distance
-    pub fn as_distance(&self) -> &V { &self.distance }
+    pub fn as_distance(&self) -> &V {
+        &self.distance
+    }
     // ------------------------------------------------------------------------
     /// set_distance
     pub fn set_distance(&mut self, src: V) -> &mut Self {
@@ -63,10 +80,10 @@ impl <V> Plane<V>
     // ========================================================================
     /// symmetry
     pub fn symmetry(&self, px: V, py: V, pz: V) -> Vector3<V> {
-        let mut r         = Vector3::from_no_clean([px, py, pz]);
-        r                -= self.normal * self.distance;
-        let f             = r.dot(&self.normal);
-        r                -= self.normal * V::from(2).unwrap() * f;
+        let mut r = Vector3::from_no_clean([px, py, pz]);
+        r -= self.normal * self.distance;
+        let f = r.dot(&self.normal);
+        r -= self.normal * V::from(2).unwrap() * f;
         r
     }
 }
