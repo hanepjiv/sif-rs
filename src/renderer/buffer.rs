@@ -11,8 +11,10 @@
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use gl::types::*;
+use ::std::result::Result as StdResult;
 // ----------------------------------------------------------------------------
-use super::{gl_result, GLError, TBind};
+use super::{gl_result, TBind};
+use super::super::{ Error, Result };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Buffer
@@ -34,8 +36,8 @@ impl Buffer {
         size: usize,
         data: *const GLvoid,
         usage: GLenum,
-    ) -> Result<Self, String> {
-        let result_id = gl_result(|| -> Result<GLuint, ()> {
+    ) -> Result<Self> {
+        let result_id = gl_result(|| -> StdResult<GLuint, ()> {
             unsafe {
                 let mut id = 0;
                 ::gl::GenBuffers(1, &mut id);
@@ -44,7 +46,7 @@ impl Buffer {
         });
 
         let result_buffer = match result_id {
-            Err(_) => Err(String::from("Buffer::new: ::gl::GenBuffers")),
+            Err(_) => Err(Error::Sif(String::from("Buffer::new: ::gl::GenBuffers"))),
             Ok(id) => Ok(Buffer {
                 id: id,
                 target: target,
@@ -53,7 +55,7 @@ impl Buffer {
         };
 
         match result_buffer {
-            Ok(buffer) => match gl_result(|| -> Result<(), ()> {
+            Ok(buffer) => match gl_result(|| -> StdResult<(), ()> {
                 unsafe {
                     let _binder = buffer.binder();
                     Ok(::gl::BufferData(
@@ -65,7 +67,7 @@ impl Buffer {
                 }
             }) {
                 Ok(_) => Ok(buffer),
-                _ => Err(String::from("Buffer::new: ::gl::BufferData")),
+                _ => Err(Error::Sif(String::from("Buffer::new: ::gl::BufferData"))),
             },
             _ => result_buffer,
         }
@@ -75,7 +77,7 @@ impl Buffer {
     pub fn new_vertices<T: ?Sized + AsRef<[GLfloat]>>(
         data: &T,
         usage: GLenum,
-    ) -> Result<Self, String> {
+    ) -> Result<Self> {
         Buffer::new(
             ::gl::ARRAY_BUFFER,
             data.as_ref().len() * ::std::mem::size_of::<GLfloat>(),
@@ -88,7 +90,7 @@ impl Buffer {
     pub fn new_indices<T: ?Sized + AsRef<[GLuint]>>(
         data: &T,
         usage: GLenum,
-    ) -> Result<Self, String> {
+    ) -> Result<Self> {
         Buffer::new(
             ::gl::ELEMENT_ARRAY_BUFFER,
             data.as_ref().len() * ::std::mem::size_of::<GLuint>(),
@@ -100,7 +102,7 @@ impl Buffer {
     /// sub_data
     pub fn sub_data<T>(&self, offset: isize, size: usize, data: *const T) {
         let _binder = self.binder();
-        gl_result(|| -> Result<(), ()> {
+        gl_result(|| -> StdResult<(), ()> {
             unsafe {
                 Ok(::gl::BufferSubData(
                     self.target,
@@ -117,9 +119,9 @@ impl Buffer {
         &self,
         mode: GLenum,
         count: GLsizei,
-    ) -> Result<(), GLError<(), ()>> {
+    ) -> Result<()> {
         let _binder = self.binder();
-        gl_result(|| -> Result<(), ()> {
+        Ok(gl_result(|| -> StdResult<(), ()> {
             unsafe {
                 Ok(::gl::DrawElements(
                     mode,
@@ -128,7 +130,7 @@ impl Buffer {
                     ::std::ptr::null(),
                 ))
             }
-        })
+        })?)
     }
     // ========================================================================
     /// draw_arrays
@@ -137,17 +139,17 @@ impl Buffer {
         mode: GLenum,
         first: GLint,
         count: GLsizei,
-    ) -> Result<(), GLError<(), ()>> {
+    ) -> Result<()> {
         let _binder = self.binder();
-        gl_result(|| -> Result<(), ()> {
+        Ok(gl_result(|| -> StdResult<(), ()> {
             unsafe { Ok(::gl::DrawArrays(mode, first, count)) }
-        })
+        })?)
     }
 }
 // ============================================================================
 impl Drop for Buffer {
     fn drop(&mut self) {
-        gl_result(|| -> Result<(), ()> {
+        gl_result(|| -> StdResult<(), ()> {
             unsafe { Ok(::gl::DeleteBuffers(1, &self.id)) }
         }).expect("Buffer::drop");
     }
@@ -160,13 +162,13 @@ impl TBind for Buffer {
     }
     // ========================================================================
     fn bind(&self) {
-        gl_result(|| -> Result<(), ()> {
+        gl_result(|| -> Result<()> {
             unsafe { Ok(::gl::BindBuffer(self.target, self.id)) }
         }).expect("Buffer::bind");
     }
     // ========================================================================
     fn unbind(&self) {
-        gl_result(|| -> Result<(), ()> {
+        gl_result(|| -> Result<()> {
             unsafe { Ok(::gl::BindBuffer(self.target, 0)) }
         }).expect("Buffer::unbind");
     }

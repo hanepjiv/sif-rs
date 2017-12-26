@@ -10,13 +10,28 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
+use ::std::error::Error as StdError;
+// ----------------------------------------------------------------------------
+use super::renderer::GLError;
+// ////////////////////////////////////////////////////////////////////////////
+// ============================================================================
 /// enum Error
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub enum Error {
     /// Sif
     Sif(String),
     /// InvalidArguments
     InvalidArguments(String),
+    /// GL
+    GL(Box<StdError>),
+}
+// ============================================================================
+impl <R, E> From<GLError<R, E>> for Error
+    where R: ::std::fmt::Debug + 'static,
+          E: ::std::fmt::Debug + 'static, {
+    fn from(e: GLError<R, E>) -> Self {
+        Error::GL(Box::new(e))
+    }
 }
 // ============================================================================
 impl ::std::fmt::Display for Error {
@@ -31,6 +46,7 @@ impl ::std::error::Error for Error {
         match *self {
             Error::Sif(ref x) => x.as_str(),
             Error::InvalidArguments(ref x) => x.as_str(),
+            Error::GL(_) => "sif::Error::GL",
         }
     }
     // ========================================================================
@@ -38,6 +54,7 @@ impl ::std::error::Error for Error {
         match *self {
             Error::Sif(_) => None,
             Error::InvalidArguments(_) => None,
+            Error::GL(ref e) => Some(e.as_ref()),
         }
     }
 }

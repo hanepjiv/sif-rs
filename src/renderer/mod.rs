@@ -10,6 +10,7 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
+pub use super::Result;
 pub use self::result::{gl_result, info_log, GLError};
 pub use self::bind::{Binder, TBind};
 pub use self::buffer::Buffer;
