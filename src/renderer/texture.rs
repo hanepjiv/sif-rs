@@ -65,7 +65,7 @@ impl Texture {
                 Ok(id)
             }
         }) {
-            Err(_) => Err(Error::SifError(String::from("Texture::new_2d"))),
+            Err(_) => Err(Error::Sif(String::from("Texture::new_2d"))),
             Ok(id) => {
                 let texture = Texture {
                     id: id,

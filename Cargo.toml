@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name            = "sif"
-version         = "0.1.8"
+version         = "0.2.0"
 authors         = ["hanepjiv <hanepjiv@gmail.com>"]
 license         = "MIT/Apache-2.0"
 keywords        = ["subsystem", "game", "math", "graphics"]
@@ -14,7 +14,7 @@ repository      = "https://github.com/hanepjiv/sif-rs.git"
 # =============================================================================
 [dependencies]
 gl              = { default-features = false, version = "^0.7.0" }
-log             = { default-features = false, version = "^0.3.8" }
+log             = { default-features = false, version = "^0.4.0" }
 num             = { default-features = false, version = "^0.1.41" }
 # -----------------------------------------------------------------------------
 [dependencies.image]

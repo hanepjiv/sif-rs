@@ -10,14 +10,13 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// type Result
-pub type Result<T> = ::std::result::Result<T, Box<::std::error::Error>>;
-// ============================================================================
 /// enum Error
 #[derive(Debug, Clone)]
 pub enum Error {
-    /// SifError
-    SifError(String),
+    /// Sif
+    Sif(String),
+    /// InvalidArguments
+    InvalidArguments(String),
 }
 // ============================================================================
 impl ::std::fmt::Display for Error {
@@ -30,13 +29,19 @@ impl ::std::error::Error for Error {
     // ========================================================================
     fn description(&self) -> &str {
         match *self {
-            Error::SifError(ref m) => m.as_str(),
+            Error::Sif(ref x) => x.as_str(),
+            Error::InvalidArguments(ref x) => x.as_str(),
         }
     }
     // ========================================================================
     fn cause(&self) -> Option<&::std::error::Error> {
         match *self {
-            Error::SifError(_) => None,
+            Error::Sif(_) => None,
+            Error::InvalidArguments(_) => None,
         }
     }
 }
+// ////////////////////////////////////////////////////////////////////////////
+// ============================================================================
+/// type Result
+pub type Result<T> = ::std::result::Result<T, Error>;

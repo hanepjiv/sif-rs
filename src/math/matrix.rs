@@ -206,8 +206,8 @@ macro_rules! matrix_define {
                     }
 
                     if m[o][o].abs() < V::epsilon().sqrt() {
-                        return Err(Box::new(Error::InvalidArguments(
-                            String::from("::sif::math::matrix::inverse"))));
+                        return Err(Error::InvalidArguments(
+                            String::from("::sif::math::matrix::inverse")));
                     }
 
                     r[o] /= m[o][o]; m[o] /= m[o][o];
@@ -227,8 +227,8 @@ macro_rules! matrix_define {
             /// new_decomposition
             pub fn new_decomposition(&self) -> Result<(Self, [usize; $n])> {
                 if $n < 2 {
-                    return Err(Box::new(Error::InvalidArguments(String::from(
-                        "::sif::math::matrix::new_decomposition: n < 2"))));
+                    return Err(Error::InvalidArguments(String::from(
+                        "::sif::math::matrix::new_decomposition: n < 2")));
                 }
 
                 let mut ord = [0usize; $n]; for i in 0..$n { ord[i] = i; }
