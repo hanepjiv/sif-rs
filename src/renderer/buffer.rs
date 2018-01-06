@@ -11,10 +11,10 @@
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use gl::types::*;
-use ::std::result::Result as StdResult;
+use std::result::Result as StdResult;
 // ----------------------------------------------------------------------------
 use super::{gl_result, TBind};
-use super::super::{ Error, Result };
+use super::super::{Error, Result};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Buffer
@@ -46,7 +46,9 @@ impl Buffer {
         });
 
         let result_buffer = match result_id {
-            Err(_) => Err(Error::Sif(String::from("Buffer::new: ::gl::GenBuffers"))),
+            Err(_) => {
+                Err(Error::Sif(String::from("Buffer::new: ::gl::GenBuffers")))
+            }
             Ok(id) => Ok(Buffer {
                 id: id,
                 target: target,
@@ -67,7 +69,9 @@ impl Buffer {
                 }
             }) {
                 Ok(_) => Ok(buffer),
-                _ => Err(Error::Sif(String::from("Buffer::new: ::gl::BufferData"))),
+                _ => Err(Error::Sif(String::from(
+                    "Buffer::new: ::gl::BufferData",
+                ))),
             },
             _ => result_buffer,
         }
@@ -115,11 +119,7 @@ impl Buffer {
     }
     // ========================================================================
     /// draw_elements
-    pub fn draw_elements(
-        &self,
-        mode: GLenum,
-        count: GLsizei,
-    ) -> Result<()> {
+    pub fn draw_elements(&self, mode: GLenum, count: GLsizei) -> Result<()> {
         let _binder = self.binder();
         Ok(gl_result(|| -> StdResult<(), ()> {
             unsafe {

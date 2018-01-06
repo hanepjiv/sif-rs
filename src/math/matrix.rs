@@ -100,7 +100,6 @@ macro_rules! matrix_define {
                 for i in 0..$n { self.0[i] /= rhs; }
             }
         }
-
         // ====================================================================
         impl <V> ::std::ops::Mul<$name<V>> for $name<V>
             where V: Number {

@@ -15,7 +15,8 @@ use std::collections::BTreeMap;
 // ----------------------------------------------------------------------------
 use gl::types::*;
 // ----------------------------------------------------------------------------
-use super::{Result, gl_result, info_log, Buffer, Shader, ShaderSrc, TBind, Texture};
+use super::{gl_result, info_log, Buffer, Result, Shader, ShaderSrc, TBind,
+            Texture};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Program
@@ -46,9 +47,8 @@ impl Program {
             shaders.push(shader);
         }
 
-        gl_result(|| -> Result<()> {
-            unsafe { Ok(::gl::LinkProgram(id)) }
-        }).expect("Program::new: LinkProgram");
+        gl_result(|| -> Result<()> { unsafe { Ok(::gl::LinkProgram(id)) } })
+            .expect("Program::new: LinkProgram");
 
         info_log(::gl::PROGRAM, id, ::gl::LINK_STATUS)
             .expect("Program::new: info_log");
@@ -195,9 +195,7 @@ impl Program {
         pointer: usize,
     ) {
         gl_result(|| -> Result<()> {
-            unsafe {
-                Ok(::gl::EnableVertexAttribArray(location as GLuint))
-            }
+            unsafe { Ok(::gl::EnableVertexAttribArray(location as GLuint)) }
         }).expect("Program::set_attribute: EnableVertexAttribArray");
         {
             let _buffer_binder = buffer.binder();
@@ -218,9 +216,8 @@ impl Program {
     // ========================================================================
     /// set_uniform1i
     pub fn set_uniform1i(l: GLint, v0: GLint) {
-        gl_result(|| -> Result<()> {
-            unsafe { Ok(::gl::Uniform1i(l, v0)) }
-        }).expect("Program::set_uniform1i");
+        gl_result(|| -> Result<()> { unsafe { Ok(::gl::Uniform1i(l, v0)) } })
+            .expect("Program::set_uniform1i");
     }
     // ------------------------------------------------------------------------
     /// set_uniform1iv
@@ -232,9 +229,8 @@ impl Program {
     // ------------------------------------------------------------------------
     /// set_uniform1ui
     pub fn set_uniform1ui(l: GLint, v0: GLuint) {
-        gl_result(|| -> Result<()> {
-            unsafe { Ok(::gl::Uniform1ui(l, v0)) }
-        }).expect("Program::set_uniform1ui");
+        gl_result(|| -> Result<()> { unsafe { Ok(::gl::Uniform1ui(l, v0)) } })
+            .expect("Program::set_uniform1ui");
     }
     // ------------------------------------------------------------------------
     /// set_uniform1uiv
@@ -246,9 +242,8 @@ impl Program {
     // ------------------------------------------------------------------------
     /// set_uniform1f
     pub fn set_uniform1f(l: GLint, v0: GLfloat) {
-        gl_result(|| -> Result<()> {
-            unsafe { Ok(::gl::Uniform1f(l, v0)) }
-        }).expect("Program::set_uniform1f");
+        gl_result(|| -> Result<()> { unsafe { Ok(::gl::Uniform1f(l, v0)) } })
+            .expect("Program::set_uniform1f");
     }
     // ------------------------------------------------------------------------
     /// set_uniform1fv
@@ -547,9 +542,8 @@ impl TBind for Program {
     }
     // ========================================================================
     fn unbind(&self) {
-        gl_result(|| -> Result<()> {
-            unsafe { Ok(::gl::UseProgram(0)) }
-        }).expect("Program::unbind");
+        gl_result(|| -> Result<()> { unsafe { Ok(::gl::UseProgram(0)) } })
+            .expect("Program::unbind");
     }
 }
 // ============================================================================

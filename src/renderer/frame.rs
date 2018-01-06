@@ -112,9 +112,7 @@ impl TBind for Frame {
     /// bind
     fn bind(&self) {
         gl_result(|| -> Result<(), ()> {
-            unsafe {
-                Ok(::gl::BindFramebuffer(::gl::FRAMEBUFFER, self.id))
-            }
+            unsafe { Ok(::gl::BindFramebuffer(::gl::FRAMEBUFFER, self.id)) }
         }).expect("Frame::bind");
     }
     // ========================================================================

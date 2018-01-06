@@ -10,7 +10,7 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-use ::std::error::Error as StdError;
+use std::error::Error as StdError;
 // ----------------------------------------------------------------------------
 use super::renderer::GLError;
 // ////////////////////////////////////////////////////////////////////////////
@@ -26,9 +26,11 @@ pub enum Error {
     GL(Box<StdError>),
 }
 // ============================================================================
-impl <R, E> From<GLError<R, E>> for Error
-    where R: ::std::fmt::Debug + 'static,
-          E: ::std::fmt::Debug + 'static, {
+impl<R, E> From<GLError<R, E>> for Error
+where
+    R: ::std::fmt::Debug + 'static,
+    E: ::std::fmt::Debug + 'static,
+{
     fn from(e: GLError<R, E>) -> Self {
         Error::GL(Box::new(e))
     }
