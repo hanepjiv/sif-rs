@@ -13,7 +13,7 @@ homepage        = "https://github.com/hanepjiv/sif-rs"
 repository      = "https://github.com/hanepjiv/sif-rs.git"
 # =============================================================================
 [dependencies]
-gl              = { default-features = false, version = "^0.9.0" }
+gl              = { default-features = false, version = "^0.10.0" }
 log             = { default-features = false, version = "^0.4.1" }
 num             = { default-features = false, version = "^0.1.42" }
 # -----------------------------------------------------------------------------
