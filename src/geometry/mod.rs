@@ -18,10 +18,10 @@ pub use self::plane::*;
 pub use self::cube::*;
 pub use self::cuboid::*;
 // mod  =======================================================================
+pub mod capsule;
+pub mod cube;
+pub mod cuboid;
+pub mod plane;
 pub mod ray;
 pub mod segment;
 pub mod sphere;
-pub mod capsule;
-pub mod plane;
-pub mod cube;
-pub mod cuboid;

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2017/01/09
+//  @date 2018/04/10
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -29,10 +29,7 @@ impl<'a> ShaderSrc<'a> {
     // ========================================================================
     /// new
     pub fn new(type_: GLenum, srcs: Vec<&'a str>) -> Self {
-        ShaderSrc {
-            type_: type_,
-            srcs: srcs,
-        }
+        ShaderSrc { type_, srcs }
     }
 }
 // ////////////////////////////////////////////////////////////////////////////
@@ -54,7 +51,7 @@ impl Shader {
 
         {
             let mut s = String::new();
-            for i in src.srcs.iter() {
+            for i in &src.srcs {
                 s.push_str(i);
             }
             let cs = unwrap!(CString::new(s));
@@ -64,7 +61,7 @@ impl Shader {
                         id,
                         1,
                         &(cs.as_ptr()) as *const *const GLchar,
-                        ::std::mem::transmute(&(cs.as_bytes().len())),
+                        &(cs.as_bytes().len()) as *const usize as *const i32,
                     ))
                 }
             }).expect("Shader::new: ShaderSource");
@@ -77,7 +74,7 @@ impl Shader {
         info_log(::gl::SHADER, id, ::gl::COMPILE_STATUS)
             .expect("Shader::new: info_log");
 
-        Ok(Shader { id: id })
+        Ok(Shader { id })
     }
     // ========================================================================
     /// id

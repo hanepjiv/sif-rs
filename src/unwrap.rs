@@ -14,9 +14,15 @@
 #[cfg(not(debug_assertions))]
 #[macro_export]
 macro_rules! unwrap {
-    ($e:expr)                           => (($e).unwrap());
-    ($e:expr, $msg:expr)                => (($e).unwrap());
-    ($e:expr, $fmt:expr, $($args:tt)+)  => (($e).unwrap());
+    ($e:expr) => {
+        ($e).unwrap()
+    };
+    ($e:expr, $msg:expr) => {
+        ($e).unwrap()
+    };
+    ($e:expr, $fmt:expr, $($args:tt)+) => {
+        ($e).unwrap()
+    };
 }
 // ----------------------------------------------------------------------------
 /// unwrap!

@@ -75,7 +75,12 @@ impl TBind for Render {
     /// bind
     fn bind(&self) {
         gl_result(|| -> Result<(), ()> {
-            unsafe { Ok(::gl::BindRenderbuffer(::gl::RENDERBUFFER, self.id)) }
+            unsafe {
+                Ok(::gl::BindRenderbuffer(
+                    ::gl::RENDERBUFFER,
+                    self.id,
+                ))
+            }
         }).expect("Render::bind");
     }
     // ========================================================================

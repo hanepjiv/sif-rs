@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2017/04/10
+//  @date 2018/04/07
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -22,7 +22,12 @@ where
     V: Number,
 {
     fn default() -> Self {
-        Quaternion(Vector4::from([V::zero(), V::zero(), V::zero(), V::one()]))
+        Quaternion(Vector4::from([
+            V::zero(),
+            V::zero(),
+            V::zero(),
+            V::one(),
+        ]))
     }
 }
 // ============================================================================

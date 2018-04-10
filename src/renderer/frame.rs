@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2017/01/17
+//  @date 2018/04/10
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -16,7 +16,7 @@ use super::{gl_result, GLError, Render, TBind, Texture};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Frame
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Frame {
     /// id
     id: GLuint,
@@ -33,8 +33,8 @@ impl Frame {
                 Ok(id)
             }
         }) {
-            Err(_) => panic!("Frame::new"),
-            Ok(id) => Frame { id: id },
+            Ok(id) => Frame { id },
+            _ => panic!("Frame::new"),
         }
     }
     // ========================================================================
@@ -112,7 +112,12 @@ impl TBind for Frame {
     /// bind
     fn bind(&self) {
         gl_result(|| -> Result<(), ()> {
-            unsafe { Ok(::gl::BindFramebuffer(::gl::FRAMEBUFFER, self.id)) }
+            unsafe {
+                Ok(::gl::BindFramebuffer(
+                    ::gl::FRAMEBUFFER,
+                    self.id,
+                ))
+            }
         }).expect("Frame::bind");
     }
     // ========================================================================

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2017/04/26
+//  @date 2018/04/10
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -105,7 +105,10 @@ impl Program {
                         ))
                     }
                 }).expect("Program::new: GetUniformLocation");
-                info!("Program::new: location: {:?} = {:?}", name, location);
+                info!(
+                    "Program::new: location: {:?} = {:?}",
+                    name, location
+                );
                 let _ = location_map.insert(name, location);
             }
         }
@@ -169,9 +172,9 @@ impl Program {
         }
 
         Ok(Program {
-            shaders: shaders,
-            location_map: location_map,
-            id: id,
+            shaders,
+            location_map,
+            id,
         })
     }
     // ========================================================================
@@ -181,7 +184,7 @@ impl Program {
         String: ::std::borrow::Borrow<Q>,
         Q: ::std::hash::Hash + Ord,
     {
-        self.location_map.get(name).map(|l| *l)
+        self.location_map.get(name).cloned()
     }
     // ========================================================================
     /// set_attribute
@@ -195,7 +198,11 @@ impl Program {
         pointer: usize,
     ) {
         gl_result(|| -> Result<()> {
-            unsafe { Ok(::gl::EnableVertexAttribArray(location as GLuint)) }
+            unsafe {
+                Ok(::gl::EnableVertexAttribArray(
+                    location as GLuint,
+                ))
+            }
         }).expect("Program::set_attribute: EnableVertexAttribArray");
         {
             let _buffer_binder = buffer.binder();
@@ -512,7 +519,9 @@ impl Program {
         } else {
             gl_result(|| -> Result<()> {
                 unsafe {
-                    Ok(::gl::ActiveTexture(::gl::TEXTURE0 + index as GLuint))
+                    Ok(::gl::ActiveTexture(
+                        ::gl::TEXTURE0 + index as GLuint,
+                    ))
                 }
             }).expect("Program::set_texture");
             texture.bind();

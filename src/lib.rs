@@ -42,6 +42,6 @@ extern crate num;
 pub mod error;
 #[macro_use]
 pub mod unwrap;
-pub mod math;
 pub mod geometry;
+pub mod math;
 pub mod renderer;

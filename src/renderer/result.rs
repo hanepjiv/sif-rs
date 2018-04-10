@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2017/01/17
+//  @date 2018/04/10
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -25,7 +25,7 @@ where
     /// Function
     Function(E),
     /// GL
-    GL(GLenum, Result<R, E>),
+    GL(Result<R, E>, GLenum),
 }
 // ============================================================================
 impl<R, E> ::std::fmt::Display for GLError<R, E>
@@ -77,7 +77,7 @@ where
         ::gl::NO_ERROR => {
             result.map_err(|e| -> GLError<R, E> { GLError::Function(e) })
         }
-        e => Err(GLError::GL(e, result)),
+        e => Err(GLError::GL(result, e)),
     }
     //} else {
     //    result.map_err(|e| -> GLError<R, E> { GLError::Function(e) })
@@ -131,9 +131,9 @@ pub fn info_log(
                         return Err(String::from("invalid type_"));
                     }
                 }
-                for i in 0..log.len() {
-                    if log[i] > 128 {
-                        log[i] -= 128;
+                for i in &mut log {
+                    if *i > 128 {
+                        *i -= 128;
                     }
                 }
                 let msg = ::std::str::from_utf8(log.as_slice())

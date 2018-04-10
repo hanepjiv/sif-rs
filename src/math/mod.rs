@@ -19,8 +19,8 @@ pub use self::matrix::{Matrix2x2, Matrix2x3, Matrix3x2, Matrix3x3, Matrix3x4,
                        Matrix4x3, Matrix4x4};
 pub use self::quaternion::Quaternion;
 // ============================================================================
-pub mod number;
 pub mod cleanup;
-pub mod vector;
 pub mod matrix;
+pub mod number;
 pub mod quaternion;
+pub mod vector;

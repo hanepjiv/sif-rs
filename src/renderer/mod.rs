@@ -20,12 +20,12 @@ pub use self::render::Render;
 pub use self::shader::{Shader, ShaderSrc};
 pub use self::program::Program;
 // mod  =======================================================================
-pub mod result;
 pub mod bind;
 pub mod buffer;
-pub mod texture;
 pub mod frame;
 pub mod render;
+pub mod result;
 pub mod shader;
+pub mod texture;
 #[macro_use]
 pub mod program;

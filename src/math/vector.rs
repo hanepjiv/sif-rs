@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2017/04/12
+//  @date 2018/04/10
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -15,14 +15,17 @@ use super::{Cleanup, Number};
 // ============================================================================
 /// vector_define!
 macro_rules! vector_define {
-    ($name:ident, $n:expr)         => {
+    ($name:ident, $n:expr) => {
         // ////////////////////////////////////////////////////////////////////
         // ====================================================================
         /// struct $name
-        #[derive( Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd, )]
+        #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd)]
         pub struct $name<V: Number>([V; $n]);
         // ====================================================================
-        impl <V> From< [V; $n] > for $name<V> where V: Number {
+        impl<V> From<[V; $n]> for $name<V>
+        where
+            V: Number,
+        {
             fn from(inner: [V; $n]) -> Self {
                 let mut m = $name(inner);
                 m.cleanup();
@@ -30,167 +33,273 @@ macro_rules! vector_define {
             }
         }
         // ====================================================================
-        impl <V> From< Vec<V> > for $name<V> where V: Number {
+        impl<V> From<Vec<V>> for $name<V>
+        where
+            V: Number,
+        {
             fn from(inner: Vec<V>) -> Self {
                 assert_eq!($n, inner.len(), "{}({})", file!(), line!());
                 let mut v = [V::zero(); $n];
-                for i in 0..$n { v[i] = inner[i]; }
+                for i in 0..$n {
+                    v[i] = inner[i];
+                }
                 Self::from(v)
             }
         }
         // ====================================================================
-        impl <V> ::std::ops::Index< usize, > for $name<V> where V: Number {
-            type Output         = V;
+        impl<V> ::std::ops::Index<usize> for $name<V>
+        where
+            V: Number,
+        {
+            type Output = V;
             fn index(&self, index: usize) -> &Self::Output {
                 &self.0[index]
             }
         }
         // --------------------------------------------------------------------
-        impl <V> ::std::ops::IndexMut< usize, > for $name<V> where V: Number {
+        impl<V> ::std::ops::IndexMut<usize> for $name<V>
+        where
+            V: Number,
+        {
             fn index_mut(&mut self, index: usize) -> &mut Self::Output {
                 &mut self.0[index]
             }
         }
         // ====================================================================
-        impl <V> ::std::ops::Add<V> for $name<V> where V: Number {
+        impl<V> ::std::ops::Add<V> for $name<V>
+        where
+            V: Number,
+        {
             type Output = Self;
             fn add(self, rhs: V) -> Self::Output {
                 let mut inner = [V::default(); $n];
-                for i in 0..$n { inner[i] = self[i] + rhs; }
+                for i in 0..$n {
+                    inner[i] = self[i] + rhs;
+                }
                 Self::from(inner)
             }
         }
         // --------------------------------------------------------------------
-        impl <V> ::std::ops::AddAssign<V> for $name<V> where V: Number {
+        impl<V> ::std::ops::AddAssign<V> for $name<V>
+        where
+            V: Number,
+        {
             fn add_assign(&mut self, rhs: V) {
-                for i in 0..$n { self.0[i] += rhs; }
+                for i in 0..$n {
+                    self.0[i] += rhs;
+                }
             }
         }
         // ====================================================================
-        impl <V> ::std::ops::Sub<V> for $name<V> where V: Number {
+        impl<V> ::std::ops::Sub<V> for $name<V>
+        where
+            V: Number,
+        {
             type Output = Self;
             fn sub(self, rhs: V) -> Self::Output {
                 let mut inner = [V::default(); $n];
-                for i in 0..$n { inner[i] = self[i] - rhs; }
+                for i in 0..$n {
+                    inner[i] = self[i] - rhs;
+                }
                 Self::from(inner)
             }
         }
         // --------------------------------------------------------------------
-        impl <V> ::std::ops::SubAssign<V> for $name<V> where V: Number {
+        impl<V> ::std::ops::SubAssign<V> for $name<V>
+        where
+            V: Number,
+        {
             fn sub_assign(&mut self, rhs: V) {
-                for i in 0..$n { self.0[i] -= rhs; }
+                for i in 0..$n {
+                    self.0[i] -= rhs;
+                }
             }
         }
         // ====================================================================
-        impl <V> ::std::ops::Mul<V> for $name<V> where V: Number {
+        impl<V> ::std::ops::Mul<V> for $name<V>
+        where
+            V: Number,
+        {
             type Output = Self;
             fn mul(self, rhs: V) -> Self::Output {
                 let mut inner = [V::default(); $n];
-                for i in 0..$n { inner[i] = self[i] * rhs; }
+                for i in 0..$n {
+                    inner[i] = self[i] * rhs;
+                }
                 Self::from(inner)
             }
         }
         // --------------------------------------------------------------------
-        impl <V> ::std::ops::MulAssign<V> for $name<V> where V: Number {
+        impl<V> ::std::ops::MulAssign<V> for $name<V>
+        where
+            V: Number,
+        {
             fn mul_assign(&mut self, rhs: V) {
-                for i in 0..$n { self.0[i] *= rhs; }
+                for i in 0..$n {
+                    self.0[i] *= rhs;
+                }
             }
         }
         // ====================================================================
-        impl <V> ::std::ops::Div<V> for $name<V> where V: Number {
+        impl<V> ::std::ops::Div<V> for $name<V>
+        where
+            V: Number,
+        {
             type Output = Self;
             fn div(self, rhs: V) -> Self::Output {
                 let mut inner = [V::default(); $n];
-                for i in 0..$n { inner[i] = self[i] / rhs; }
+                for i in 0..$n {
+                    inner[i] = self[i] / rhs;
+                }
                 Self::from(inner)
             }
         }
         // --------------------------------------------------------------------
-        impl <V> ::std::ops::DivAssign<V> for $name<V> where V: Number {
+        impl<V> ::std::ops::DivAssign<V> for $name<V>
+        where
+            V: Number,
+        {
             fn div_assign(&mut self, rhs: V) {
-                for i in 0..$n { self.0[i] /= rhs; }
+                for i in 0..$n {
+                    self.0[i] /= rhs;
+                }
             }
         }
         // ====================================================================
-        impl <V> ::std::ops::Add for $name<V> where V: Number {
+        impl<V> ::std::ops::Add for $name<V>
+        where
+            V: Number,
+        {
             type Output = Self;
             fn add(self, rhs: Self) -> Self::Output {
                 let mut inner = [V::default(); $n];
-                for i in 0..$n { inner[i] = self[i] + rhs[i]; }
+                for i in 0..$n {
+                    inner[i] = self[i] + rhs[i];
+                }
                 Self::from(inner)
             }
         }
         // --------------------------------------------------------------------
-        impl <V> ::std::ops::AddAssign for $name<V> where V: Number {
+        impl<V> ::std::ops::AddAssign for $name<V>
+        where
+            V: Number,
+        {
             fn add_assign(&mut self, rhs: Self) {
-                for i in 0..$n { self.0[i] += rhs[i]; }
+                for i in 0..$n {
+                    self.0[i] += rhs[i];
+                }
             }
         }
         // ====================================================================
-        impl <V> ::std::ops::Sub for $name<V> where V: Number {
+        impl<V> ::std::ops::Sub for $name<V>
+        where
+            V: Number,
+        {
             type Output = Self;
             fn sub(self, rhs: Self) -> Self::Output {
                 let mut inner = [V::default(); $n];
-                for i in 0..$n { inner[i] = self[i] - rhs[i]; }
+                for i in 0..$n {
+                    inner[i] = self[i] - rhs[i];
+                }
                 Self::from(inner)
             }
         }
         // --------------------------------------------------------------------
-        impl <V> ::std::ops::SubAssign for $name<V> where V: Number {
+        impl<V> ::std::ops::SubAssign for $name<V>
+        where
+            V: Number,
+        {
             fn sub_assign(&mut self, rhs: Self) {
-                for i in 0..$n { self.0[i] -= rhs[i]; }
+                for i in 0..$n {
+                    self.0[i] -= rhs[i];
+                }
             }
         }
         // ====================================================================
-        impl <V> ::std::ops::Mul for $name<V> where V: Number {
+        impl<V> ::std::ops::Mul for $name<V>
+        where
+            V: Number,
+        {
             type Output = Self;
             fn mul(self, rhs: Self) -> Self::Output {
                 let mut inner = [V::default(); $n];
-                for i in 0..$n { inner[i] = self[i] * rhs[i]; }
+                for i in 0..$n {
+                    inner[i] = self[i] * rhs[i];
+                }
                 Self::from(inner)
             }
         }
         // --------------------------------------------------------------------
-        impl <V> ::std::ops::MulAssign for $name<V> where V: Number {
+        impl<V> ::std::ops::MulAssign for $name<V>
+        where
+            V: Number,
+        {
             fn mul_assign(&mut self, rhs: Self) {
-                for i in 0..$n { self.0[i] *= rhs[i]; }
+                for i in 0..$n {
+                    self.0[i] *= rhs[i];
+                }
             }
         }
         // ====================================================================
-        impl <V> ::std::ops::Div for $name<V> where V: Number {
+        impl<V> ::std::ops::Div for $name<V>
+        where
+            V: Number,
+        {
             type Output = Self;
             fn div(self, rhs: Self) -> Self::Output {
                 let mut inner = [V::default(); $n];
-                for i in 0..$n { inner[i] = self[i] / rhs[i]; }
+                for i in 0..$n {
+                    inner[i] = self[i] / rhs[i];
+                }
                 Self::from(inner)
             }
         }
         // --------------------------------------------------------------------
-        impl <V> ::std::ops::DivAssign for $name<V> where V: Number {
+        impl<V> ::std::ops::DivAssign for $name<V>
+        where
+            V: Number,
+        {
             fn div_assign(&mut self, rhs: Self) {
-                for i in 0..$n { self.0[i] /= rhs[i]; }
+                for i in 0..$n {
+                    self.0[i] /= rhs[i];
+                }
             }
         }
         // ====================================================================
-        impl <V> $name<V> where V: Number {
+        impl<V> $name<V>
+        where
+            V: Number,
+        {
             // ================================================================
             /// size
-            pub fn size() -> usize { $n }
+            pub fn size() -> usize {
+                $n
+            }
             // ================================================================
             /// from_no_clean
-            pub fn from_no_clean(inner: [V; $n]) -> Self { $name(inner) }
+            pub fn from_no_clean(inner: [V; $n]) -> Self {
+                $name(inner)
+            }
             // ================================================================
             /// as_ptr
-            pub fn as_ptr(&self) -> *const V { self.0.as_ptr() }
+            pub fn as_ptr(&self) -> *const V {
+                self.0.as_ptr()
+            }
             // ================================================================
             /// as_mut_ptr
-            pub fn as_mut_ptr(&mut self) -> *mut V { self.0.as_mut_ptr() }
+            pub fn as_mut_ptr(&mut self) -> *mut V {
+                self.0.as_mut_ptr()
+            }
             // ================================================================
             /// cleanup
             pub fn cleanup(&mut self) {
                 let mut c = Cleanup::new();
-                for i in 0..$n { c.collect(self[i]); }
-                for i in 0..$n { self[i] = c.check(self[i]); }
+                for i in 0..$n {
+                    c.collect(self[i]);
+                }
+                for i in 0..$n {
+                    self[i] = c.check(self[i]);
+                }
             }
             // ================================================================
             /// dot
@@ -206,23 +315,33 @@ macro_rules! vector_define {
             /// ```
             pub fn dot(&self, r: &Self) -> V {
                 let mut ret = V::zero();
-                for i in 0..$n { ret += self[i] * r[i] }
+                for i in 0..$n {
+                    ret += self[i] * r[i]
+                }
                 ret
             }
             // ================================================================
             /// length2
-            pub fn length2(&self) -> V { self.dot(self) }
+            pub fn length2(&self) -> V {
+                self.dot(self)
+            }
             // ----------------------------------------------------------------
             /// length
-            pub fn length(&self) -> V { self.length2().sqrt() }
+            pub fn length(&self) -> V {
+                self.length2().sqrt()
+            }
             // ================================================================
             /// normalize
             pub fn normalize(&mut self) -> &mut Self {
                 let l = self.length();
                 if l < V::epsilon().sqrt() {
-                    for i in 0..$n { self.0[i] = V::zero(); }
+                    for i in &mut self.0 {
+                        *i = V::zero();
+                    }
                 } else {
-                    for i in 0..$n { self.0[i] /= l; }
+                    for i in &mut self.0 {
+                        *i /= l;
+                    }
                 }
                 self
             }
@@ -313,5 +432,21 @@ impl<V: Number> Vector4<V> {
     /// from_vector3
     pub fn from_vector3(src: &Vector3<V>, w: V) -> Self {
         Vector4::new(src[0], src[1], src[2], w)
+    }
+}
+// ////////////////////////////////////////////////////////////////////////////
+// ============================================================================
+#[cfg(test)]
+mod tests {
+    // use  ===================================================================
+    use super::*;
+    // ========================================================================
+    #[test]
+    fn normalize() {
+        let mut v0 = Vector4::new(0.0f32, 0.0, 0.0, 0.0);
+        assert_eq!(0.0f32, v0.normalize().length());
+
+        let mut v1 = Vector4::new(1.0f32, 1.0, 1.0, 1.0);
+        assert_eq!(1.0f32, v1.normalize().length());
     }
 }

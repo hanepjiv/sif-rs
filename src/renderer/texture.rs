@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2017/04/25
+//  @date 2018/04/10
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -68,10 +68,10 @@ impl Texture {
             Err(_) => Err(Error::Sif(String::from("Texture::new_2d"))),
             Ok(id) => {
                 let texture = Texture {
-                    id: id,
+                    id,
                     target: ::gl::TEXTURE_2D,
-                    format: format,
-                    type_: type_,
+                    format,
+                    type_,
                 };
                 texture.tex_image_2d(
                     wrap_s,
