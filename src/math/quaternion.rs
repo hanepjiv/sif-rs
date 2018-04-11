@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2018/04/07
+//  @date 2018/04/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -22,12 +22,7 @@ where
     V: Number,
 {
     fn default() -> Self {
-        Quaternion(Vector4::from([
-            V::zero(),
-            V::zero(),
-            V::zero(),
-            V::one(),
-        ]))
+        Quaternion(Vector4::from([V::zero(), V::zero(), V::zero(), V::one()]))
     }
 }
 // ============================================================================
@@ -45,9 +40,7 @@ where
     V: Number,
 {
     fn from(inner: Vector4<V>) -> Self {
-        let mut q = Quaternion(inner);
-        q.cleanup();
-        q
+        *Quaternion(inner).cleanup()
     }
 }
 // ============================================================================
@@ -86,7 +79,8 @@ where
     }
     // ========================================================================
     /// cleanup
-    pub fn cleanup(&mut self) {
-        self.0.cleanup();
+    pub fn cleanup(&mut self) -> &mut Self {
+        let _ = self.0.cleanup();
+        self
     }
 }

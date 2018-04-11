@@ -2,11 +2,11 @@
 
 //! vector.rs
 
-//  Copyright 2016 hanepjiv
+//  Copyight 2016 hanepjiv
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2018/04/10
+//  @date 2018/04/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -28,8 +28,7 @@ macro_rules! vector_define {
         {
             fn from(inner: [V; $n]) -> Self {
                 let mut m = $name(inner);
-                m.cleanup();
-                m
+                *m.cleanup()
             }
         }
         // ====================================================================
@@ -292,7 +291,7 @@ macro_rules! vector_define {
             }
             // ================================================================
             /// cleanup
-            pub fn cleanup(&mut self) {
+            pub fn cleanup(&mut self) -> &mut Self {
                 let mut c = Cleanup::new();
                 for i in 0..$n {
                     c.collect(self[i]);
@@ -300,6 +299,7 @@ macro_rules! vector_define {
                 for i in 0..$n {
                     self[i] = c.check(self[i]);
                 }
+                self
             }
             // ================================================================
             /// dot
