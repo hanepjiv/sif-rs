@@ -10,15 +10,15 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-pub use super::Result;
-pub use self::result::{gl_result, info_log, GLError};
 pub use self::bind::{Binder, TBind};
 pub use self::buffer::Buffer;
-pub use self::texture::Texture;
 pub use self::frame::Frame;
-pub use self::render::Render;
-pub use self::shader::{Shader, ShaderSrc};
 pub use self::program::Program;
+pub use self::render::Render;
+pub use self::result::{gl_result, info_log, GLError};
+pub use self::shader::{Shader, ShaderSrc};
+pub use self::texture::Texture;
+pub use super::Result;
 // mod  =======================================================================
 pub mod bind;
 pub mod buffer;

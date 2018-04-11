@@ -22,7 +22,12 @@ where
     V: Number,
 {
     fn default() -> Self {
-        Quaternion(Vector4::from([V::zero(), V::zero(), V::zero(), V::one()]))
+        Quaternion(Vector4::from([
+            V::zero(),
+            V::zero(),
+            V::zero(),
+            V::one(),
+        ]))
     }
 }
 // ============================================================================

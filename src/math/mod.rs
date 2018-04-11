@@ -12,12 +12,12 @@
 // ============================================================================
 pub use super::{Error, Result};
 // ----------------------------------------------------------------------------
-pub use self::number::Number;
 pub use self::cleanup::Cleanup;
-pub use self::vector::{Vector2, Vector3, Vector4};
 pub use self::matrix::{Matrix2x2, Matrix2x3, Matrix3x2, Matrix3x3, Matrix3x4,
                        Matrix4x3, Matrix4x4};
+pub use self::number::Number;
 pub use self::quaternion::Quaternion;
+pub use self::vector::{Vector2, Vector3, Vector4};
 // ============================================================================
 pub mod cleanup;
 pub mod matrix;

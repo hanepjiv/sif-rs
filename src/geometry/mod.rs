@@ -10,13 +10,13 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
+pub use self::capsule::*;
+pub use self::cube::*;
+pub use self::cuboid::*;
+pub use self::plane::*;
 pub use self::ray::*;
 pub use self::segment::*;
 pub use self::sphere::*;
-pub use self::capsule::*;
-pub use self::plane::*;
-pub use self::cube::*;
-pub use self::cuboid::*;
 // mod  =======================================================================
 pub mod capsule;
 pub mod cube;

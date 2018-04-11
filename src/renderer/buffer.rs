@@ -13,8 +13,8 @@
 use gl::types::*;
 use std::result::Result as StdResult;
 // ----------------------------------------------------------------------------
-use super::{gl_result, TBind};
 use super::super::{Error, Result};
+use super::{gl_result, TBind};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Buffer
@@ -46,10 +46,14 @@ impl Buffer {
         });
 
         let result_buffer = match result_id {
-            Err(_) => {
-                Err(Error::Sif(String::from("Buffer::new: ::gl::GenBuffers")))
-            }
-            Ok(id) => Ok(Buffer { id, target, usage }),
+            Err(_) => Err(Error::Sif(String::from(
+                "Buffer::new: ::gl::GenBuffers",
+            ))),
+            Ok(id) => Ok(Buffer {
+                id,
+                target,
+                usage,
+            }),
         };
 
         match result_buffer {

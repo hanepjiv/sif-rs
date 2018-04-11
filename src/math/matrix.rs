@@ -258,7 +258,9 @@ macro_rules! matrix_define {
             pub fn apply_order(&mut self, order: &[usize; $n]) -> &mut Self {
                 let tmp = self.clone();
                 for i in 0..$n {
-                    if i == order[i] { continue; }
+                    if i == order[i] {
+                        continue;
+                    }
                     self[i] = tmp[order[i]];
                 }
                 self
