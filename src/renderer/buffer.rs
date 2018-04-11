@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2017/04/20
+//  @date 2018/04/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -46,14 +46,10 @@ impl Buffer {
         });
 
         let result_buffer = match result_id {
-            Err(_) => Err(Error::Sif(String::from(
-                "Buffer::new: ::gl::GenBuffers",
-            ))),
-            Ok(id) => Ok(Buffer {
-                id: id,
-                target: target,
-                usage: usage,
-            }),
+            Err(_) => {
+                Err(Error::Sif(String::from("Buffer::new: ::gl::GenBuffers")))
+            }
+            Ok(id) => Ok(Buffer { id, target, usage }),
         };
 
         match result_buffer {

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/11
-//  @date 2017/03/09
+//  @date 2018/04/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -47,7 +47,7 @@ impl<'a> Binder<'a> {
     /// new
     pub fn new(bind: &'a TBind) -> Self {
         bind.bind();
-        Binder { bind: bind }
+        Binder { bind }
     }
 }
 // ============================================================================

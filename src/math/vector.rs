@@ -27,22 +27,7 @@ macro_rules! vector_define {
             V: Number,
         {
             fn from(inner: [V; $n]) -> Self {
-                let mut m = $name(inner);
-                *m.cleanup()
-            }
-        }
-        // ====================================================================
-        impl<V> From<Vec<V>> for $name<V>
-        where
-            V: Number,
-        {
-            fn from(inner: Vec<V>) -> Self {
-                assert_eq!($n, inner.len(), "{}({})", file!(), line!());
-                let mut v = [V::zero(); $n];
-                for i in 0..$n {
-                    v[i] = inner[i];
-                }
-                Self::from(v)
+                *$name(inner).cleanup()
             }
         }
         // ====================================================================
@@ -293,11 +278,11 @@ macro_rules! vector_define {
             /// cleanup
             pub fn cleanup(&mut self) -> &mut Self {
                 let mut c = Cleanup::new();
-                for i in 0..$n {
-                    c.collect(self[i]);
+                for i in &self.0 {
+                    c.collect(*i);
                 }
-                for i in 0..$n {
-                    self[i] = c.check(self[i]);
+                for i in &mut self.0 {
+                    *i = c.check(*i);
                 }
                 self
             }
