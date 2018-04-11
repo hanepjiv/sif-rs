@@ -58,7 +58,7 @@ macro_rules! vector_define {
             fn add(self, rhs: V) -> Self::Output {
                 let mut inner = [V::default(); $n];
                 for i in 0..$n {
-                    inner[i] = self[i] + rhs;
+                    inner[i] = self.0[i] + rhs;
                 }
                 Self::from(inner)
             }
@@ -83,7 +83,7 @@ macro_rules! vector_define {
             fn sub(self, rhs: V) -> Self::Output {
                 let mut inner = [V::default(); $n];
                 for i in 0..$n {
-                    inner[i] = self[i] - rhs;
+                    inner[i] = self.0[i] - rhs;
                 }
                 Self::from(inner)
             }
@@ -108,7 +108,7 @@ macro_rules! vector_define {
             fn mul(self, rhs: V) -> Self::Output {
                 let mut inner = [V::default(); $n];
                 for i in 0..$n {
-                    inner[i] = self[i] * rhs;
+                    inner[i] = self.0[i] * rhs;
                 }
                 Self::from(inner)
             }
@@ -133,7 +133,7 @@ macro_rules! vector_define {
             fn div(self, rhs: V) -> Self::Output {
                 let mut inner = [V::default(); $n];
                 for i in 0..$n {
-                    inner[i] = self[i] / rhs;
+                    inner[i] = self.0[i] / rhs;
                 }
                 Self::from(inner)
             }
@@ -158,7 +158,7 @@ macro_rules! vector_define {
             fn add(self, rhs: Self) -> Self::Output {
                 let mut inner = [V::default(); $n];
                 for i in 0..$n {
-                    inner[i] = self[i] + rhs[i];
+                    inner[i] = self.0[i] + rhs.0[i];
                 }
                 Self::from(inner)
             }
@@ -170,7 +170,7 @@ macro_rules! vector_define {
         {
             fn add_assign(&mut self, rhs: Self) {
                 for i in 0..$n {
-                    self.0[i] += rhs[i];
+                    self.0[i] += rhs.0[i];
                 }
             }
         }
@@ -183,7 +183,7 @@ macro_rules! vector_define {
             fn sub(self, rhs: Self) -> Self::Output {
                 let mut inner = [V::default(); $n];
                 for i in 0..$n {
-                    inner[i] = self[i] - rhs[i];
+                    inner[i] = self.0[i] - rhs.0[i];
                 }
                 Self::from(inner)
             }
@@ -195,7 +195,7 @@ macro_rules! vector_define {
         {
             fn sub_assign(&mut self, rhs: Self) {
                 for i in 0..$n {
-                    self.0[i] -= rhs[i];
+                    self.0[i] -= rhs.0[i];
                 }
             }
         }
@@ -208,7 +208,7 @@ macro_rules! vector_define {
             fn mul(self, rhs: Self) -> Self::Output {
                 let mut inner = [V::default(); $n];
                 for i in 0..$n {
-                    inner[i] = self[i] * rhs[i];
+                    inner[i] = self.0[i] * rhs.0[i];
                 }
                 Self::from(inner)
             }
@@ -220,7 +220,7 @@ macro_rules! vector_define {
         {
             fn mul_assign(&mut self, rhs: Self) {
                 for i in 0..$n {
-                    self.0[i] *= rhs[i];
+                    self.0[i] *= rhs.0[i];
                 }
             }
         }
@@ -233,7 +233,7 @@ macro_rules! vector_define {
             fn div(self, rhs: Self) -> Self::Output {
                 let mut inner = [V::default(); $n];
                 for i in 0..$n {
-                    inner[i] = self[i] / rhs[i];
+                    inner[i] = self.0[i] / rhs.0[i];
                 }
                 Self::from(inner)
             }
@@ -245,7 +245,7 @@ macro_rules! vector_define {
         {
             fn div_assign(&mut self, rhs: Self) {
                 for i in 0..$n {
-                    self.0[i] /= rhs[i];
+                    self.0[i] /= rhs.0[i];
                 }
             }
         }
@@ -298,10 +298,10 @@ macro_rules! vector_define {
             ///            dot(&Vector3::from([0.0f32, 1.0, 0.0])),
             ///            0.0);
             /// ```
-            pub fn dot(&self, r: &Self) -> V {
+            pub fn dot(&self, rhs: &Self) -> V {
                 let mut ret = V::zero();
                 for i in 0..$n {
-                    ret += self[i] * r[i]
+                    ret += self.0[i] * rhs.0[i]
                 }
                 ret
             }

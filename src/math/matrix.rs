@@ -257,9 +257,9 @@ macro_rules! matrix_define {
             pub fn apply_order(&mut self, order: &[usize; $n]) -> &mut Self {
                 debug_assert!($n == $vector::<V>::size());
                 let tmp = self.clone();
-                for (i, o) in order.iter().enumerate() {
-                    if i == *o { continue; }
-                    self[i] = tmp[*o];
+                for i in 0..$n {
+                    if i == order[i] { continue; }
+                    self[i] = tmp[order[i]];
                 }
                 self
             }
@@ -308,38 +308,17 @@ macro_rules! matrix_define {
             }
             // ================================================================
             /// new_decomposition
-            pub fn new_decomposition(&self) -> Result<(Self, [usize; $n])> {
+            pub fn new_decomposition(&self) -> Result<Self> {
                 if $n < 2 {
                     return Err(Error::InvalidArguments(String::from(
                         "::sif::math::matrix::new_decomposition: n < 2",
                     )));
                 }
-
-                let mut ord = [0usize; $n];
-                for i in 0..$n {
-                    ord[i] = i;
-                }
                 let mut m = *self.clone().cleanup();
-
                 for o in 0..$n {
-                    let d = m.pivot(o);
-                    if o != d {
-                        {
-                            let t = ord[o];
-                            ord[o] = ord[d];
-                            ord[d] = t;
-                        }
-                        {
-                            let t = m[o];
-                            m[o] = m[d];
-                            m[d] = t;
-                        }
-                    }
-
                     if m[o][o].abs() < V::epsilon().sqrt() {
                         continue;
                     }
-
                     for j in o + 1..$vector::<V>::size() {
                         m[o][j] /= m[o][o];
                         for i in o + 1..$n {
@@ -347,7 +326,7 @@ macro_rules! matrix_define {
                         }
                     }
                 }
-                Ok((*m.cleanup(), ord))
+                Ok(*m.cleanup())
             }
             // ----------------------------------------------------------------
             /// new_lower       *** row_order ***
@@ -488,11 +467,11 @@ mod tests {
             Vector4::from_no_clean([10.0f32, 0.0, 5.0, 0.0]),
             Vector4::from_no_clean([2.1, 1.0, 0.0, 0.0]),
             Vector4::from_no_clean([3.0, 2.0, 1.0, 0.0]),
-            Vector4::from_no_clean([0.0, 1.0, 0.0, 1.0]),
+            Vector4::from_no_clean([0.0, 1.0, 5.0, 1.0]),
         ]);
-        let (lu, ord) = m.new_decomposition().unwrap();
+        let lu = m.new_decomposition().unwrap();
         let l = lu.new_lower();
         let u = lu.new_upper();
-        assert_eq!(m, *(l * u).apply_order(&ord));
+        assert_eq!(m, l * u);
     }
 }
