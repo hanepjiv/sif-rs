@@ -26,8 +26,19 @@ macro_rules! vector_define {
         where
             V: Number,
         {
-            fn from(inner: [V; $n]) -> Self {
-                *$name(inner).cleanup()
+            fn from(src: [V; $n]) -> Self {
+                *$name(src).cleanup()
+            }
+        }
+        // ====================================================================
+        impl<'a, V> From<&'a [V]> for $name<V>
+        where
+            V: Number,
+        {
+            fn from(src: &'a [V]) -> Self {
+                let mut inner = <[V; $n]>::default();
+                inner.copy_from_slice(src);
+                $name::from(inner)
             }
         }
         // ====================================================================

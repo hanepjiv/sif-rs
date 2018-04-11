@@ -242,6 +242,7 @@ macro_rules! matrix_define {
             }
             // ================================================================
             fn pivot(&self, o: usize) -> usize {
+                debug_assert!($n == $vector::<V>::size());
                 let mut d = o;
                 let mut max = self[o][o].abs();
                 for i in o + 1..$n {
@@ -255,7 +256,6 @@ macro_rules! matrix_define {
             // ================================================================
             /// apply_order
             pub fn apply_order(&mut self, order: &[usize; $n]) -> &mut Self {
-                debug_assert!($n == $vector::<V>::size());
                 let tmp = self.clone();
                 for i in 0..$n {
                     if i == order[i] { continue; }
