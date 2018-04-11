@@ -288,7 +288,7 @@ macro_rules! matrix_define {
 
                     if m[o][o].abs() < V::epsilon().sqrt() {
                         return Err(Error::InvalidArguments(String::from(
-                            "::sif::math::matrix::inverse",
+                            "::sif::math::matrix::new_inverse",
                         )));
                     }
 
