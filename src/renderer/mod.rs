@@ -6,11 +6,11 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/02/23
-//  @date 2017/01/17
+//  @date 2018/04/12
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-pub use self::bind::{Binder, TBind};
+pub use self::bind::Bind;
 pub use self::buffer::Buffer;
 pub use self::frame::Frame;
 pub use self::program::Program;

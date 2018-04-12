@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2018/04/10
+//  @date 2018/04/12
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -15,7 +15,7 @@ use std::collections::BTreeMap;
 // ----------------------------------------------------------------------------
 use gl::types::*;
 // ----------------------------------------------------------------------------
-use super::{gl_result, info_log, Buffer, Result, Shader, ShaderSrc, TBind,
+use super::{gl_result, info_log, Bind, Buffer, Result, Shader, ShaderSrc,
             Texture};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -205,19 +205,20 @@ impl Program {
             }
         }).expect("Program::set_attribute: EnableVertexAttribArray");
         {
-            let _buffer_binder = buffer.binder();
-            gl_result(|| -> Result<()> {
-                unsafe {
-                    Ok(::gl::VertexAttribPointer(
-                        location as GLuint,
-                        size_ as GLint,
-                        type_,
-                        normalized,
-                        stride as GLsizei,
-                        pointer as *const GLvoid,
-                    ))
-                }
-            }).expect("Program::set_attribute: VertexAttribPointer");
+            buffer.bind_with(|| {
+                gl_result(|| -> Result<()> {
+                    unsafe {
+                        Ok(::gl::VertexAttribPointer(
+                            location as GLuint,
+                            size_ as GLint,
+                            type_,
+                            normalized,
+                            stride as GLsizei,
+                            pointer as *const GLvoid,
+                        ))
+                    }
+                }).expect("Program::set_attribute: VertexAttribPointer");
+            })
         }
     }
     // ========================================================================
@@ -538,7 +539,7 @@ impl Drop for Program {
     }
 }
 // ============================================================================
-impl TBind for Program {
+impl Bind for Program {
     // ========================================================================
     fn id(&self) -> GLuint {
         self.id

@@ -6,15 +6,15 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/11
-//  @date 2018/04/11
+//  @date 2018/04/12
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use gl::types::*;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// trait TBind
-pub trait TBind: ::std::fmt::Debug {
+/// trait Bind
+pub trait Bind {
     // ========================================================================
     /// id
     fn id(&self) -> GLuint;
@@ -25,34 +25,14 @@ pub trait TBind: ::std::fmt::Debug {
     /// unbind
     fn unbind(&self);
     // ========================================================================
-    /// binder
-    fn binder<'a>(&'a self) -> Binder<'a>
+    /// bind_with
+    fn bind_with<F, R>(&self, func: F) -> R
     where
-        Self: Sized,
+        F: FnOnce() -> R,
     {
-        Binder::new(self)
-    }
-}
-// ////////////////////////////////////////////////////////////////////////////
-// ============================================================================
-/// struct Binder
-#[derive(Debug)]
-pub struct Binder<'a> {
-    /// bind
-    bind: &'a TBind,
-}
-// ============================================================================
-impl<'a> Binder<'a> {
-    // ========================================================================
-    /// new
-    pub fn new(bind: &'a TBind) -> Self {
-        bind.bind();
-        Binder { bind }
-    }
-}
-// ============================================================================
-impl<'a> Drop for Binder<'a> {
-    fn drop(&mut self) {
-        self.bind.unbind();
+        self.bind();
+        let ret = func();
+        self.unbind();
+        ret
     }
 }

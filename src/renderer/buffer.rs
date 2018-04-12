@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2018/04/11
+//  @date 2018/04/12
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -14,7 +14,7 @@ use gl::types::*;
 use std::result::Result as StdResult;
 // ----------------------------------------------------------------------------
 use super::super::{Error, Result};
-use super::{gl_result, TBind};
+use super::{gl_result, Bind};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Buffer
@@ -58,15 +58,14 @@ impl Buffer {
 
         match result_buffer {
             Ok(buffer) => match gl_result(|| -> StdResult<(), ()> {
-                unsafe {
-                    let _binder = buffer.binder();
+                buffer.bind_with(|| unsafe {
                     Ok(::gl::BufferData(
                         target,
                         size as GLsizeiptr,
                         data,
                         usage,
                     ))
-                }
+                })
             }) {
                 Ok(_) => Ok(buffer),
                 _ => Err(Error::Sif(String::from(
@@ -105,31 +104,29 @@ impl Buffer {
     // ========================================================================
     /// sub_data
     pub fn sub_data<T>(&self, offset: isize, size: usize, data: *const T) {
-        let _binder = self.binder();
         gl_result(|| -> StdResult<(), ()> {
-            unsafe {
+            self.bind_with(|| unsafe {
                 Ok(::gl::BufferSubData(
                     self.target,
                     offset as GLintptr,
                     size as GLsizeiptr,
                     data as *const GLvoid,
                 ))
-            }
+            })
         }).expect("Buffer::sub_data");
     }
     // ========================================================================
     /// draw_elements
     pub fn draw_elements(&self, mode: GLenum, count: GLsizei) -> Result<()> {
-        let _binder = self.binder();
         Ok(gl_result(|| -> StdResult<(), ()> {
-            unsafe {
+            self.bind_with(|| unsafe {
                 Ok(::gl::DrawElements(
                     mode,
                     count,
                     ::gl::UNSIGNED_INT,
                     ::std::ptr::null(),
                 ))
-            }
+            })
         })?)
     }
     // ========================================================================
@@ -140,9 +137,10 @@ impl Buffer {
         first: GLint,
         count: GLsizei,
     ) -> Result<()> {
-        let _binder = self.binder();
         Ok(gl_result(|| -> StdResult<(), ()> {
-            unsafe { Ok(::gl::DrawArrays(mode, first, count)) }
+            self.bind_with(|| unsafe {
+                Ok(::gl::DrawArrays(mode, first, count))
+            })
         })?)
     }
 }
@@ -155,7 +153,7 @@ impl Drop for Buffer {
     }
 }
 // ============================================================================
-impl TBind for Buffer {
+impl Bind for Buffer {
     // ========================================================================
     fn id(&self) -> GLuint {
         self.id

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2018/04/10
+//  @date 2018/04/12
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -15,7 +15,7 @@ use std::os::raw::c_void;
 use gl::types::*;
 // ----------------------------------------------------------------------------
 use super::super::error::Error;
-use super::{gl_result, GLError, TBind};
+use super::{gl_result, Bind, GLError};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// max_texture_size
@@ -124,52 +124,53 @@ impl Texture {
         pixels: *const c_void,
     ) {
         debug_assert_eq!(::gl::TEXTURE_2D, self.target);
-        let _binder = self.binder();
-        gl_result(|| -> Result<(), ()> {
-            unsafe {
-                ::gl::TexParameteri(
-                    ::gl::TEXTURE_2D,
-                    ::gl::TEXTURE_WRAP_S,
-                    wrap_s as GLint,
-                );
-                ::gl::TexParameteri(
-                    ::gl::TEXTURE_2D,
-                    ::gl::TEXTURE_WRAP_T,
-                    wrap_t as GLint,
-                );
-                ::gl::TexParameteri(
-                    ::gl::TEXTURE_2D,
-                    ::gl::TEXTURE_MAG_FILTER,
-                    filter_mag as GLint,
-                );
-                ::gl::TexParameteri(
-                    ::gl::TEXTURE_2D,
-                    ::gl::TEXTURE_MIN_FILTER,
-                    filter_min as GLint,
-                );
-                Ok(())
-            }
-        }).expect("Texture::tex_image_2d: TexParameteri");
-        gl_result(|| -> Result<(), ()> {
-            unsafe {
-                Ok(::gl::TexImage2D(
-                    self.target,
-                    0,
-                    self.format as GLint,
-                    width,
-                    height,
-                    0,
-                    self.format,
-                    self.type_,
-                    pixels,
-                ))
-            }
-        }).expect("Texture::tex_image_2d: TexImage2D");
-        if mipmap {
+        self.bind_with(|| {
             gl_result(|| -> Result<(), ()> {
-                unsafe { Ok(::gl::GenerateMipmap(::gl::TEXTURE_2D)) }
-            }).expect("Texture::tex_image_2d: GenerateMipmap");
-        }
+                unsafe {
+                    ::gl::TexParameteri(
+                        ::gl::TEXTURE_2D,
+                        ::gl::TEXTURE_WRAP_S,
+                        wrap_s as GLint,
+                    );
+                    ::gl::TexParameteri(
+                        ::gl::TEXTURE_2D,
+                        ::gl::TEXTURE_WRAP_T,
+                        wrap_t as GLint,
+                    );
+                    ::gl::TexParameteri(
+                        ::gl::TEXTURE_2D,
+                        ::gl::TEXTURE_MAG_FILTER,
+                        filter_mag as GLint,
+                    );
+                    ::gl::TexParameteri(
+                        ::gl::TEXTURE_2D,
+                        ::gl::TEXTURE_MIN_FILTER,
+                        filter_min as GLint,
+                    );
+                    Ok(())
+                }
+            }).expect("Texture::tex_image_2d: TexParameteri");
+            gl_result(|| -> Result<(), ()> {
+                unsafe {
+                    Ok(::gl::TexImage2D(
+                        self.target,
+                        0,
+                        self.format as GLint,
+                        width,
+                        height,
+                        0,
+                        self.format,
+                        self.type_,
+                        pixels,
+                    ))
+                }
+            }).expect("Texture::tex_image_2d: TexImage2D");
+            if mipmap {
+                gl_result(|| -> Result<(), ()> {
+                    unsafe { Ok(::gl::GenerateMipmap(::gl::TEXTURE_2D)) }
+                }).expect("Texture::tex_image_2d: GenerateMipmap");
+            }
+        })
     }
     // ========================================================================
     /// sub_image_2d
@@ -183,21 +184,22 @@ impl Texture {
         pixels: *const c_void,
     ) -> Result<(), GLError<(), ()>> {
         debug_assert_eq!(::gl::TEXTURE_2D, self.target);
-        let _binder = self.binder();
-        gl_result(|| -> Result<(), ()> {
-            unsafe {
-                Ok(::gl::TexSubImage2D(
-                    self.target,
-                    level,
-                    xoffset,
-                    yoffset,
-                    width,
-                    height,
-                    self.format,
-                    self.type_,
-                    pixels,
-                ))
-            }
+        self.bind_with(|| {
+            gl_result(|| -> Result<(), ()> {
+                unsafe {
+                    Ok(::gl::TexSubImage2D(
+                        self.target,
+                        level,
+                        xoffset,
+                        yoffset,
+                        width,
+                        height,
+                        self.format,
+                        self.type_,
+                        pixels,
+                    ))
+                }
+            })
         })
     }
 }
@@ -210,7 +212,7 @@ impl Drop for Texture {
     }
 }
 // ============================================================================
-impl TBind for Texture {
+impl Bind for Texture {
     // ========================================================================
     fn id(&self) -> GLuint {
         self.id
