@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/03/17
-//  @date 2017/03/17
+//  @date 2018/04/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -49,9 +49,6 @@ where
     // ========================================================================
     /// new
     pub fn new(start: Vector3<V>, end: Vector3<V>) -> Self {
-        Ray::<V> {
-            start: start,
-            end: end,
-        }
+        Ray::<V> { start, end }
     }
 }

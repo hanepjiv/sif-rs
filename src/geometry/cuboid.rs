@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/19
-//  @date 2017/03/17
+//  @date 2018/04/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -49,17 +49,14 @@ where
     // ========================================================================
     /// new
     pub fn new(center: Vector3<V>, radius: Vector3<V>) -> Self {
-        Cuboid {
-            center: center,
-            radius: radius,
-        }
+        Cuboid { center, radius }
     }
     // ========================================================================
     /// is_cube
     pub fn is_cube(&self) -> Option<V> {
-        if V::epsilon() < V::abs(self.radius[0] - self.radius[1]) {
-            None
-        } else if V::epsilon() < V::abs(self.radius[0] - self.radius[2]) {
+        if V::epsilon() < V::abs(self.radius[0] - self.radius[1])
+            || V::epsilon() < V::abs(self.radius[0] - self.radius[2])
+        {
             None
         } else {
             Some(self.radius[0])

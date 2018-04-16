@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/12
-//  @date 2017/03/17
+//  @date 2018/04/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -45,9 +45,6 @@ where
     // ========================================================================
     /// new
     pub fn new(center: Vector3<V>, radius: V) -> Self {
-        Sphere::<V> {
-            center: center,
-            radius: radius,
-        }
+        Sphere::<V> { center, radius }
     }
 }

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/12
-//  @date 2017/03/17
+//  @date 2018/04/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -48,10 +48,10 @@ where
 {
     // ========================================================================
     /// new
-    pub fn new(normal: Vector3<V>, distance: V) -> Self {
+    pub fn new(normal: &mut Vector3<V>, distance: V) -> Self {
         Plane {
             normal: *normal.clone().normalize(),
-            distance: distance,
+            distance,
         }
     }
     // ========================================================================
@@ -61,9 +61,8 @@ where
     }
     // ------------------------------------------------------------------------
     /// set_normal
-    pub fn set_normal(&mut self, src: Vector3<V>) -> &mut Self {
-        self.normal = src;
-        let _ = self.normal.normalize();
+    pub fn set_normal(&mut self, src: &mut Vector3<V>) -> &mut Self {
+        self.normal = *src.clone().normalize();
         self
     }
     // ========================================================================

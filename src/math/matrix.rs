@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2018/04/11
+//  @date 2018/04/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -214,7 +214,7 @@ macro_rules! matrix_define {
             // ================================================================
             /// cleanup
             pub fn cleanup(&mut self) -> &mut Self {
-                let mut c = Cleanup::new();
+                let mut c = Cleanup::default();
                 for i in 0..$n {
                     for j in 0..$vector::<V>::size() {
                         c.collect(self[i][j]);
