@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2018/04/12
+//  @date 2018/04/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -21,11 +21,11 @@ use super::{gl_result, Bind, GLError};
 /// max_texture_size
 pub fn max_texture_size() -> Result<GLint, GLError<GLint, ()>> {
     gl_result(|| -> Result<_, ()> {
+        let mut s: GLint = 0;
         unsafe {
-            let mut s: GLint = 0;
             ::gl::GetIntegerv(::gl::MAX_TEXTURE_SIZE, &mut s);
-            Ok(s)
         }
+        Ok(s)
     })
 }
 // ////////////////////////////////////////////////////////////////////////////
@@ -59,11 +59,11 @@ impl Texture {
         pixels: *const c_void,
     ) -> Result<Self, Error> {
         match gl_result(|| -> Result<GLuint, ()> {
+            let mut id = 0;
             unsafe {
-                let mut id = 0;
                 ::gl::GenTextures(1, &mut id);
-                Ok(id)
             }
+            Ok(id)
         }) {
             Err(_) => Err(Error::Sif(String::from("Texture::new_2d"))),
             Ok(id) => {
@@ -74,8 +74,14 @@ impl Texture {
                     type_,
                 };
                 texture.tex_image_2d(
-                    wrap_s, wrap_t, filter_mag, filter_min, mipmap, width,
-                    height, pixels,
+                    wrap_s,
+                    wrap_t,
+                    filter_mag,
+                    filter_min,
+                    mipmap,
+                    width,
+                    height,
+                    pixels,
                 );
                 Ok(texture)
             }
@@ -147,12 +153,12 @@ impl Texture {
                         ::gl::TEXTURE_MIN_FILTER,
                         filter_min as GLint,
                     );
-                    Ok(())
                 }
+                Ok(())
             }).expect("Texture::tex_image_2d: TexParameteri");
             gl_result(|| -> Result<(), ()> {
                 unsafe {
-                    Ok(::gl::TexImage2D(
+                    ::gl::TexImage2D(
                         self.target,
                         0,
                         self.format as GLint,
@@ -162,12 +168,16 @@ impl Texture {
                         self.format,
                         self.type_,
                         pixels,
-                    ))
+                    );
                 }
+                Ok(())
             }).expect("Texture::tex_image_2d: TexImage2D");
             if mipmap {
                 gl_result(|| -> Result<(), ()> {
-                    unsafe { Ok(::gl::GenerateMipmap(::gl::TEXTURE_2D)) }
+                    unsafe {
+                        ::gl::GenerateMipmap(::gl::TEXTURE_2D);
+                    }
+                    Ok(())
                 }).expect("Texture::tex_image_2d: GenerateMipmap");
             }
         })
@@ -187,7 +197,7 @@ impl Texture {
         self.bind_with(|| {
             gl_result(|| -> Result<(), ()> {
                 unsafe {
-                    Ok(::gl::TexSubImage2D(
+                    ::gl::TexSubImage2D(
                         self.target,
                         level,
                         xoffset,
@@ -197,8 +207,9 @@ impl Texture {
                         self.format,
                         self.type_,
                         pixels,
-                    ))
+                    );
                 }
+                Ok(())
             })
         })
     }
@@ -207,7 +218,10 @@ impl Texture {
 impl Drop for Texture {
     fn drop(&mut self) {
         gl_result(|| -> Result<(), ()> {
-            unsafe { Ok(::gl::DeleteTextures(1, &self.id)) }
+            unsafe {
+                ::gl::DeleteTextures(1, &self.id);
+            }
+            Ok(())
         }).expect("Texture::drop");
     }
 }
@@ -220,13 +234,19 @@ impl Bind for Texture {
     // ========================================================================
     fn bind(&self) {
         gl_result(|| -> Result<(), ()> {
-            unsafe { Ok(::gl::BindTexture(self.target, self.id)) }
+            unsafe {
+                ::gl::BindTexture(self.target, self.id);
+            }
+            Ok(())
         }).expect("Texture::bind");
     }
     // ========================================================================
     fn unbind(&self) {
         gl_result(|| -> Result<(), ()> {
-            unsafe { Ok(::gl::BindTexture(self.target, 0)) }
+            unsafe {
+                ::gl::BindTexture(self.target, 0);
+            }
+            Ok(())
         }).expect("Texture::unbind");
     }
 }

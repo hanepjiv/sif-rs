@@ -52,6 +52,10 @@ where
     // ========================================================================
     /// new
     pub fn new(start: Vector3<V>, end: Vector3<V>, radius: V) -> Self {
-        Capsule::<V> { start, end, radius }
+        Capsule::<V> {
+            start,
+            end,
+            radius,
+        }
     }
 }

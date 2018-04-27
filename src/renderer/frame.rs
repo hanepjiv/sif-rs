@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2018/04/12
+//  @date 2018/04/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -48,21 +48,22 @@ impl Frame {
         self.bind_with(|| {
             unwrap!(gl_result(|| -> Result<(), ()> {
                 unsafe {
-                    Ok(::gl::FramebufferTexture2D(
+                    ::gl::FramebufferTexture2D(
                         ::gl::FRAMEBUFFER,
                         attatchment,
                         textarget,
                         texture.id(),
                         0,
-                    ))
+                    )
                 }
+                Ok(())
             }));
             gl_result(|| -> Result<(), GLenum> {
-                unsafe {
-                    match ::gl::CheckFramebufferStatus(::gl::FRAMEBUFFER) {
-                        ::gl::FRAMEBUFFER_COMPLETE => Ok(()),
-                        x => Err(x),
-                    }
+                match unsafe {
+                    ::gl::CheckFramebufferStatus(::gl::FRAMEBUFFER)
+                } {
+                    ::gl::FRAMEBUFFER_COMPLETE => Ok(()),
+                    x => Err(x),
                 }
             })
         })
@@ -77,20 +78,21 @@ impl Frame {
         self.bind_with(|| {
             unwrap!(gl_result(|| -> Result<(), ()> {
                 unsafe {
-                    Ok(::gl::FramebufferRenderbuffer(
+                    ::gl::FramebufferRenderbuffer(
                         ::gl::FRAMEBUFFER,
                         attatchment,
                         ::gl::RENDERBUFFER,
                         renderbuffer.id(),
-                    ))
+                    )
                 }
+                Ok(())
             }));
             gl_result(|| -> Result<(), GLenum> {
-                unsafe {
-                    match ::gl::CheckFramebufferStatus(::gl::FRAMEBUFFER) {
-                        ::gl::FRAMEBUFFER_COMPLETE => Ok(()),
-                        x => Err(x),
-                    }
+                match unsafe {
+                    ::gl::CheckFramebufferStatus(::gl::FRAMEBUFFER)
+                } {
+                    ::gl::FRAMEBUFFER_COMPLETE => Ok(()),
+                    x => Err(x),
                 }
             })
         })
@@ -100,7 +102,10 @@ impl Frame {
 impl Drop for Frame {
     fn drop(&mut self) {
         gl_result(|| -> Result<(), ()> {
-            unsafe { Ok(::gl::DeleteFramebuffers(1, &self.id)) }
+            unsafe {
+                ::gl::DeleteFramebuffers(1, &self.id);
+            }
+            Ok(())
         }).expect("Frame::drop");
     }
 }
@@ -115,18 +120,19 @@ impl Bind for Frame {
     fn bind(&self) {
         gl_result(|| -> Result<(), ()> {
             unsafe {
-                Ok(::gl::BindFramebuffer(
-                    ::gl::FRAMEBUFFER,
-                    self.id,
-                ))
+                ::gl::BindFramebuffer(::gl::FRAMEBUFFER, self.id);
             }
+            Ok(())
         }).expect("Frame::bind");
     }
     // ========================================================================
     /// unbind
     fn unbind(&self) {
         gl_result(|| -> Result<(), ()> {
-            unsafe { Ok(::gl::BindFramebuffer(::gl::FRAMEBUFFER, 0)) }
+            unsafe {
+                ::gl::BindFramebuffer(::gl::FRAMEBUFFER, 0);
+            }
+            Ok(())
         }).expect("Frame::unbind");
     }
 }

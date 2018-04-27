@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2018/04/16
+//  @date 2018/04/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -68,8 +68,8 @@ macro_rules! vector_define {
             type Output = Self;
             fn add(self, rhs: V) -> Self::Output {
                 let mut inner = [V::default(); $n];
-                for i in 0..$n {
-                    inner[i] = self.0[i] + rhs;
+                for (i, v) in inner.iter_mut().enumerate() {
+                    *v = self.0[i] + rhs;
                 }
                 Self::from(inner)
             }
@@ -93,8 +93,8 @@ macro_rules! vector_define {
             type Output = Self;
             fn sub(self, rhs: V) -> Self::Output {
                 let mut inner = [V::default(); $n];
-                for i in 0..$n {
-                    inner[i] = self.0[i] - rhs;
+                for (i, v) in inner.iter_mut().enumerate() {
+                    *v = self.0[i] - rhs;
                 }
                 Self::from(inner)
             }
@@ -118,8 +118,8 @@ macro_rules! vector_define {
             type Output = Self;
             fn mul(self, rhs: V) -> Self::Output {
                 let mut inner = [V::default(); $n];
-                for i in 0..$n {
-                    inner[i] = self.0[i] * rhs;
+                for (i, v) in inner.iter_mut().enumerate() {
+                    *v = self.0[i] * rhs;
                 }
                 Self::from(inner)
             }
@@ -143,8 +143,8 @@ macro_rules! vector_define {
             type Output = Self;
             fn div(self, rhs: V) -> Self::Output {
                 let mut inner = [V::default(); $n];
-                for i in 0..$n {
-                    inner[i] = self.0[i] / rhs;
+                for (i, v) in inner.iter_mut().enumerate() {
+                    *v = self.0[i] / rhs;
                 }
                 Self::from(inner)
             }
@@ -168,8 +168,8 @@ macro_rules! vector_define {
             type Output = Self;
             fn add(self, rhs: Self) -> Self::Output {
                 let mut inner = [V::default(); $n];
-                for i in 0..$n {
-                    inner[i] = self.0[i] + rhs.0[i];
+                for (i, v) in inner.iter_mut().enumerate() {
+                    *v = self.0[i] + rhs.0[i];
                 }
                 Self::from(inner)
             }
@@ -193,8 +193,8 @@ macro_rules! vector_define {
             type Output = Self;
             fn sub(self, rhs: Self) -> Self::Output {
                 let mut inner = [V::default(); $n];
-                for i in 0..$n {
-                    inner[i] = self.0[i] - rhs.0[i];
+                for (i, v) in inner.iter_mut().enumerate() {
+                    *v = self.0[i] - rhs.0[i];
                 }
                 Self::from(inner)
             }
@@ -218,8 +218,8 @@ macro_rules! vector_define {
             type Output = Self;
             fn mul(self, rhs: Self) -> Self::Output {
                 let mut inner = [V::default(); $n];
-                for i in 0..$n {
-                    inner[i] = self.0[i] * rhs.0[i];
+                for (i, v) in inner.iter_mut().enumerate() {
+                    *v = self.0[i] * rhs.0[i];
                 }
                 Self::from(inner)
             }
@@ -243,8 +243,8 @@ macro_rules! vector_define {
             type Output = Self;
             fn div(self, rhs: Self) -> Self::Output {
                 let mut inner = [V::default(); $n];
-                for i in 0..$n {
-                    inner[i] = self.0[i] / rhs.0[i];
+                for (i, v) in inner.iter_mut().enumerate() {
+                    *v = self.0[i] / rhs.0[i];
                 }
                 Self::from(inner)
             }
@@ -280,10 +280,20 @@ macro_rules! vector_define {
             pub fn as_ptr(&self) -> *const V {
                 self.0.as_ptr()
             }
-            // ================================================================
+            // ----------------------------------------------------------------
             /// as_mut_ptr
             pub fn as_mut_ptr(&mut self) -> *mut V {
                 self.0.as_mut_ptr()
+            }
+            // ================================================================
+            /// iter
+            pub fn iter<'a>(&'a self) -> ::std::slice::Iter<'a, V> {
+                self.0.iter()
+            }
+            // ----------------------------------------------------------------
+            /// iter_mut
+            pub fn iter_mut<'a>(&'a mut self) -> ::std::slice::IterMut<'a, V> {
+                self.0.iter_mut()
             }
             // ================================================================
             /// cleanup

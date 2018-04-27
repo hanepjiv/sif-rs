@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2018/04/16
+//  @date 2018/04/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -157,10 +157,10 @@ macro_rules! matrix_define {
             type Output = Self;
             fn mul(self, rhs: $name<V>) -> Self::Output {
                 let mut r = Self::from_no_clean([$vector::<V>::default(); $n]);
-                for i in 0..$n {
-                    for j in 0..$vector::<V>::size() {
-                        for k in 0..$vector::<V>::size() {
-                            r[i][j] += self[k][j] * rhs[i][k];
+                for (i, vi) in r.iter_mut().enumerate() {
+                    for (j, vj) in vi.iter_mut().enumerate() {
+                        for (k, s) in self.iter().enumerate() {
+                            *vj += s[j] * rhs[i][k];
                         }
                     }
                 }
@@ -196,8 +196,8 @@ macro_rules! matrix_define {
             pub fn new_identity() -> Self {
                 debug_assert!($n == $vector::<V>::size());
                 let mut ret = Self::from_no_clean([$vector::default(); $n]);
-                for i in 0..$n {
-                    ret[i][i] = V::one();
+                for (i, v) in ret.iter_mut().enumerate() {
+                    (*v)[i] = V::one();
                 }
                 ret
             }
@@ -206,23 +206,33 @@ macro_rules! matrix_define {
             pub fn as_ptr(&self) -> *const V {
                 self.0[0].as_ptr()
             }
-            // ================================================================
+            // ----------------------------------------------------------------
             /// as_mut_ptr
             pub fn as_mut_ptr(&mut self) -> *mut V {
                 self.0[0].as_mut_ptr()
             }
             // ================================================================
+            /// iter
+            pub fn iter<'a>(&'a self) -> ::std::slice::Iter<'a, $vector<V>> {
+                self.0.iter()
+            }
+            // ----------------------------------------------------------------
+            /// iter_mut
+            pub fn iter_mut<'a>(&'a mut self) -> ::std::slice::IterMut<'a, $vector<V>> {
+                self.0.iter_mut()
+            }
+            // ================================================================
             /// cleanup
             pub fn cleanup(&mut self) -> &mut Self {
                 let mut c = Cleanup::default();
-                for i in 0..$n {
-                    for j in 0..$vector::<V>::size() {
-                        c.collect(self[i][j]);
+                for i in &self.0 {
+                    for j in i.iter() {
+                        c.collect(*j);
                     }
                 }
-                for i in 0..$n {
-                    for j in 0..$vector::<V>::size() {
-                        self[i][j] = c.check(self[i][j]);
+                for i in &mut self.0 {
+                    for j in i.iter_mut() {
+                        *j = c.check(*j);
                     }
                 }
                 self
@@ -245,10 +255,10 @@ macro_rules! matrix_define {
                 debug_assert!($n == $vector::<V>::size());
                 let mut d = o;
                 let mut max = self[o][o].abs();
-                for i in o + 1..$n {
-                    if max < self[i][o].abs() {
+                for (i, v) in self.0.iter().enumerate().skip(o + 1) {
+                    if max < v[o].abs() {
                         d = i;
-                        max = self[i][o].abs();
+                        max = v[o].abs();
                     }
                 }
                 d

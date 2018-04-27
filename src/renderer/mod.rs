@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/02/23
-//  @date 2018/04/12
+//  @date 2018/04/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -15,7 +15,7 @@ pub use self::buffer::Buffer;
 pub use self::frame::Frame;
 pub use self::program::Program;
 pub use self::render::Render;
-pub use self::result::{gl_result, info_log, GLError};
+pub use self::result::{gl_result, info_log, GLError, GLResult};
 pub use self::shader::{Shader, ShaderSrc};
 pub use self::texture::Texture;
 pub use super::Result;

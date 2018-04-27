@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2018/04/12
+//  @date 2018/04/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -31,11 +31,11 @@ impl Render {
         height: GLsizei,
     ) -> Result<Self, GLError<GLuint, ()>> {
         match gl_result(|| -> Result<GLuint, ()> {
+            let mut id = 0;
             unsafe {
-                let mut id = 0;
                 ::gl::GenRenderbuffers(1, &mut id);
-                Ok(id)
             }
+            Ok(id)
         }) {
             Err(e) => Err(e),
             Ok(id) => match gl_result(|| -> Result<GLuint, ()> {
@@ -48,8 +48,8 @@ impl Render {
                         height,
                     );
                     ::gl::BindRenderbuffer(::gl::RENDERBUFFER, 0);
-                    Ok(id)
                 }
+                Ok(id)
             }) {
                 Err(e) => Err(e),
                 Ok(id_) => Ok(Render { id: id_ }),
@@ -61,7 +61,10 @@ impl Render {
 impl Drop for Render {
     fn drop(&mut self) {
         gl_result(|| -> Result<(), ()> {
-            unsafe { Ok(::gl::DeleteRenderbuffers(1, &self.id)) }
+            unsafe {
+                ::gl::DeleteRenderbuffers(1, &self.id);
+            }
+            Ok(())
         }).expect("Render::drop");
     }
 }
@@ -76,18 +79,19 @@ impl Bind for Render {
     fn bind(&self) {
         gl_result(|| -> Result<(), ()> {
             unsafe {
-                Ok(::gl::BindRenderbuffer(
-                    ::gl::RENDERBUFFER,
-                    self.id,
-                ))
+                ::gl::BindRenderbuffer(::gl::RENDERBUFFER, self.id);
             }
+            Ok(())
         }).expect("Render::bind");
     }
     // ========================================================================
     /// unbind
     fn unbind(&self) {
         gl_result(|| -> Result<(), ()> {
-            unsafe { Ok(::gl::BindRenderbuffer(::gl::RENDERBUFFER, 0)) }
+            unsafe {
+                ::gl::BindRenderbuffer(::gl::RENDERBUFFER, 0);
+            }
+            Ok(())
         }).expect("Render::unbind");
     }
 }

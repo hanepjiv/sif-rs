@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2018/04/10
+//  @date 2018/04/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -14,6 +14,9 @@ use std::fmt::Debug;
 // ----------------------------------------------------------------------------
 use gl::types::*;
 // ////////////////////////////////////////////////////////////////////////////
+// ============================================================================
+/// type GLResult
+pub type GLResult<R, E> = Result<R, GLError<R, E>>;
 // ============================================================================
 /// enum GLError
 #[derive(Debug, Clone)]
@@ -65,23 +68,19 @@ where
 }
 // ============================================================================
 /// gl_result
-pub fn gl_result<R, E, F>(f: F) -> Result<R, GLError<R, E>>
+pub fn gl_result<R, E, F>(f: F) -> GLResult<R, E>
 where
     R: Debug,
     E: Debug,
     F: FnOnce() -> Result<R, E>,
 {
     let result = f();
-    // if cfg!(debug_assertions) {
     match unsafe { ::gl::GetError() } {
         ::gl::NO_ERROR => {
             result.map_err(|e| -> GLError<R, E> { GLError::Function(e) })
         }
         e => Err(GLError::GL(result, e)),
     }
-    //} else {
-    //    result.map_err(|e| -> GLError<R, E> { GLError::Function(e) })
-    //}
 }
 // ============================================================================
 /// get_iv

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2018/04/12
+//  @date 2018/04/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -14,7 +14,7 @@ use gl::types::*;
 use std::result::Result as StdResult;
 // ----------------------------------------------------------------------------
 use super::super::{Error, Result};
-use super::{gl_result, Bind};
+use super::{gl_result, Bind, GLResult};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Buffer
@@ -38,33 +38,32 @@ impl Buffer {
         usage: GLenum,
     ) -> Result<Self> {
         let result_id = gl_result(|| -> StdResult<GLuint, ()> {
+            let mut id = 0;
             unsafe {
-                let mut id = 0;
                 ::gl::GenBuffers(1, &mut id);
-                Ok(id)
             }
+            Ok(id)
         });
 
         let result_buffer = match result_id {
-            Err(_) => Err(Error::Sif(String::from(
-                "Buffer::new: ::gl::GenBuffers",
-            ))),
-            Ok(id) => Ok(Buffer {
-                id,
-                target,
-                usage,
-            }),
+            Err(_) => {
+                Err(Error::Sif(String::from("Buffer::new: ::gl::GenBuffers")))
+            }
+            Ok(id) => Ok(Buffer { id, target, usage }),
         };
 
         match result_buffer {
             Ok(buffer) => match gl_result(|| -> StdResult<(), ()> {
-                buffer.bind_with(|| unsafe {
-                    Ok(::gl::BufferData(
-                        target,
-                        size as GLsizeiptr,
-                        data,
-                        usage,
-                    ))
+                buffer.bind_with(|| {
+                    unsafe {
+                        ::gl::BufferData(
+                            target,
+                            size as GLsizeiptr,
+                            data,
+                            usage,
+                        )
+                    }
+                    Ok(())
                 })
             }) {
                 Ok(_) => Ok(buffer),
@@ -103,31 +102,46 @@ impl Buffer {
     }
     // ========================================================================
     /// sub_data
-    pub fn sub_data<T>(&self, offset: isize, size: usize, data: *const T) {
+    pub fn sub_data<T>(
+        &self,
+        offset: isize,
+        size: usize,
+        data: *const T,
+    ) -> GLResult<(), ()> {
         gl_result(|| -> StdResult<(), ()> {
-            self.bind_with(|| unsafe {
-                Ok(::gl::BufferSubData(
-                    self.target,
-                    offset as GLintptr,
-                    size as GLsizeiptr,
-                    data as *const GLvoid,
-                ))
+            self.bind_with(|| {
+                unsafe {
+                    ::gl::BufferSubData(
+                        self.target,
+                        offset as GLintptr,
+                        size as GLsizeiptr,
+                        data as *const GLvoid,
+                    )
+                }
+                Ok(())
             })
-        }).expect("Buffer::sub_data");
+        })
     }
     // ========================================================================
     /// draw_elements
-    pub fn draw_elements(&self, mode: GLenum, count: GLsizei) -> Result<()> {
-        Ok(gl_result(|| -> StdResult<(), ()> {
-            self.bind_with(|| unsafe {
-                Ok(::gl::DrawElements(
-                    mode,
-                    count,
-                    ::gl::UNSIGNED_INT,
-                    ::std::ptr::null(),
-                ))
+    pub fn draw_elements(
+        &self,
+        mode: GLenum,
+        count: GLsizei,
+    ) -> GLResult<(), ()> {
+        gl_result(|| -> StdResult<(), ()> {
+            self.bind_with(|| {
+                unsafe {
+                    ::gl::DrawElements(
+                        mode,
+                        count,
+                        ::gl::UNSIGNED_INT,
+                        ::std::ptr::null(),
+                    )
+                }
+                Ok(())
             })
-        })?)
+        })
     }
     // ========================================================================
     /// draw_arrays
@@ -136,19 +150,21 @@ impl Buffer {
         mode: GLenum,
         first: GLint,
         count: GLsizei,
-    ) -> Result<()> {
-        Ok(gl_result(|| -> StdResult<(), ()> {
-            self.bind_with(|| unsafe {
-                Ok(::gl::DrawArrays(mode, first, count))
+    ) -> GLResult<(), ()> {
+        gl_result(|| -> StdResult<(), ()> {
+            self.bind_with(|| {
+                unsafe { ::gl::DrawArrays(mode, first, count) }
+                Ok(())
             })
-        })?)
+        })
     }
 }
 // ============================================================================
 impl Drop for Buffer {
     fn drop(&mut self) {
         gl_result(|| -> StdResult<(), ()> {
-            unsafe { Ok(::gl::DeleteBuffers(1, &self.id)) }
+            unsafe { ::gl::DeleteBuffers(1, &self.id) }
+            Ok(())
         }).expect("Buffer::drop");
     }
 }
@@ -161,13 +177,15 @@ impl Bind for Buffer {
     // ========================================================================
     fn bind(&self) {
         gl_result(|| -> Result<()> {
-            unsafe { Ok(::gl::BindBuffer(self.target, self.id)) }
+            unsafe { ::gl::BindBuffer(self.target, self.id) }
+            Ok(())
         }).expect("Buffer::bind");
     }
     // ========================================================================
     fn unbind(&self) {
         gl_result(|| -> Result<()> {
-            unsafe { Ok(::gl::BindBuffer(self.target, 0)) }
+            unsafe { ::gl::BindBuffer(self.target, 0) }
+            Ok(())
         }).expect("Buffer::unbind");
     }
 }
