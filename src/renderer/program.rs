@@ -108,7 +108,10 @@ impl Program {
                         )
                     })
                 }).expect("Program::new: GetUniformLocation");
-                info!("Program::new: location: {:?} = {:?}", name, location);
+                info!(
+                    "Program::new: location: {:?} = {:?}",
+                    name, location
+                );
                 let _ = location_map.insert(name, location);
             }
         }

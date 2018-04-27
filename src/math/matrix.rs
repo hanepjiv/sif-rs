@@ -218,7 +218,9 @@ macro_rules! matrix_define {
             }
             // ----------------------------------------------------------------
             /// iter_mut
-            pub fn iter_mut<'a>(&'a mut self) -> ::std::slice::IterMut<'a, $vector<V>> {
+            pub fn iter_mut<'a>(
+                &'a mut self,
+            ) -> ::std::slice::IterMut<'a, $vector<V>> {
                 self.0.iter_mut()
             }
             // ================================================================
