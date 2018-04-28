@@ -20,5 +20,5 @@ num             = { default-features = false, version = "^0.1" }
 # -----------------------------------------------------------------------------
 [dependencies.image]
 #default-features = false
-version = "^0.18"
+version = "^0.19"
 features = ["png_codec"]
