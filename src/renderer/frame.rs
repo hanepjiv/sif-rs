@@ -6,11 +6,12 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2018/04/27
+//  @date 2018/05/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use gl::types::*;
+use std::result::Result as StdResult;
 // ----------------------------------------------------------------------------
 use super::{gl_result, Bind, GLError, Render, Texture};
 // ////////////////////////////////////////////////////////////////////////////
@@ -26,7 +27,7 @@ impl Frame {
     // ========================================================================
     /// new
     pub fn new() -> Self {
-        match gl_result(|| -> Result<GLuint, ()> {
+        match gl_result(|| -> StdResult<GLuint, ()> {
             let mut id = 0;
             unsafe {
                 ::gl::GenFramebuffers(1, &mut id);
@@ -44,9 +45,9 @@ impl Frame {
         attatchment: GLenum,
         textarget: GLenum,
         texture: &Texture,
-    ) -> Result<(), GLError<(), GLenum>> {
-        self.bind_with(|| {
-            unwrap!(gl_result(|| -> Result<(), ()> {
+    ) -> StdResult<(), GLError<(), GLenum>> {
+        self.bind_with(|| -> StdResult<(), GLError<(), GLenum>> {
+            gl_result(|| -> StdResult<(), GLenum> {
                 unsafe {
                     ::gl::FramebufferTexture2D(
                         ::gl::FRAMEBUFFER,
@@ -57,8 +58,8 @@ impl Frame {
                     )
                 }
                 Ok(())
-            }));
-            gl_result(|| -> Result<(), GLenum> {
+            })?;
+            gl_result(|| -> StdResult<(), GLenum> {
                 match unsafe {
                     ::gl::CheckFramebufferStatus(::gl::FRAMEBUFFER)
                 } {
@@ -74,9 +75,9 @@ impl Frame {
         &self,
         attatchment: GLenum,
         renderbuffer: &Render,
-    ) -> Result<(), GLError<(), GLenum>> {
+    ) -> StdResult<(), GLError<(), GLenum>> {
         self.bind_with(|| {
-            unwrap!(gl_result(|| -> Result<(), ()> {
+            gl_result(|| -> StdResult<(), GLenum> {
                 unsafe {
                     ::gl::FramebufferRenderbuffer(
                         ::gl::FRAMEBUFFER,
@@ -86,8 +87,8 @@ impl Frame {
                     )
                 }
                 Ok(())
-            }));
-            gl_result(|| -> Result<(), GLenum> {
+            })?;
+            gl_result(|| -> StdResult<(), GLenum> {
                 match unsafe {
                     ::gl::CheckFramebufferStatus(::gl::FRAMEBUFFER)
                 } {
@@ -101,7 +102,7 @@ impl Frame {
 // ============================================================================
 impl Drop for Frame {
     fn drop(&mut self) {
-        gl_result(|| -> Result<(), ()> {
+        gl_result(|| -> StdResult<(), ()> {
             unsafe {
                 ::gl::DeleteFramebuffers(1, &self.id);
             }
@@ -118,7 +119,7 @@ impl Bind for Frame {
     // ========================================================================
     /// bind
     fn bind(&self) {
-        gl_result(|| -> Result<(), ()> {
+        gl_result(|| -> StdResult<(), ()> {
             unsafe {
                 ::gl::BindFramebuffer(::gl::FRAMEBUFFER, self.id);
             }
@@ -128,7 +129,7 @@ impl Bind for Frame {
     // ========================================================================
     /// unbind
     fn unbind(&self) {
-        gl_result(|| -> Result<(), ()> {
+        gl_result(|| -> StdResult<(), ()> {
             unsafe {
                 ::gl::BindFramebuffer(::gl::FRAMEBUFFER, 0);
             }

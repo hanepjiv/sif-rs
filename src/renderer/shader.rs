@@ -6,14 +6,15 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2018/04/27
+//  @date 2018/05/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use gl::types::*;
 use std::ffi::CString;
+use std::result::Result as StdResult;
 // ----------------------------------------------------------------------------
-use super::{gl_result, info_log};
+use super::{gl_result, info_log, Result};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct ShderSrc
@@ -44,18 +45,18 @@ pub struct Shader {
 impl Shader {
     // ========================================================================
     /// new
-    pub fn new(src: &ShaderSrc) -> Result<Self, String> {
-        let id = gl_result(|| -> Result<GLuint, ()> {
+    pub fn new(src: &ShaderSrc) -> Result<Self> {
+        let id = gl_result(|| -> StdResult<GLuint, ()> {
             Ok(unsafe { ::gl::CreateShader(src.type_) })
-        }).expect("Shader::new: CreateShader");
+        })?;
 
         {
             let mut s = String::new();
             for i in &src.srcs {
                 s.push_str(i);
             }
-            let cs = unwrap!(CString::new(s));
-            gl_result(|| -> Result<(), ()> {
+            let cs = CString::new(s)?;
+            gl_result(|| -> StdResult<(), ()> {
                 unsafe {
                     ::gl::ShaderSource(
                         id,
@@ -65,18 +66,17 @@ impl Shader {
                     );
                 }
                 Ok(())
-            }).expect("Shader::new: ShaderSource");
+            })?;
         }
 
-        gl_result(|| -> Result<(), ()> {
+        gl_result(|| -> StdResult<(), ()> {
             unsafe {
                 ::gl::CompileShader(id);
             }
             Ok(())
-        }).expect("Shader::new: CompileShader");
+        })?;
 
-        info_log(::gl::SHADER, id, ::gl::COMPILE_STATUS)
-            .expect("Shader::new: info_log");
+        info_log(::gl::SHADER, id, ::gl::COMPILE_STATUS)?;
 
         Ok(Shader { id })
     }
@@ -89,7 +89,7 @@ impl Shader {
 // ============================================================================
 impl Drop for Shader {
     fn drop(&mut self) {
-        gl_result(|| -> Result<(), ()> {
+        gl_result(|| -> StdResult<(), ()> {
             unsafe {
                 ::gl::DeleteShader(self.id);
             }

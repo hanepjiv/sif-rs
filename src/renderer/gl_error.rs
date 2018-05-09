@@ -1,22 +1,25 @@
 // -*- mode:rust; coding:utf-8-unix; -*-
 
-//! result.rs
+//! gl_error.rs
 
 //  Copyright 2016 hanepjiv
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2018/04/27
+//  @date 2018/05/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use std::fmt::Debug;
+use std::result::Result as StdResult;
 // ----------------------------------------------------------------------------
 use gl::types::*;
+// ----------------------------------------------------------------------------
+use super::{Error, Result};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// type GLResult
-pub type GLResult<R, E> = Result<R, GLError<R, E>>;
+pub type GLResult<R, E> = StdResult<R, GLError<R, E>>;
 // ============================================================================
 /// enum GLError
 #[derive(Debug, Clone)]
@@ -28,7 +31,7 @@ where
     /// Function
     Function(E),
     /// GL
-    GL(Result<R, E>, GLenum),
+    GL(StdResult<R, E>, GLenum),
 }
 // ============================================================================
 impl<R, E> ::std::fmt::Display for GLError<R, E>
@@ -72,7 +75,7 @@ pub fn gl_result<R, E, F>(f: F) -> GLResult<R, E>
 where
     R: Debug,
     E: Debug,
-    F: FnOnce() -> Result<R, E>,
+    F: FnOnce() -> StdResult<R, E>,
 {
     let result = f();
     match unsafe { ::gl::GetError() } {
@@ -85,7 +88,7 @@ where
 // ============================================================================
 /// get_iv
 fn get_iv(type_: GLenum, id: GLuint, pname: GLenum) -> GLint {
-    gl_result(|| -> Result<GLint, ()> {
+    gl_result(|| -> StdResult<GLint, ()> {
         unsafe {
             let mut params = 0;
             match type_ {
@@ -95,59 +98,52 @@ fn get_iv(type_: GLenum, id: GLuint, pname: GLenum) -> GLint {
             }
             Ok(params)
         }
-    }).expect("result::get_iv")
+    }).expect("gl_result::get_iv")
 }
 // ============================================================================
 /// info_log
-pub fn info_log(
-    type_: GLenum,
-    id: GLuint,
-    state: GLenum,
-) -> Result<(), String> {
+pub fn info_log(type_: GLenum, id: GLuint, state: GLenum) -> Result<()> {
     match get_iv(type_, id, state) as GLboolean {
-        ::gl::FALSE => gl_result(|| -> Result<(), String> {
-            unsafe {
-                let loglen = get_iv(type_, id, ::gl::INFO_LOG_LENGTH);
-                if 0 >= loglen {
-                    return Err(String::from("0 >= loglen"));
-                }
-                let mut log = vec![0u8; loglen as usize];
-                let mut length = 0;
-                match type_ {
-                    ::gl::SHADER => ::gl::GetShaderInfoLog(
-                        id,
-                        loglen,
-                        &mut length,
-                        log.as_mut_ptr() as *mut i8,
-                    ),
-                    ::gl::PROGRAM => ::gl::GetProgramInfoLog(
-                        id,
-                        loglen,
-                        &mut length,
-                        log.as_mut_ptr() as *mut i8,
-                    ),
-                    _ => {
-                        return Err(String::from("invalid type_"));
+        ::gl::FALSE => {
+            gl_result(|| -> Result<()> {
+                unsafe {
+                    let loglen = get_iv(type_, id, ::gl::INFO_LOG_LENGTH);
+                    if 0 >= loglen {
+                        return Err(Error::Renderer("0 >= loglen".to_string()));
                     }
-                }
-                for i in &mut log {
-                    if *i > 128 {
-                        *i -= 128;
+                    let mut log = vec![0u8; loglen as usize];
+                    let mut length = 0;
+                    match type_ {
+                        ::gl::SHADER => ::gl::GetShaderInfoLog(
+                            id,
+                            loglen,
+                            &mut length,
+                            log.as_mut_ptr() as *mut i8,
+                        ),
+                        ::gl::PROGRAM => ::gl::GetProgramInfoLog(
+                            id,
+                            loglen,
+                            &mut length,
+                            log.as_mut_ptr() as *mut i8,
+                        ),
+                        _ => {
+                            return Err(Error::Renderer(
+                                "invalid type_".to_string(),
+                            ));
+                        }
                     }
+                    for i in &mut log {
+                        if *i > 128 {
+                            *i -= 128;
+                        }
+                    }
+                    let msg = ::std::str::from_utf8(log.as_slice())?;
+                    println!("{}", msg);
+                    Err(Error::Renderer(msg.to_string()))
                 }
-                let msg = ::std::str::from_utf8(log.as_slice())
-                    .expect("info_log: ::std::str::from_utf8");
-                println!("{}", msg);
-                Err(String::from(msg))
-            }
-        }).map_err(|e| -> String {
-            match e {
-                GLError::Function(msg) => msg,
-                GLError::GL(_, _) => {
-                    String::from("info_log: ::gl::Get*InfoLog")
-                }
-            }
-        }),
+            })?;
+            Ok(())
+        }
         _ => Ok(()),
     }
 }
