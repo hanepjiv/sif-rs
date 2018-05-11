@@ -6,12 +6,11 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2018/04/27
+//  @date 2018/05/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use std::collections::BTreeMap;
-
 // ----------------------------------------------------------------------------
 use gl::types::*;
 // ----------------------------------------------------------------------------
@@ -108,10 +107,7 @@ impl Program {
                         )
                     })
                 }).expect("Program::new: GetUniformLocation");
-                info!(
-                    "Program::new: location: {:?} = {:?}",
-                    name, location
-                );
+                info!("Program::new: location: {:?} = {:?}", name, location);
                 let _ = location_map.insert(name, location);
             }
         }
