@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "sif"
-version                 = "0.4.0"
+version                 = "0.4.1"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
 keywords                = ["subsystem", "game", "math", "graphics"]
@@ -25,19 +25,20 @@ members                 = [
                         ]
 # =============================================================================
 [dependencies]
-sif_error               = { default-features = false, path="./sif_error" }
-sif_graphics            = { default-features = false, path="./sif_graphics" }
-sif_math                = { default-features = false, path="./sif_math" }
-sif_manager             = { default-features = false, path="./sif_manager" }
-sif_nursery             = { default-features = false, path="./sif_nursery" }
-sif_renderer            = { default-features = false, path="./sif_renderer" }
-sif_three               = { default-features = false, path="./sif_three" }
+sif_error               = { default-features = false, path="sif_error" }
+sif_graphics            = { default-features = false, path="sif_graphics" }
+sif_math                = { default-features = false, path="sif_math" }
+sif_manager             = { default-features = false, path="sif_manager" }
+sif_nursery             = { default-features = false, path="sif_nursery" }
+sif_renderer            = { default-features = false, path="sif_renderer" }
+sif_three               = { default-features = false, path="sif_three" }
 # =============================================================================
 [replace]
-#"sif_error:0.1.0"      = { path="./sif_error" }
-#"sif_graphics:0.1.0"   = { path="./sif_graphics" }
-#"sif_manager:0.1.0"    = { path="./sif_manager" }
-#"sif_math:0.1.0"       = { path="./sif_math" }
-#"sif_nursery:0.1.0"    = { path="./sif_nursery" }
-#"sif_renderer:0.1.0"   = { path="./sif_renderer" }
-#"sif_three:0.1.0"      = { path="./sif_three" }
+#"sif:0.4.1"            = { default-features = false, path="./" }
+#"sif_error:0.1.0"      = { default-features = false, path="./sif_error" }
+#"sif_graphics:0.1.0"   = { default-features = false, path="./sif_graphics" }
+#"sif_manager:0.1.0"    = { default-features = false, path="./sif_manager" }
+#"sif_math:0.1.0"       = { default-features = false, path="./sif_math" }
+#"sif_nursery:0.1.0"    = { default-features = false, path="./sif_nursery" }
+#"sif_renderer:0.1.0"   = { default-features = false, path="./sif_renderer" }
+#"sif_three:0.1.0"      = { default-features = false, path="./sif_three" }

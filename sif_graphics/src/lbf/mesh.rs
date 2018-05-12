@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/02
-//  @date 2018/05/12
+//  @date 2018/05/13
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -74,44 +74,27 @@ impl Mesh {
             )));
         }
 
-        let coo = coord.into();
-        let bon = bone.into();
-        let wei = weight.into();
-        let pol = polygons.into();
+        fn vec_opt<T>(vec: Vec<T>) -> Option<Vec<T>> {
+            if vec.is_empty() {
+                None
+            } else {
+                Some(vec)
+            }
+        }
+
+        fn into_opt<T>(vs: impl Into<Vec<T>>) -> Option<Vec<T>> {
+            vec_opt(vs.into())
+        }
 
         Ok(Mesh {
             uuid,
             name: name.into(),
-            position: if pos.is_empty() {
-                None
-            } else {
-                Some(pos)
-            },
-            normal: if nor.is_empty() {
-                None
-            } else {
-                Some(nor)
-            },
-            coord: if coo.is_empty() {
-                None
-            } else {
-                Some(coo)
-            },
-            bone: if bon.is_empty() {
-                None
-            } else {
-                Some(bon)
-            },
-            weight: if wei.is_empty() {
-                None
-            } else {
-                Some(wei)
-            },
-            polygones: if pol.is_empty() {
-                None
-            } else {
-                Some(pol)
-            },
+            position: vec_opt(pos),
+            normal: vec_opt(nor),
+            coord: into_opt(coord),
+            bone: into_opt(bone),
+            weight: into_opt(weight),
+            polygones: into_opt(polygons),
             flags: Flags::DIRTY,
         })
     }
