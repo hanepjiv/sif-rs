@@ -1,0 +1,16 @@
+# -*- mode:toml; coding:utf-8-unix; -*-
+# =============================================================================
+[package]
+name                    = "sif_error"
+version                 = "0.1.0"
+authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
+license                 = "MIT/Apache-2.0"
+keywords                = ["subsystem", "game", "math", "graphics"]
+description             = "Game libraries"
+readme                  = "README.md"
+documentation           = "https://github.com/hanepjiv/sif-rs/wiki"
+homepage                = "https://github.com/hanepjiv/sif-rs"
+repository              = "https://github.com/hanepjiv/sif-rs.git"
+publish                 = false
+# =============================================================================
+[dependencies]

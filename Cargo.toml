@@ -1,24 +1,22 @@
 # -*- mode:toml; coding:utf-8-unix; -*-
 # =============================================================================
-[package]
-name            = "sif"
-version         = "0.3.0"
-authors         = ["hanepjiv <hanepjiv@gmail.com>"]
-license         = "MIT/Apache-2.0"
-keywords        = ["subsystem", "game", "math", "graphics"]
-description     = "Game libraries"
-readme          = "README.md"
-documentation   = "https://github.com/hanepjiv/sif-rs/wiki"
-homepage        = "https://github.com/hanepjiv/sif-rs"
-repository      = "https://github.com/hanepjiv/sif-rs.git"
-publish         = false
+[workspace]
+members                         = [
+                                "sif",
+                                "sif_error",
+                                "sif_graphics",
+                                "sif_manager",
+                                "sif_math",
+                                "sif_nursery",
+                                "sif_renderer",
+                                "sif_three",
+                                ]
 # =============================================================================
-[dependencies]
-gl              = { default-features = false, version = "^0.10" }
-log             = { default-features = false, version = "^0.4" }
-num             = { default-features = false, version = "^0.1" }
-# -----------------------------------------------------------------------------
-[dependencies.image]
-#default-features = false
-version = "^0.19"
-features = ["png_codec"]
+[replace]
+#"sif_error:0.1.0"               = { path="./sif_error" }
+#"sif_graphics:0.1.0"            = { path="./sif_graphics" }
+#"sif_manager:0.1.0"             = { path="./sif_manager" }
+#"sif_math:0.1.0"                = { path="./sif_math" }
+#"sif_nursery:0.1.0"             = { path="./sif_nursery" }
+#"sif_renderer:0.1.0"            = { path="./sif_renderer" }
+#"sif_three:0.1.0"               = { path="./sif_three" }

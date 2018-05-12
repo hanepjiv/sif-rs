@@ -1,0 +1,44 @@
+# -*- mode:toml; coding:utf-8-unix; -*-
+# =============================================================================
+[package]
+name                    = "sif_graphics"
+version                 = "0.1.0"
+authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
+license                 = "MIT/Apache-2.0"
+keywords                = ["subsystem", "game", "math", "graphics"]
+description             = "Game libraries"
+readme                  = "README.md"
+documentation           = "https://github.com/hanepjiv/sif-rs/wiki"
+homepage                = "https://github.com/hanepjiv/sif-rs"
+repository              = "https://github.com/hanepjiv/sif-rs.git"
+publish                 = false
+# =============================================================================
+[dependencies]
+bitflags                = { default-features = false, version = "^1.0" }
+gl                      = { default-features = false, version = "^0.10" }
+log                     = { default-features = false, version = "^0.4" }
+#lua                     = { default-features = false, git = "https://github.com/jcmoyer/rust-lua53.git" }
+#lua                     = { default-features = false, path = "../../lua/orig" }
+lua                     = { default-features = false, version = "^0.0" }
+num                     = { default-features = false, version = "^0.1" }
+# -----------------------------------------------------------------------------
+sif_error               = { default-features = false, path="../sif_error" }
+sif_manager             = { default-features = false, path="../sif_manager" }
+sif_math                = { default-features = false, path="../sif_math" }
+sif_renderer            = { default-features = false, path="../sif_renderer" }
+sif_three               = { default-features = false, path="../sif_three" }
+# -----------------------------------------------------------------------------
+[dependencies.rand]
+default-features        = false
+version                 = "^0.4"
+features                = ["std"]
+# -----------------------------------------------------------------------------
+[dependencies.sdl2]
+default-features        = false
+version                 = "^0.31"
+features                = ["ttf", "mixer"]
+# -----------------------------------------------------------------------------
+[dependencies.uuid]
+default-features        = false
+version                 = "^0.6"
+features                = ["v4"]
