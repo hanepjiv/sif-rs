@@ -17,7 +17,7 @@ use sif_math::Matrix4x4;
 use sif_renderer::{gl_result, Bind, Program, ShaderSrc, Texture};
 use sif_three::NodeHolder;
 // ----------------------------------------------------------------------------
-use super::{Result, Screen, super::Object};
+use super::{super::Object, Result, Screen};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 const VERSION: &str = r##"#version 100

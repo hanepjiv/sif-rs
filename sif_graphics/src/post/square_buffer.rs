@@ -73,9 +73,7 @@ impl SquareBuffer {
     pub fn new() -> Result<Self> {
         Ok(SquareBuffer {
             vertices: Buffer::new_vertices(
-                &[
-                    0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0
-                ],
+                &[0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0],
                 ::gl::STATIC_DRAW,
             )?,
         })
@@ -96,8 +94,7 @@ impl SquareBuffer {
     // ========================================================================
     /// draw
     pub fn draw(&self) -> Result<&Self> {
-        self.vertices
-            .draw_arrays(::gl::TRIANGLES, 0, 6)?;
+        self.vertices.draw_arrays(::gl::TRIANGLES, 0, 6)?;
         Ok(self)
     }
 }

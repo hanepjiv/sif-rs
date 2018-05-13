@@ -70,13 +70,7 @@ impl Texture {
             type_,
         };
         texture.tex_image_2d(
-            wrap_s,
-            wrap_t,
-            filter_mag,
-            filter_min,
-            mipmap,
-            width,
-            height,
+            wrap_s, wrap_t, filter_mag, filter_min, mipmap, width, height,
             pixels,
         );
         Ok(texture)

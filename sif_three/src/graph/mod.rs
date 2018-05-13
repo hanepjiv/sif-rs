@@ -19,8 +19,9 @@ use sif_math::Number;
 // ----------------------------------------------------------------------------
 use super::{Error, Result};
 // ----------------------------------------------------------------------------
-pub use self::node::{AsNodeHolder, Flags as NodeFlags, Node, NodeHolder,
-                     NodeHolderField};
+pub use self::node::{
+    AsNodeHolder, Flags as NodeFlags, Node, NodeHolder, NodeHolderField,
+};
 // mod  =======================================================================
 #[macro_use]
 mod node;
@@ -85,11 +86,7 @@ where
                 ))
             })?
             .clone();
-        Ok(Graph {
-            uuid,
-            nodes,
-            root,
-        })
+        Ok(Graph { uuid, nodes, root })
     }
     // ========================================================================
     /// root

@@ -17,7 +17,7 @@ use sif_manager::ManagedValue;
 use sif_math::Vector3;
 use sif_renderer::{Bind, Program, Texture};
 // ----------------------------------------------------------------------------
-use super::{Object, Result, Shadow, post::DepthMapParam};
+use super::{post::DepthMapParam, Object, Result, Shadow};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// Flags

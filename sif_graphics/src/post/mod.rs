@@ -12,9 +12,11 @@
 // use  =======================================================================
 use super::Result;
 // ----------------------------------------------------------------------------
-pub use self::{depth_map::{DepthMap, DepthMapParam},
-               effect::{Blur, Effect, EffectArgs, Pass}, screen::Screen,
-               square_buffer::SquareBuffer};
+pub use self::{
+    depth_map::{DepthMap, DepthMapParam},
+    effect::{Blur, Effect, EffectArgs, Pass}, screen::Screen,
+    square_buffer::SquareBuffer,
+};
 // mod  =======================================================================
 mod depth_map;
 mod effect;

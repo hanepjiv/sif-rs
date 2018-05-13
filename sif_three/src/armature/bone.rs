@@ -44,10 +44,6 @@ where
     // ------------------------------------------------------------------------
     /// inverse_offset_matrix
     pub fn inverse_offset_matrix(&self) -> Matrix4x4<V> {
-        new_mat4_tra::<V>(
-            -self.offset[0],
-            -self.offset[1],
-            -self.offset[2],
-        )
+        new_mat4_tra::<V>(-self.offset[0], -self.offset[1], -self.offset[2])
     }
 }

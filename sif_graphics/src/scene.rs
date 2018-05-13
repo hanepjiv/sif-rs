@@ -19,8 +19,10 @@ use uuid::Uuid;
 use sif_manager::{ManagedValue, Manager};
 use sif_three::{Armature, Graph, Node, NodeHolder, Pose, TraRotSca};
 // ----------------------------------------------------------------------------
-use super::{lbf, Camera, Error, Image, Light, LightSrc, Material, Mesh,
-            Model, Object, ObjectData, ObjectSrc, Result, Texture, lbf::LBF};
+use super::{
+    lbf, lbf::LBF, Camera, Error, Image, Light, LightSrc, Material, Mesh,
+    Model, Object, ObjectData, ObjectSrc, Result, Texture,
+};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Scene
@@ -194,8 +196,8 @@ impl Scene {
                         k,
                         k.as_bytes()
                     );
-                    let _ = self.lights
-                        .insert(Light::from_src(v, texture_size)?)?;
+                    let _ =
+                        self.lights.insert(Light::from_src(v, texture_size)?)?;
                 }
             }
         }

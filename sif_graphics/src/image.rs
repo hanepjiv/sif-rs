@@ -48,12 +48,7 @@ impl Image {
         dimension: u8,
         method: ImageProcedualMethod,
     ) -> Self {
-        Image::Procedual(ImageProcedual::new(
-            uuid,
-            name,
-            dimension,
-            method,
-        ))
+        Image::Procedual(ImageProcedual::new(uuid, name, dimension, method))
     }
 }
 // ============================================================================

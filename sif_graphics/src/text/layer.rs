@@ -19,7 +19,9 @@ use sif_manager::ManagedValue;
 use sif_math::Matrix4x4;
 use sif_three::{new_mat4_tra, new_mat4_trarotsca};
 // ----------------------------------------------------------------------------
-use super::{Font, Metal, TFontReserve, super::{Error, Result}};
+use super::{
+    super::{Error, Result}, Font, Metal, TFontReserve,
+};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// trait TLayerAppend

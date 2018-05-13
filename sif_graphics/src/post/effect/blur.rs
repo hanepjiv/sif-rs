@@ -15,8 +15,10 @@ use num::Float;
 // ----------------------------------------------------------------------------
 use sif_renderer::{gl_result, Bind, Frame, Program, ShaderSrc, Texture};
 // ----------------------------------------------------------------------------
-use super::{Effect, EffectArgs, Result,
-            super::square_buffer::{SquareBuffer, UNIFORM, VERSION, VERTEX}};
+use super::{
+    super::square_buffer::{SquareBuffer, UNIFORM, VERSION, VERTEX}, Effect,
+    EffectArgs, Result,
+};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 const FRAGMENT: &str = r##"
@@ -85,11 +87,7 @@ impl Blur {
             height,
             ::std::ptr::null(),
         )?;
-        frame.attach_2d(
-            ::gl::COLOR_ATTACHMENT0,
-            ::gl::TEXTURE_2D,
-            &color0,
-        )?;
+        frame.attach_2d(::gl::COLOR_ATTACHMENT0, ::gl::TEXTURE_2D, &color0)?;
         let mut gaussian = vec![0.0; LIMIT_DISTANCE as usize];
         {
             let sigma = 5.0;

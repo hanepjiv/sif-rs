@@ -17,7 +17,7 @@ use uuid::Uuid;
 use sif_manager::{ManagedValue, ManagedWeak};
 use sif_math::{Matrix4x4, Number};
 // ----------------------------------------------------------------------------
-use super::super::{Error, Result, trarotsca::TraRotSca};
+use super::super::{trarotsca::TraRotSca, Error, Result};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// Flags

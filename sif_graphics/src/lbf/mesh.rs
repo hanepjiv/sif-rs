@@ -13,8 +13,9 @@
 use gl::types::*;
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
-use super::{Error, Result, polygon::Polygon,
-            super::{Element, Offsets, ELEMENT_SIZE}};
+use super::{
+    super::{Element, Offsets, ELEMENT_SIZE}, polygon::Polygon, Error, Result,
+};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// Flags

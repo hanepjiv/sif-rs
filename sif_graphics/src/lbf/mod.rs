@@ -10,20 +10,25 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::{any::TypeId, collections::BTreeMap, fmt::Debug, fs::File,
-          hash::Hash, io::Read, path::{Path, PathBuf}};
+use std::{
+    any::TypeId, collections::BTreeMap, fmt::Debug, fs::File, hash::Hash,
+    io::Read, path::{Path, PathBuf},
+};
 // ----------------------------------------------------------------------------
 use gl::types::*;
-use lua::{State as LuaState, ffi::lua_Integer};
+use lua::{ffi::lua_Integer, State as LuaState};
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
 use sif_math::{Number, Quaternion, Vector3, Vector4};
 use sif_three::{Armature, Bone, TraRotSca};
 // ----------------------------------------------------------------------------
-use super::{light, Camera, Image, LightSrc, Material, Model, ObjectSrc,
-            Texture};
+use super::{
+    light, Camera, Image, LightSrc, Material, Model, ObjectSrc, Texture,
+};
 // ============================================================================
-pub use self::{error::{Error, Result}, mesh::Mesh, polygon::Polygon};
+pub use self::{
+    error::{Error, Result}, mesh::Mesh, polygon::Polygon,
+};
 // mod  =======================================================================
 pub mod error;
 pub mod mesh;
@@ -83,15 +88,12 @@ impl LuaType for u8 {
         ::lua::Type::Number == t
     }
     fn from_lua(state: &mut LuaState, idx: ::lua::Index) -> Result<Self> {
-        state
-            .to_integerx(idx)
-            .map(|x| x as u8)
-            .ok_or_else(|| {
-                Error::Type(format!(
-                    "<{:?} as LuaType>::from_lua",
-                    TypeId::of::<Self>()
-                ))
-            })
+        state.to_integerx(idx).map(|x| x as u8).ok_or_else(|| {
+            Error::Type(format!(
+                "<{:?} as LuaType>::from_lua",
+                TypeId::of::<Self>()
+            ))
+        })
     }
 }
 // ----------------------------------------------------------------------------
@@ -100,15 +102,12 @@ impl LuaType for u32 {
         ::lua::Type::Number == t
     }
     fn from_lua(state: &mut LuaState, idx: ::lua::Index) -> Result<Self> {
-        state
-            .to_integerx(idx)
-            .map(|x| x as u32)
-            .ok_or_else(|| {
-                Error::Type(format!(
-                    "<{:?} as LuaType>::from_lua",
-                    TypeId::of::<Self>()
-                ))
-            })
+        state.to_integerx(idx).map(|x| x as u32).ok_or_else(|| {
+            Error::Type(format!(
+                "<{:?} as LuaType>::from_lua",
+                TypeId::of::<Self>()
+            ))
+        })
     }
 }
 // ----------------------------------------------------------------------------
@@ -117,15 +116,12 @@ impl LuaType for usize {
         ::lua::Type::Number == t
     }
     fn from_lua(state: &mut LuaState, idx: ::lua::Index) -> Result<Self> {
-        state
-            .to_integerx(idx)
-            .map(|x| x as usize)
-            .ok_or_else(|| {
-                Error::Type(format!(
-                    "<{:?} as LuaType>::from_lua",
-                    TypeId::of::<Self>()
-                ))
-            })
+        state.to_integerx(idx).map(|x| x as usize).ok_or_else(|| {
+            Error::Type(format!(
+                "<{:?} as LuaType>::from_lua",
+                TypeId::of::<Self>()
+            ))
+        })
     }
 }
 // ----------------------------------------------------------------------------
@@ -134,15 +130,12 @@ impl LuaType for isize {
         ::lua::Type::Number == t
     }
     fn from_lua(state: &mut LuaState, idx: ::lua::Index) -> Result<Self> {
-        state
-            .to_integerx(idx)
-            .map(|x| x as isize)
-            .ok_or_else(|| {
-                Error::Type(format!(
-                    "<{:?} as LuaType>::from_lua",
-                    TypeId::of::<Self>()
-                ))
-            })
+        state.to_integerx(idx).map(|x| x as isize).ok_or_else(|| {
+            Error::Type(format!(
+                "<{:?} as LuaType>::from_lua",
+                TypeId::of::<Self>()
+            ))
+        })
     }
 }
 // ----------------------------------------------------------------------------
@@ -165,15 +158,12 @@ impl LuaType for GLfloat {
         ::lua::Type::Number == t
     }
     fn from_lua(state: &mut LuaState, idx: ::lua::Index) -> Result<Self> {
-        state
-            .to_numberx(idx)
-            .map(|x| x as GLfloat)
-            .ok_or_else(|| {
-                Error::Type(format!(
-                    "<{:?} as LuaType>::from_lua",
-                    TypeId::of::<Self>()
-                ))
-            })
+        state.to_numberx(idx).map(|x| x as GLfloat).ok_or_else(|| {
+            Error::Type(format!(
+                "<{:?} as LuaType>::from_lua",
+                TypeId::of::<Self>()
+            ))
+        })
     }
 }
 // ----------------------------------------------------------------------------
@@ -345,15 +335,12 @@ impl LuaType for String {
         ::lua::Type::String == t
     }
     fn from_lua(state: &mut LuaState, idx: ::lua::Index) -> Result<Self> {
-        state
-            .to_str_in_place(idx)
-            .map(String::from)
-            .ok_or_else(|| {
-                Error::Type(format!(
-                    "<{:?} as LuaType>::from_lua",
-                    TypeId::of::<Self>()
-                ))
-            })
+        state.to_str_in_place(idx).map(String::from).ok_or_else(|| {
+            Error::Type(format!(
+                "<{:?} as LuaType>::from_lua",
+                TypeId::of::<Self>()
+            ))
+        })
     }
 }
 // ----------------------------------------------------------------------------
@@ -458,14 +445,7 @@ impl LuaType for Texture {
         let mipmap = state.idxtbl::<bool, _>(idx, "mipmap")?;
 
         Ok(Texture::new(
-            uuid,
-            name,
-            wrap_s,
-            wrap_t,
-            filter_mag,
-            filter_min,
-            mipmap,
-            image,
+            uuid, name, wrap_s, wrap_t, filter_mag, filter_min, mipmap, image,
         ))
     }
 }
@@ -487,9 +467,8 @@ impl LuaType for Material {
         m.emissive.intensity = state.idxtbl(idx, "emissive.intensity")?;
         m.shininess = state.idxtbl(idx, "shininess")?;
         m.alpha = state.idxtbl(idx, "alpha")?;
-        m.parallax.height = state
-            .idxtbl(idx, "parallax.height")
-            .unwrap_or(0.025);
+        m.parallax.height =
+            state.idxtbl(idx, "parallax.height").unwrap_or(0.025);
         if let Ok(textures) = state.idxtbl(idx, "textures") {
             m.textures = Some(Err(textures));
         }
@@ -536,9 +515,7 @@ impl LuaType for Polygon {
         state.pop(1); // next
 
         let material = if !state.next(idx - 1) {
-            return Err(Error::Type(
-                "Polygon: material_index".to_string(),
-            ));
+            return Err(Error::Type("Polygon: material_index".to_string()));
         } else {
             isize::from_lua(state, -1)
         };
@@ -560,11 +537,7 @@ impl LuaType for Polygon {
             polygon::Flags::from_bits(bits).ok_or_else(|| {
                 Error::Type(format!("Polygon: flags from_bits({})", bits))
             })?,
-            if -1 < midx {
-                Some(midx as usize)
-            } else {
-                None
-            },
+            if -1 < midx { Some(midx as usize) } else { None },
             &(indices?)[..],
         )
     }
@@ -615,14 +588,7 @@ where
         let o = offset?;
         let p = parent?;
 
-        Ok(Bone::new(
-            o,
-            if 0 > p {
-                None
-            } else {
-                Some(p as usize)
-            },
-        ))
+        Ok(Bone::new(o, if 0 > p { None } else { Some(p as usize) }))
     }
 }
 // ----------------------------------------------------------------------------
@@ -665,10 +631,7 @@ impl LuaType for LightSrc {
                 light.cutoff = state.idxtbl::<GLfloat, _>(idx, "cutoff")?;
             }
         }
-        if state
-            .idxtbl::<bool, _>(idx, "shadow")
-            .unwrap_or(false)
-        {
+        if state.idxtbl::<bool, _>(idx, "shadow").unwrap_or(false) {
             light.flags.insert(light::Flags::SHADOW);
         }
         Ok(light)
@@ -701,14 +664,7 @@ impl LuaType for Camera {
             "ORTHO" => {
                 let width = state.idxtbl::<GLfloat, _>(idx, "width")?;
                 let height = state.idxtbl::<GLfloat, _>(idx, "height")?;
-                Ok(Camera::new_ortho(
-                    uuid,
-                    name,
-                    near,
-                    far,
-                    width,
-                    height,
-                ))
+                Ok(Camera::new_ortho(uuid, name, near, far, width, height))
             }
             _ => Err(Error::Type(format!(
                 "<{:?} as LuaType>::from_lua: invalid camera_type",
@@ -951,13 +907,9 @@ impl LBF {
                 current,
                 images,
                 textures: state.idxtbl(-1, "textures").unwrap_or_default(),
-                materials: state
-                    .idxtbl(-1, "materials")
-                    .unwrap_or_default(),
+                materials: state.idxtbl(-1, "materials").unwrap_or_default(),
                 meshes: state.idxtbl(-1, "meshes").unwrap_or_default(),
-                armatures: state
-                    .idxtbl(-1, "armatures")
-                    .unwrap_or_default(),
+                armatures: state.idxtbl(-1, "armatures").unwrap_or_default(),
                 models: state.idxtbl(-1, "models").unwrap_or_default(),
                 lights: state.idxtbl(-1, "lights").unwrap_or_default(),
                 cameras: state.idxtbl(-1, "cameras").unwrap_or_default(),

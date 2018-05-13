@@ -15,7 +15,9 @@ use gl::types::*;
 use sif_manager::ManagedValue;
 use sif_renderer::{Bind, Program, Texture};
 // ----------------------------------------------------------------------------
-use super::{Object, Result, post::{DepthMap, DepthMapParam}};
+use super::{
+    post::{DepthMap, DepthMapParam}, Object, Result,
+};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Shadow
@@ -71,8 +73,7 @@ impl Shadow {
         depth_map_program: &Program,
         managed_obj: &ManagedValue<Object>,
     ) -> Result<&Self> {
-        let _ = self.map
-            .emit(depth_map_program, &self.param, managed_obj)?;
+        let _ = self.map.emit(depth_map_program, &self.param, managed_obj)?;
         Ok(self)
     }
 }

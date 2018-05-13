@@ -12,8 +12,9 @@
 // const  =====================================================================
 const PADDING: GLsizei = 3;
 // use  =======================================================================
-use std::{borrow::Borrow, collections::BTreeMap, fmt::{Debug, Formatter},
-          hash::Hash};
+use std::{
+    borrow::Borrow, collections::BTreeMap, fmt::{Debug, Formatter}, hash::Hash,
+};
 // ----------------------------------------------------------------------------
 use gl::types::*;
 use uuid::Uuid;
@@ -22,7 +23,9 @@ use sif_math::Matrix4x4;
 use sif_renderer::Texture;
 use sif_three::new_mat4_tra;
 // ----------------------------------------------------------------------------
-use super::{Metal, glyph::Glyph, super::{Error, Result}};
+use super::{
+    super::{Error, Result}, glyph::Glyph, Metal,
+};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// trait TFontReserve
@@ -73,11 +76,7 @@ pub struct Font<'a, 'b> {
 // ============================================================================
 impl<'a, 'b> Debug for Font<'a, 'b> {
     fn fmt(&self, f: &mut Formatter) -> ::std::fmt::Result {
-        write!(
-            f,
-            "graphics::text::Font{{ uuid: {:?}, .. }}",
-            self.uuid
-        )
+        write!(f, "graphics::text::Font{{ uuid: {:?}, .. }}", self.uuid)
     }
 }
 // ============================================================================
@@ -196,9 +195,9 @@ impl<'a, 'b> Font<'a, 'b> {
         while let Some(ref c) = self.added.pop() {
             let mut s = String::new();
             s.push(*c);
-            let surface = self.ttf_font.render(&s).blended(
-                ::sdl2::pixels::Color::RGBA(0xFF, 0xFF, 0xFF, 0xFF),
-            )?;
+            let surface = self.ttf_font
+                .render(&s)
+                .blended(::sdl2::pixels::Color::RGBA(0xFF, 0xFF, 0xFF, 0xFF))?;
             let rect = surface.rect();
 
             if self.width < (self.cursor.0 + rect.width() as GLsizei + PADDING)
@@ -236,9 +235,8 @@ impl<'a, 'b> Font<'a, 'b> {
 
             {
                 // glyph
-                let metrics = self.ttf_font
-                    .find_glyph_metrics(*c)
-                    .ok_or_else(|| {
+                let metrics =
+                    self.ttf_font.find_glyph_metrics(*c).ok_or_else(|| {
                         Error::OptNone(
                             "graphics::text::font::update: find_glyph_metrics"
                                 .to_string(),

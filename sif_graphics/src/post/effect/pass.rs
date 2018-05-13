@@ -16,8 +16,10 @@ use gl::types::*;
 // ----------------------------------------------------------------------------
 use sif_renderer::{gl_result, Bind, Frame, Program, ShaderSrc, Texture};
 // ----------------------------------------------------------------------------
-use super::{Effect, EffectArgs, Result,
-            super::square_buffer::{SquareBuffer, UNIFORM, VERSION, VERTEX}};
+use super::{
+    super::square_buffer::{SquareBuffer, UNIFORM, VERSION, VERTEX}, Effect,
+    EffectArgs, Result,
+};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 const FRAGMENT: &str = r##"

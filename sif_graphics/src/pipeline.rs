@@ -10,8 +10,10 @@
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::{borrow::Borrow, cell::RefCell, f32::consts::PI, hash::Hash,
-          os::raw::c_void};
+use std::{
+    borrow::Borrow, cell::RefCell, f32::consts::PI, hash::Hash,
+    os::raw::c_void,
+};
 // ----------------------------------------------------------------------------
 use gl::types::*;
 // ----------------------------------------------------------------------------
@@ -20,8 +22,10 @@ use sif_math::{Matrix4x4, Vector3, Vector4};
 use sif_renderer::{Bind, Program, ShaderSrc, Texture as RendererTexture};
 use sif_three::NodeHolder;
 // ----------------------------------------------------------------------------
-use super::{light, Camera, ColorExponent, ColorIntensity, Object, ObjectData,
-            Result, post::DepthMap};
+use super::{
+    light, post::DepthMap, Camera, ColorExponent, ColorIntensity, Object,
+    ObjectData, Result,
+};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// const PIPELINE_MAX_BONE
