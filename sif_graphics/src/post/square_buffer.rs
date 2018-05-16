@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/03/06
-//  @date 2018/05/12
+//  @date 2018/05/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -80,7 +80,7 @@ impl SquareBuffer {
     }
     // ========================================================================
     /// set_vertices
-    pub fn set_vertices(&self, program: &Program) {
+    pub fn set_vertices(&self, program: &Program) -> Result<&Self> {
         Program::set_attribute(
             sif_renderer_program_location!(program, "iv_Coord"),
             &self.vertices,
@@ -89,12 +89,13 @@ impl SquareBuffer {
             ::gl::FALSE,
             2 * size_of::<GLfloat>(),
             0, // 0 * size_of::<GLfloat>(),
-        );
+        )?;
+        Ok(self)
     }
     // ========================================================================
     /// draw
     pub fn draw(&self) -> Result<&Self> {
-        self.vertices.draw_arrays(::gl::TRIANGLES, 0, 6)?;
+        let _ = self.vertices.draw_arrays(::gl::TRIANGLES, 0, 6)?;
         Ok(self)
     }
 }

@@ -6,11 +6,11 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/03/06
-//  @date 2018/05/12
+//  @date 2018/05/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use super::Result;
+use super::{Error, Result};
 // ----------------------------------------------------------------------------
 pub use self::{
     depth_map::{DepthMap, DepthMapParam},

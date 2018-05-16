@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/28
-//  @date 2018/05/12
+//  @date 2018/05/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -147,11 +147,11 @@ impl SubMesh {
                     )
                 })?;
                 unsafe {
-                    buffer.sub_data(
+                    let _ = buffer.sub_data(
                         0,
                         is.len() * size_of::<GLuint>(),
                         is.as_ptr(),
-                    )?
+                    )?;
                 }
             }
             self.flags.remove(Flags::DIRTY);
@@ -182,11 +182,11 @@ impl SubMesh {
 
                     ::gl::CullFace(::gl::FRONT);
 
-                    buffer.draw_elements(self.mode, self.len)?;
+                    let _ = buffer.draw_elements(self.mode, self.len)?;
 
                     ::gl::CullFace(::gl::BACK);
 
-                    buffer.draw_elements(self.mode, self.len)?;
+                    let _ = buffer.draw_elements(self.mode, self.len)?;
                 } else {
                     ::gl::Disable(::gl::BLEND);
                     ::gl::DepthMask(::gl::TRUE);
@@ -203,7 +203,7 @@ impl SubMesh {
                         ::gl::Disable(::gl::CULL_FACE);
                     }
 
-                    buffer.draw_elements(self.mode, self.len)?;
+                    let _ = buffer.draw_elements(self.mode, self.len)?;
                 }
                 Ok(())
             }
@@ -221,7 +221,7 @@ impl SubMesh {
         if let Some(material_index) = self.material_index {
             if let Some(mats) = materials {
                 let material = mats[material_index].as_ref().borrow();
-                material.set_material(prog);
+                let _ = material.set_material(prog)?;
             }
         }
         self.draw_impl()
@@ -237,7 +237,7 @@ impl SubMesh {
         if let Some(material_index) = self.material_index {
             if let Some(mats) = materials {
                 let material = mats[material_index].as_ref().borrow();
-                material.set_material_silhouette(prog);
+                let _ = material.set_material_silhouette(prog)?;
             }
         }
         self.draw_impl()

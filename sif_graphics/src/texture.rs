@@ -6,14 +6,12 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/01/06
-//  @date 2018/05/12
+//  @date 2018/05/17
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::{
-    cell::RefCell, convert::Into, os::raw::c_void, path::{Path, PathBuf},
-    rc::Rc,
-};
+use std::{cell::RefCell, convert::Into, os::raw::c_void,
+          path::{Path, PathBuf}, rc::Rc};
 // ----------------------------------------------------------------------------
 use gl::types::*;
 use uuid::Uuid;
@@ -83,8 +81,16 @@ impl Texture {
             uuid,
             name: name.into(),
             inner: Ok(Rc::new(RefCell::new(RendererTexture::new_2d(
-                wrap_s, wrap_t, filter_mag, filter_min, mipmap, format, type_,
-                width, height, pixels,
+                wrap_s,
+                wrap_t,
+                filter_mag,
+                filter_min,
+                mipmap,
+                format,
+                type_,
+                width,
+                height,
+                pixels,
             )?))),
             wrap: [wrap_s, wrap_t, 0],
             filter: [filter_mag, filter_min],
@@ -107,7 +113,12 @@ impl Texture {
             uuid,
             name: name.into(),
             inner: Ok(Rc::new(RefCell::new(RendererTexture::open_2d(
-                wrap_s, wrap_t, filter_mag, filter_min, mipmap, path,
+                wrap_s,
+                wrap_t,
+                filter_mag,
+                filter_min,
+                mipmap,
+                path,
             )?))),
             wrap: [wrap_s, wrap_t, 0],
             filter: [filter_mag, filter_min],
@@ -142,7 +153,10 @@ impl Texture {
                         lbf_texture.mipmap,
                         AsRef::<PathBuf>::as_ref(inner),
                     ),
-                    _ => panic!("invalid image dimension"),
+                    _ => Err(Error::InvalidArg(
+                        "graphics: texture: from_lbf: invalid image dimension"
+                            .to_string(),
+                    )),
                 }
             } else {
                 Err(Error::InvalidImage)

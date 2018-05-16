@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/02
-//  @date 2018/05/12
+//  @date 2018/05/15
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -170,7 +170,7 @@ impl LuaType for GLfloat {
 impl<T> LuaType for Vector3<T>
 where
     Vector3<T>: 'static,
-    T: 'static + Debug + Number + LuaType,
+    T: 'static + Number + LuaType,
 {
     fn lua_type(t: ::lua::Type) -> bool {
         ::lua::Type::Table == t
@@ -202,7 +202,7 @@ where
 impl<T> LuaType for Vector4<T>
 where
     Vector4<T>: 'static,
-    T: 'static + Debug + Number + LuaType,
+    T: 'static + Number + LuaType,
 {
     fn lua_type(t: ::lua::Type) -> bool {
         ::lua::Type::Table == t
@@ -234,7 +234,7 @@ where
 impl<T> LuaType for Quaternion<T>
 where
     Quaternion<T>: 'static,
-    T: 'static + Debug + Number + LuaType,
+    T: 'static + Number + LuaType,
 {
     fn lua_type(t: ::lua::Type) -> bool {
         ::lua::Type::Table == t
@@ -265,7 +265,7 @@ where
 // ----------------------------------------------------------------------------
 impl<T> LuaType for TraRotSca<T>
 where
-    T: 'static + Debug + Number + LuaType,
+    T: 'static + Number + LuaType,
 {
     fn lua_type(t: ::lua::Type) -> bool {
         ::lua::Type::Table == t
@@ -545,7 +545,7 @@ impl LuaType for Polygon {
 // ----------------------------------------------------------------------------
 impl<V> LuaType for Armature<V>
 where
-    V: 'static + Debug + Number + LuaType,
+    V: 'static + Number + LuaType,
 {
     fn lua_type(t: ::lua::Type) -> bool {
         ::lua::Type::Table == t
@@ -561,7 +561,7 @@ where
 // ----------------------------------------------------------------------------
 impl<V> LuaType for Bone<V>
 where
-    V: 'static + Debug + Number + LuaType,
+    V: 'static + Number + LuaType,
 {
     fn lua_type(t: ::lua::Type) -> bool {
         ::lua::Type::Table == t

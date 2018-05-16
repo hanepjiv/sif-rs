@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/13
-//  @date 2018/05/12
+//  @date 2018/05/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -17,7 +17,7 @@ use sif_math::Matrix4x4;
 use sif_renderer::{gl_result, Bind, Program, ShaderSrc, Texture};
 use sif_three::NodeHolder;
 // ----------------------------------------------------------------------------
-use super::{super::Object, Result, Screen};
+use super::{super::Object, Error, Result, Screen};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 const VERSION: &str = r##"#version 100
@@ -177,11 +177,11 @@ impl DepthMap {
             Program::set_uniform1f(
                 sif_renderer_program_location!(program, "u_Near"),
                 param.near,
-            );
+            )?;
             Program::set_uniform1f(
                 sif_renderer_program_location!(program, "u_Far"),
                 param.far,
-            );
+            )?;
             let mut obj = managed_obj.as_ref().borrow_mut();
             if let Ok(rc) = obj.as_node() {
                 let node = &*rc.borrow();
@@ -193,7 +193,7 @@ impl DepthMap {
                     1,
                     ::gl::FALSE,
                     (param.mat4_proj_view * *node.as_matrix()).as_ptr(),
-                );
+                )?;
             }
             obj.draw_silhouette(program)?;
             Ok(self)
@@ -213,13 +213,15 @@ impl DepthMap {
 // ============================================================================
 impl Bind for DepthMap {
     // ========================================================================
+    type BindError = Error;
+    // ========================================================================
     fn id(&self) -> GLuint {
         panic!("::graphics::DepthMap: No id.");
     }
     // ========================================================================
-    fn bind(&self) {
-        self.screen.bind();
-        unwrap!(gl_result(|| -> Result<()> {
+    fn bind(&self) -> Result<()> {
+        self.screen.bind()?;
+        gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Enable(::gl::DEPTH_TEST);
                 ::gl::DepthFunc(::gl::LEQUAL);
@@ -230,10 +232,11 @@ impl Bind for DepthMap {
                 ::gl::Clear(::gl::COLOR_BUFFER_BIT | ::gl::DEPTH_BUFFER_BIT);
             }
             Ok(())
-        }));
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
-    fn unbind(&self) {
-        self.screen.unbind();
+    fn unbind(&self) -> Result<()> {
+        self.screen.unbind()
     }
 }

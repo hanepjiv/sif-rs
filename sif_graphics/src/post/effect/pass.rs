@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/13
-//  @date 2018/05/12
+//  @date 2018/05/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -18,7 +18,7 @@ use sif_renderer::{gl_result, Bind, Frame, Program, ShaderSrc, Texture};
 // ----------------------------------------------------------------------------
 use super::{
     super::square_buffer::{SquareBuffer, UNIFORM, VERSION, VERTEX}, Effect,
-    EffectArgs, Result,
+    EffectArgs, Error, Result,
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -124,8 +124,8 @@ impl Effect for Pass {
                     sif_renderer_program_location!(self.program, "u_Texture"),
                     0,
                     texture,
-                );
-                square_buffer.set_vertices(&self.program);
+                )?;
+                let _ = square_buffer.set_vertices(&self.program)?;
                 if let Some(f) = frame {
                     let _ = f.bind_with(|| square_buffer.draw())?;
                 } else {
@@ -134,7 +134,9 @@ impl Effect for Pass {
                 Ok(self)
             })
         } else {
-            panic!("::graphics::post::effect::pass::Pass: invalid args.");
+            Err(Error::InvalidArg(
+                "::graphics::post::effect::blur::Pass".to_string(),
+            ))
         }
     }
 }

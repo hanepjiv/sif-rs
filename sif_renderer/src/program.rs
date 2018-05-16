@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2018/05/11
+//  @date 2018/05/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -15,7 +15,8 @@ use std::collections::BTreeMap;
 use gl::types::*;
 // ----------------------------------------------------------------------------
 use super::{
-    gl_result, info_log, Bind, Buffer, Result, Shader, ShaderSrc, Texture,
+    gl_result, info_log, Bind, Buffer, Error, Result, Shader, ShaderSrc,
+    Texture,
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -36,25 +37,24 @@ impl Program {
     pub fn new(srcs: &[ShaderSrc]) -> Result<Self> {
         let id = gl_result(|| -> Result<GLuint> {
             Ok(unsafe { ::gl::CreateProgram() })
-        }).expect("Program::new: CreateProgram");
+        })?;
 
         let mut shaders = Vec::new();
         for i in srcs {
-            let shader = Shader::new(i).expect("Program::new: Shader::new");
+            let shader = Shader::new(i)?;
             gl_result(|| -> Result<()> {
                 unsafe { ::gl::AttachShader(id, shader.id()) }
                 Ok(())
-            }).expect("Program::new: AttachShader");
+            })?;
             shaders.push(shader);
         }
 
         gl_result(|| -> Result<()> {
             unsafe { ::gl::LinkProgram(id) }
             Ok(())
-        }).expect("Program::new: LinkProgram");
+        })?;
 
-        info_log(::gl::PROGRAM, id, ::gl::LINK_STATUS)
-            .expect("Program::new: info_log");
+        info_log(::gl::PROGRAM, id, ::gl::LINK_STATUS)?;
 
         let mut location_map = BTreeMap::new();
         {
@@ -65,7 +65,7 @@ impl Program {
                     ::gl::GetProgramiv(id, ::gl::ACTIVE_UNIFORMS, &mut active);
                 }
                 Ok(active)
-            }).expect("Program::new: GetProgramiv");
+            })?;
 
             let max_length = gl_result(|| -> Result<GLint> {
                 let mut max_length = 0;
@@ -77,7 +77,7 @@ impl Program {
                     );
                 }
                 Ok(max_length)
-            }).expect("Program::new: GetProgramiv");
+            })?;
 
             for i in 0..active as GLuint {
                 let name = gl_result(|| -> Result<String> {
@@ -97,9 +97,8 @@ impl Program {
                         );
                     }
                     name.resize(length as usize, 0u8);
-                    Ok(String::from_utf8(name)
-                        .expect("Program::new: String::from_utf8"))
-                }).expect("Program::new: GetActiveUniform");
+                    Ok(String::from_utf8(name)?)
+                })?;
                 let location = gl_result(|| -> Result<GLint> {
                     Ok(unsafe {
                         ::gl::GetUniformLocation(
@@ -107,7 +106,7 @@ impl Program {
                             name.as_ptr() as *const GLchar,
                         )
                     })
-                }).expect("Program::new: GetUniformLocation");
+                })?;
                 info!("Program::new: location: {:?} = {:?}", name, location);
                 let _ = location_map.insert(name, location);
             }
@@ -124,7 +123,7 @@ impl Program {
                     );
                 }
                 Ok(active)
-            }).expect("Program::new: GetProgramiv");
+            })?;
 
             let max_length = gl_result(|| -> Result<GLint> {
                 let mut max_length = 0;
@@ -136,7 +135,7 @@ impl Program {
                     );
                 }
                 Ok(max_length)
-            }).expect("Program::new: GetProgramiv");
+            })?;
 
             for i in 0..active as GLuint {
                 let name = gl_result(|| -> Result<String> {
@@ -156,9 +155,8 @@ impl Program {
                         );
                     }
                     name.resize(length as usize, 0u8);
-                    Ok(String::from_utf8(name)
-                        .expect("Program::new: String::from_utf8"))
-                }).expect("Program::new: GetActiveAttrib");
+                    Ok(String::from_utf8(name)?)
+                })?;
                 let location = gl_result(|| -> Result<GLint> {
                     Ok(unsafe {
                         ::gl::GetAttribLocation(
@@ -166,7 +164,7 @@ impl Program {
                             name.as_ptr() as *const GLchar,
                         )
                     })
-                }).expect("Program::new: GetAttribLocation");
+                })?;
                 let _ = location_map.insert(name, location);
             }
         }
@@ -196,208 +194,276 @@ impl Program {
         normalized: GLboolean,
         stride: usize,
         pointer: usize,
-    ) {
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::EnableVertexAttribArray(location as GLuint);
             }
             Ok(())
-        }).expect("Program::set_attribute: EnableVertexAttribArray");
-        {
-            buffer.bind_with(|| {
-                gl_result(|| -> Result<()> {
-                    unsafe {
-                        ::gl::VertexAttribPointer(
-                            location as GLuint,
-                            size_ as GLint,
-                            type_,
-                            normalized,
-                            stride as GLsizei,
-                            pointer as *const GLvoid,
-                        );
-                    }
-                    Ok(())
-                }).expect("Program::set_attribute: VertexAttribPointer");
-            })
-        }
+        })?;
+        buffer.bind_with(|| -> Result<()> {
+            gl_result(|| -> Result<()> {
+                unsafe {
+                    ::gl::VertexAttribPointer(
+                        location as GLuint,
+                        size_ as GLint,
+                        type_,
+                        normalized,
+                        stride as GLsizei,
+                        pointer as *const GLvoid,
+                    );
+                }
+                Ok(())
+            })?;
+            Ok(())
+        })
     }
     // ========================================================================
     /// set_uniform1i
-    pub fn set_uniform1i(l: GLint, v0: GLint) {
+    pub fn set_uniform1i(l: GLint, v0: GLint) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform1i(l, v0);
             }
             Ok(())
-        }).expect("Program::set_uniform1i");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform1iv
-    pub fn set_uniform1iv(l: GLint, c: GLsizei, v: *const GLint) {
+    pub fn set_uniform1iv(
+        l: GLint,
+        c: GLsizei,
+        v: *const GLint,
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform1iv(l, c, v);
             }
             Ok(())
-        }).expect("Program::set_uniform1iv");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform1ui
-    pub fn set_uniform1ui(l: GLint, v0: GLuint) {
+    pub fn set_uniform1ui(l: GLint, v0: GLuint) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe { ::gl::Uniform1ui(l, v0) }
             Ok(())
-        }).expect("Program::set_uniform1ui");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform1uiv
-    pub fn set_uniform1uiv(l: GLint, c: GLsizei, v: *const GLuint) {
+    pub fn set_uniform1uiv(
+        l: GLint,
+        c: GLsizei,
+        v: *const GLuint,
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform1uiv(l, c, v);
             }
             Ok(())
-        }).expect("Program::set_uniformu1uiv");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform1f
-    pub fn set_uniform1f(l: GLint, v0: GLfloat) {
+    pub fn set_uniform1f(l: GLint, v0: GLfloat) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform1f(l, v0);
             }
             Ok(())
-        }).expect("Program::set_uniform1f");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform1fv
-    pub fn set_uniform1fv(l: GLint, c: GLsizei, v: *const GLfloat) {
+    pub fn set_uniform1fv(
+        l: GLint,
+        c: GLsizei,
+        v: *const GLfloat,
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform1fv(l, c, v);
             }
             Ok(())
-        }).expect("Program::set_uniform1fv");
+        })?;
+        Ok(())
     }
     // ========================================================================
     /// set_uniform2i
-    pub fn set_uniform2i(l: GLint, v0: GLint, v1: GLint) {
+    pub fn set_uniform2i(l: GLint, v0: GLint, v1: GLint) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform2i(l, v0, v1);
             }
             Ok(())
-        }).expect("Program::set_uniform2i");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform2iv
-    pub fn set_uniform2iv(l: GLint, c: GLsizei, v: *const GLint) {
+    pub fn set_uniform2iv(
+        l: GLint,
+        c: GLsizei,
+        v: *const GLint,
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform2iv(l, c, v);
             }
             Ok(())
-        }).expect("Program::set_uniform2iv");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform2ui
-    pub fn set_uniform2ui(l: GLint, v0: GLuint, v1: GLuint) {
+    pub fn set_uniform2ui(l: GLint, v0: GLuint, v1: GLuint) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform2ui(l, v0, v1);
             }
             Ok(())
-        }).expect("Program::set_uniform2ui");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform2uiv
-    pub fn set_uniform2uiv(l: GLint, c: GLsizei, v: *const GLuint) {
+    pub fn set_uniform2uiv(
+        l: GLint,
+        c: GLsizei,
+        v: *const GLuint,
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform2uiv(l, c, v);
             }
             Ok(())
-        }).expect("Program::set_uniformu1uiv");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform2f
-    pub fn set_uniform2f(l: GLint, v0: GLfloat, v1: GLfloat) {
+    pub fn set_uniform2f(l: GLint, v0: GLfloat, v1: GLfloat) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform2f(l, v0, v1);
             }
             Ok(())
-        }).expect("Program::set_uniform2f");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform2fv
-    pub fn set_uniform2fv(l: GLint, c: GLsizei, v: *const GLfloat) {
+    pub fn set_uniform2fv(
+        l: GLint,
+        c: GLsizei,
+        v: *const GLfloat,
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform2fv(l, c, v);
             }
             Ok(())
-        }).expect("Program::set_uniform2fv");
+        })?;
+        Ok(())
     }
     // ========================================================================
     /// set_uniform3i
-    pub fn set_uniform3i(l: GLint, v0: GLint, v1: GLint, v2: GLint) {
+    pub fn set_uniform3i(
+        l: GLint,
+        v0: GLint,
+        v1: GLint,
+        v2: GLint,
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform3i(l, v0, v1, v2);
             }
             Ok(())
-        }).expect("Program::set_uniform3i");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform3iv
-    pub fn set_uniform3iv(l: GLint, c: GLsizei, v: *const GLint) {
+    pub fn set_uniform3iv(
+        l: GLint,
+        c: GLsizei,
+        v: *const GLint,
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform3iv(l, c, v);
             }
             Ok(())
-        }).expect("Program::set_uniform3iv");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform3ui
-    pub fn set_uniform3ui(l: GLint, v0: GLuint, v1: GLuint, v2: GLuint) {
+    pub fn set_uniform3ui(
+        l: GLint,
+        v0: GLuint,
+        v1: GLuint,
+        v2: GLuint,
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform3ui(l, v0, v1, v2);
             }
             Ok(())
-        }).expect("Program::set_uniform3ui");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform3uiv
-    pub fn set_uniform3uiv(l: GLint, c: GLsizei, v: *const GLuint) {
+    pub fn set_uniform3uiv(
+        l: GLint,
+        c: GLsizei,
+        v: *const GLuint,
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform3uiv(l, c, v);
             }
             Ok(())
-        }).expect("Program::set_uniformu1uiv");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform3f
-    pub fn set_uniform3f(l: GLint, v0: GLfloat, v1: GLfloat, v2: GLfloat) {
+    pub fn set_uniform3f(
+        l: GLint,
+        v0: GLfloat,
+        v1: GLfloat,
+        v2: GLfloat,
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform3f(l, v0, v1, v2);
             }
             Ok(())
-        }).expect("Program::set_uniform3f");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform3fv
-    pub fn set_uniform3fv(l: GLint, c: GLsizei, v: *const GLfloat) {
+    pub fn set_uniform3fv(
+        l: GLint,
+        c: GLsizei,
+        v: *const GLfloat,
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform3fv(l, c, v);
             }
             Ok(())
-        }).expect("Program::set_uniform3fv");
+        })?;
+        Ok(())
     }
     // ========================================================================
     /// set_uniform4i
@@ -407,23 +473,29 @@ impl Program {
         v1: GLint,
         v2: GLint,
         v3: GLint,
-    ) {
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform4i(l, v0, v1, v2, v3);
             }
             Ok(())
-        }).expect("Program::set_uniform4i");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform4iv
-    pub fn set_uniform4iv(l: GLint, c: GLsizei, v: *const GLint) {
+    pub fn set_uniform4iv(
+        l: GLint,
+        c: GLsizei,
+        v: *const GLint,
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform4iv(l, c, v);
             }
             Ok(())
-        }).expect("Program::set_uniform4iv");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform4ui
@@ -433,23 +505,29 @@ impl Program {
         v1: GLuint,
         v2: GLuint,
         v3: GLuint,
-    ) {
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform4ui(l, v0, v1, v2, v3);
             }
             Ok(())
-        }).expect("Program::set_uniform4ui");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform4uiv
-    pub fn set_uniform4uiv(l: GLint, c: GLsizei, v: *const GLuint) {
+    pub fn set_uniform4uiv(
+        l: GLint,
+        c: GLsizei,
+        v: *const GLuint,
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform4uiv(l, c, v);
             }
             Ok(())
-        }).expect("Program::set_uniformu1uiv");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform4f
@@ -459,23 +537,29 @@ impl Program {
         v1: GLfloat,
         v2: GLfloat,
         v3: GLfloat,
-    ) {
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform4f(l, v0, v1, v2, v3);
             }
             Ok(())
-        }).expect("Program::set_uniform4f");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform4fv
-    pub fn set_uniform4fv(l: GLint, c: GLsizei, v: *const GLfloat) {
+    pub fn set_uniform4fv(
+        l: GLint,
+        c: GLsizei,
+        v: *const GLfloat,
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::Uniform4fv(l, c, v);
             }
             Ok(())
-        }).expect("Program::set_uniform4fv");
+        })?;
+        Ok(())
     }
     // ========================================================================
     /// set_uniform_matrix2fv
@@ -484,13 +568,14 @@ impl Program {
         c: GLsizei,
         t: GLboolean,
         v: *const GLfloat,
-    ) {
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::UniformMatrix2fv(l, c, t, v);
             }
             Ok(())
-        }).expect("Program::set_uniform_matrix2fv");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform_matrix3fv
@@ -499,13 +584,14 @@ impl Program {
         c: GLsizei,
         t: GLboolean,
         v: *const GLfloat,
-    ) {
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::UniformMatrix3fv(l, c, t, v);
             }
             Ok(())
-        }).expect("Program::set_uniform_matrix3fv");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform_matrix4fv
@@ -514,13 +600,14 @@ impl Program {
         c: GLsizei,
         t: GLboolean,
         v: *const GLfloat,
-    ) {
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::UniformMatrix4fv(l, c, t, v);
             }
             Ok(())
-        }).expect("Program::set_uniform_matrix4fv");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform_matrix2x3fv
@@ -529,13 +616,14 @@ impl Program {
         c: GLsizei,
         t: GLboolean,
         v: *const GLfloat,
-    ) {
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::UniformMatrix2x3fv(l, c, t, v);
             }
             Ok(())
-        }).expect("Program::set_uniform_matrix2x3fv");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform_matrix3x2fv
@@ -544,13 +632,14 @@ impl Program {
         c: GLsizei,
         t: GLboolean,
         v: *const GLfloat,
-    ) {
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::UniformMatrix3x2fv(l, c, t, v);
             }
             Ok(())
-        }).expect("Program::set_uniform_matrix3x2fv");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform_matrix2x4fv
@@ -559,13 +648,14 @@ impl Program {
         c: GLsizei,
         t: GLboolean,
         v: *const GLfloat,
-    ) {
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::UniformMatrix2x4fv(l, c, t, v);
             }
             Ok(())
-        }).expect("Program::set_uniform_matrix2x4fv");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform_matrix4x2fv
@@ -574,13 +664,14 @@ impl Program {
         c: GLsizei,
         t: GLboolean,
         v: *const GLfloat,
-    ) {
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::UniformMatrix4x2fv(l, c, t, v);
             }
             Ok(())
-        }).expect("Program::set_uniform_matrix4x2fv");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform_matrix3x4fv
@@ -589,13 +680,14 @@ impl Program {
         c: GLsizei,
         t: GLboolean,
         v: *const GLfloat,
-    ) {
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::UniformMatrix3x4fv(l, c, t, v);
             }
             Ok(())
-        }).expect("Program::set_uniform_matrix3x4fv");
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// set_uniform_matrix4x3fv
@@ -604,28 +696,33 @@ impl Program {
         c: GLsizei,
         t: GLboolean,
         v: *const GLfloat,
-    ) {
+    ) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::UniformMatrix4x3fv(l, c, t, v);
             }
             Ok(())
-        }).expect("Program::set_uniform_matrix4x3fv");
+        })?;
+        Ok(())
     }
     // ========================================================================
     /// set_texture
-    pub fn set_texture(l: GLint, index: GLint, texture: &Texture) {
+    pub fn set_texture(
+        l: GLint,
+        index: GLint,
+        texture: &Texture,
+    ) -> Result<()> {
         if 0 > index {
-            Program::set_uniform1i(l, -1);
+            Program::set_uniform1i(l, -1)
         } else {
             gl_result(|| -> Result<()> {
                 unsafe {
                     ::gl::ActiveTexture(::gl::TEXTURE0 + index as GLuint);
                 }
                 Ok(())
-            }).expect("Program::set_texture");
-            texture.bind();
-            Program::set_uniform1i(l, index);
+            })?;
+            texture.bind()?;
+            Program::set_uniform1i(l, index)
         }
     }
 }
@@ -641,26 +738,30 @@ impl Drop for Program {
 // ============================================================================
 impl Bind for Program {
     // ========================================================================
+    type BindError = Error;
+    // ========================================================================
     fn id(&self) -> GLuint {
         self.id
     }
     // ========================================================================
-    fn bind(&self) {
+    fn bind(&self) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::UseProgram(self.id);
             }
             Ok(())
-        }).expect("Program::bind");
+        })?;
+        Ok(())
     }
     // ========================================================================
-    fn unbind(&self) {
+    fn unbind(&self) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe {
                 ::gl::UseProgram(0);
             }
             Ok(())
-        }).expect("Program::unbind");
+        })?;
+        Ok(())
     }
 }
 // ============================================================================

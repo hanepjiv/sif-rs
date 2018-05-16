@@ -6,14 +6,13 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2018/05/12
+//  @date 2018/05/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use gl::types::*;
-use std::result::Result as StdResult;
 // ----------------------------------------------------------------------------
-use super::{gl_result, Bind, GLResult, Result};
+use super::{gl_result, Bind, Error, Result};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Buffer
@@ -91,9 +90,9 @@ impl Buffer {
         offset: isize,
         size: usize,
         data: *const T,
-    ) -> GLResult<(), ()> {
-        gl_result(|| -> StdResult<(), ()> {
-            self.bind_with(|| {
+    ) -> Result<&Self> {
+        gl_result(|| -> Result<()> {
+            self.bind_with(|| -> Result<()> {
                 ::gl::BufferSubData(
                     self.target,
                     offset as GLintptr,
@@ -102,7 +101,8 @@ impl Buffer {
                 );
                 Ok(())
             })
-        })
+        })?;
+        Ok(self)
     }
     // ========================================================================
     /// draw_elements
@@ -110,9 +110,9 @@ impl Buffer {
         &self,
         mode: GLenum,
         count: GLsizei,
-    ) -> GLResult<(), ()> {
-        gl_result(|| -> StdResult<(), ()> {
-            self.bind_with(|| {
+    ) -> Result<&Self> {
+        gl_result(|| -> Result<()> {
+            self.bind_with(|| -> Result<()> {
                 unsafe {
                     ::gl::DrawElements(
                         mode,
@@ -123,7 +123,8 @@ impl Buffer {
                 }
                 Ok(())
             })
-        })
+        })?;
+        Ok(self)
     }
     // ========================================================================
     /// draw_arrays
@@ -132,19 +133,20 @@ impl Buffer {
         mode: GLenum,
         first: GLint,
         count: GLsizei,
-    ) -> GLResult<(), ()> {
-        gl_result(|| -> StdResult<(), ()> {
+    ) -> Result<&Self> {
+        gl_result(|| -> Result<()> {
             self.bind_with(|| {
                 unsafe { ::gl::DrawArrays(mode, first, count) }
                 Ok(())
             })
-        })
+        })?;
+        Ok(self)
     }
 }
 // ============================================================================
 impl Drop for Buffer {
     fn drop(&mut self) {
-        gl_result(|| -> StdResult<(), ()> {
+        gl_result(|| -> Result<()> {
             unsafe { ::gl::DeleteBuffers(1, &self.id) }
             Ok(())
         }).expect("Buffer::drop");
@@ -153,21 +155,25 @@ impl Drop for Buffer {
 // ============================================================================
 impl Bind for Buffer {
     // ========================================================================
+    type BindError = Error;
+    // ========================================================================
     fn id(&self) -> GLuint {
         self.id
     }
     // ========================================================================
-    fn bind(&self) {
+    fn bind(&self) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe { ::gl::BindBuffer(self.target, self.id) }
             Ok(())
-        }).expect("Buffer::bind");
+        })?;
+        Ok(())
     }
     // ========================================================================
-    fn unbind(&self) {
+    fn unbind(&self) -> Result<()> {
         gl_result(|| -> Result<()> {
             unsafe { ::gl::BindBuffer(self.target, 0) }
             Ok(())
-        }).expect("Buffer::unbind");
+        })?;
+        Ok(())
     }
 }

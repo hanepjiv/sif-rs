@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/24
-//  @date 2018/05/12
+//  @date 2018/05/17
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -17,7 +17,7 @@ use sif_manager::ManagedValue;
 use sif_math::Vector3;
 use sif_renderer::{Bind, Program, Texture};
 // ----------------------------------------------------------------------------
-use super::{post::DepthMapParam, Object, Result, Shadow};
+use super::{Error, Object, Result, Shadow, post::DepthMapParam};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// Flags
@@ -174,7 +174,7 @@ impl Light {
         if let Some(ref shadow) = self.shadow {
             shadow.as_ref()
         } else {
-            panic!("::Light: no shadow.");
+            panic!("::Light: no shadow");
         }
     }
     // ------------------------------------------------------------------------
@@ -183,7 +183,7 @@ impl Light {
         if let Some(ref mut shadow) = self.shadow {
             shadow.as_mut()
         } else {
-            panic!("::Light: no shadow.");
+            panic!("::Light: no shadow");
         }
     }
     // ========================================================================
@@ -192,7 +192,7 @@ impl Light {
         if let Some(ref shadow) = self.shadow {
             shadow.as_color()
         } else {
-            panic!("::Light: no shadow.");
+            panic!("::Light: no shadow");
         }
     }
     // ========================================================================
@@ -201,7 +201,7 @@ impl Light {
         if let Some(ref shadow) = self.shadow {
             shadow.size()
         } else {
-            panic!("::Light: no shadow.");
+            panic!("::Light: no shadow");
         }
     }
     // ========================================================================
@@ -214,7 +214,7 @@ impl Light {
         if let Some(ref shadow) = self.shadow {
             let _ = shadow.emit(depth_map_program, managed_obj)?;
         } else {
-            panic!("::Light: no shadow.");
+            panic!("::Light: no shadow");
         }
         Ok(self)
     }
@@ -222,23 +222,27 @@ impl Light {
 // ============================================================================
 impl Bind for Light {
     // ========================================================================
+    type BindError = Error;
+    // ========================================================================
     fn id(&self) -> GLuint {
-        panic!("::Light: No id.");
+        panic!("::Light: No id");
     }
     // ========================================================================
-    fn bind(&self) {
+    fn bind(&self) -> Result<()> {
         if let Some(ref shadow) = self.shadow {
-            shadow.bind();
+            shadow.bind()
         } else {
-            panic!("::Light: no shadow.");
+            Err(Error::Light("bind: invalid shadow".to_string()))
         }
     }
     // ------------------------------------------------------------------------
-    fn unbind(&self) {
+    fn unbind(&self) -> Result<()> {
         if let Some(ref shadow) = self.shadow {
-            shadow.unbind();
+            shadow.unbind()
         } else {
-            panic!("::Light: no shadow.");
+            Err(Error::Light(
+                "unbind: invalid shadow".to_string(),
+            ))
         }
     }
 }

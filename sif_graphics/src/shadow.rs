@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/03/08
-//  @date 2018/05/12
+//  @date 2018/05/17
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -15,9 +15,7 @@ use gl::types::*;
 use sif_manager::ManagedValue;
 use sif_renderer::{Bind, Program, Texture};
 // ----------------------------------------------------------------------------
-use super::{
-    post::{DepthMap, DepthMapParam}, Object, Result,
-};
+use super::{Error, Object, Result, post::{DepthMap, DepthMapParam}};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Shadow
@@ -73,22 +71,25 @@ impl Shadow {
         depth_map_program: &Program,
         managed_obj: &ManagedValue<Object>,
     ) -> Result<&Self> {
-        let _ = self.map.emit(depth_map_program, &self.param, managed_obj)?;
+        let _ = self.map
+            .emit(depth_map_program, &self.param, managed_obj)?;
         Ok(self)
     }
 }
 // ============================================================================
 impl Bind for Shadow {
     // ========================================================================
+    type BindError = Error;
+    // ========================================================================
     fn id(&self) -> GLuint {
-        panic!("::Shadow: No id.");
+        panic!("::Shadow: No id");
     }
     // ========================================================================
-    fn bind(&self) {
-        self.map.bind();
+    fn bind(&self) -> Result<()> {
+        self.map.bind()
     }
     // ------------------------------------------------------------------------
-    fn unbind(&self) {
-        self.map.unbind();
+    fn unbind(&self) -> Result<()> {
+        self.map.unbind()
     }
 }

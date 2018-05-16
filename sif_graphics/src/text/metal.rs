@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/06/20
-//  @date 2018/05/12
+//  @date 2018/05/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -158,7 +158,7 @@ impl Metal {
         })?;
 
         unsafe {
-            self.coords.sub_data(
+            let _ = self.coords.sub_data(
                 0,
                 4 * 2 * size_of::<GLfloat>(),
                 &[
@@ -176,11 +176,11 @@ impl Metal {
 
         if let Some(c) = color {
             unsafe {
-                self.colors.sub_data(
+                let _ = self.colors.sub_data(
                     0,
                     4 * 4 * size_of::<GLfloat>(),
                     c as *const _,
-                )?
+                )?;
             }
         }
 
@@ -190,16 +190,16 @@ impl Metal {
                 1,
                 ::gl::FALSE,
                 matrix.as_ptr(),
-            );
+            )?;
             Program::set_uniform1f(
                 sif_renderer_program_location!(self.program, "u_Aspect"),
                 (coords[1][0] - coords[0][0]) / (coords[0][1] - coords[1][1]),
-            );
+            )?;
             Program::set_texture(
                 sif_renderer_program_location!(self.program, "u_Texture"),
                 0,
                 texture,
-            );
+            )?;
             Program::set_attribute(
                 sif_renderer_program_location!(self.program, "iv_Position"),
                 &self.positions,
@@ -208,7 +208,7 @@ impl Metal {
                 ::gl::FALSE,
                 3 * size_of::<GLfloat>(),
                 0, // 0 * size_of::<GLfloat>(),
-            );
+            )?;
             Program::set_attribute(
                 sif_renderer_program_location!(self.program, "iv_Coord"),
                 &self.coords,
@@ -217,7 +217,7 @@ impl Metal {
                 ::gl::FALSE,
                 2 * size_of::<GLfloat>(),
                 0, // 0 * size_of::<GLfloat>(),
-            );
+            )?;
             Program::set_attribute(
                 sif_renderer_program_location!(self.program, "iv_Color"),
                 &self.colors,
@@ -226,8 +226,8 @@ impl Metal {
                 ::gl::FALSE,
                 4 * size_of::<GLfloat>(),
                 0, // 0 * size_of::<GLfloat>(),
-            );
-            self.indices.draw_elements(::gl::TRIANGLES, 6)?;
+            )?;
+            let _ = self.indices.draw_elements(::gl::TRIANGLES, 6)?;
             Ok(())
         })
     }

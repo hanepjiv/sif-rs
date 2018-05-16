@@ -6,30 +6,43 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/11
-//  @date 2018/05/12
+//  @date 2018/05/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
+use std::result::Result as StdResult;
+// ----------------------------------------------------------------------------
 use gl::types::*;
+// ----------------------------------------------------------------------------
+use super::Error;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// trait Bind
 pub trait Bind {
     // ========================================================================
-    /// id
+    /// type Error
+    type BindError: From<Error>;
+    // ========================================================================
+    /// fn id
     fn id(&self) -> GLuint;
     // ========================================================================
-    /// bind
-    fn bind(&self);
+    /// fn bind
+    fn bind(&self) -> StdResult<(), Self::BindError>;
     // ========================================================================
-    /// unbind
-    fn unbind(&self);
+    /// fn unbind
+    fn unbind(&self) -> StdResult<(), Self::BindError>;
     // ========================================================================
-    /// bind_with
-    fn bind_with<R>(&self, func: impl FnOnce() -> R) -> R {
-        self.bind();
-        let ret = func();
-        self.unbind();
-        ret
+    /// fn bind_with
+    fn bind_with<R, E>(
+        &self,
+        func: impl FnOnce() -> StdResult<R, E>,
+    ) -> StdResult<R, E>
+    where
+        E: From<Self::BindError>,
+    {
+        self.bind()?;
+        let ret = func()?;
+        self.unbind()?;
+        Ok(ret)
     }
 }

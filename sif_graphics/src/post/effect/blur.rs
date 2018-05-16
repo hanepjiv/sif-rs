@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/01/19
-//  @date 2018/05/12
+//  @date 2018/05/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -17,7 +17,7 @@ use sif_renderer::{gl_result, Bind, Frame, Program, ShaderSrc, Texture};
 // ----------------------------------------------------------------------------
 use super::{
     super::square_buffer::{SquareBuffer, UNIFORM, VERSION, VERTEX}, Effect,
-    EffectArgs, Result,
+    EffectArgs, Error, Result,
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -74,7 +74,7 @@ impl Blur {
     // ========================================================================
     /// new
     pub fn new(width: GLsizei, height: GLsizei) -> Result<Self> {
-        let frame = Frame::new();
+        let frame = Frame::new()?;
         let color0 = Texture::new_2d(
             ::gl::CLAMP_TO_EDGE,
             ::gl::CLAMP_TO_EDGE,
@@ -87,7 +87,11 @@ impl Blur {
             height,
             ::std::ptr::null(),
         )?;
-        frame.attach_2d(::gl::COLOR_ATTACHMENT0, ::gl::TEXTURE_2D, &color0)?;
+        let _ = frame.attach_2d(
+            ::gl::COLOR_ATTACHMENT0,
+            ::gl::TEXTURE_2D,
+            &color0,
+        )?;
         let mut gaussian = vec![0.0; LIMIT_DISTANCE as usize];
         {
             let sigma = 5.0;
@@ -147,7 +151,7 @@ impl Effect for Blur {
             })?;
             self.program.bind_with(|| {
                 // vertices
-                square_buffer.set_vertices(&self.program);
+                let _ = square_buffer.set_vertices(&self.program)?;
 
                 // common params
                 {
@@ -164,7 +168,7 @@ impl Effect for Blur {
                             "u_Distance"
                         ),
                         GLint::from(d),
-                    );
+                    )?;
 
                     // gauss
                     Program::set_uniform1fv(
@@ -174,7 +178,7 @@ impl Effect for Blur {
                         ),
                         1 + GLint::from(d),
                         self.gaussian.as_ptr(),
-                    );
+                    )?;
 
                     // weight
                     {
@@ -188,7 +192,7 @@ impl Effect for Blur {
                                 "u_InvWeight"
                             ),
                             1.0 / weight,
-                        );
+                        )?;
                     }
                 }
 
@@ -201,14 +205,14 @@ impl Effect for Blur {
                         ),
                         1.0 / (self.size[0] as GLfloat),
                         1.0 / (self.size[1] as GLfloat),
-                    );
+                    )?;
                     Program::set_uniform1i(
                         sif_renderer_program_location!(
                             self.program,
                             "u_Direction"
                         ),
                         0,
-                    );
+                    )?;
                     Program::set_texture(
                         sif_renderer_program_location!(
                             self.program,
@@ -216,7 +220,7 @@ impl Effect for Blur {
                         ),
                         0,
                         texture,
-                    );
+                    )?;
                     let _ = self.frame.bind_with(|| {
                         gl_result(|| -> Result<()> {
                             unsafe {
@@ -242,14 +246,14 @@ impl Effect for Blur {
                         ),
                         1.0 / (a_width as GLfloat),
                         1.0 / (a_height as GLfloat),
-                    );
+                    )?;
                     Program::set_uniform1i(
                         sif_renderer_program_location!(
                             self.program,
                             "u_Direction"
                         ),
                         1,
-                    );
+                    )?;
                     Program::set_texture(
                         sif_renderer_program_location!(
                             self.program,
@@ -257,7 +261,7 @@ impl Effect for Blur {
                         ),
                         0,
                         &self.color0,
-                    );
+                    )?;
                     let draw = move || {
                         gl_result(|| -> Result<()> {
                             unsafe {
@@ -276,7 +280,9 @@ impl Effect for Blur {
                 Ok(self)
             })
         } else {
-            panic!("::graphics::post::effect::blur::Blur: invalid args.");
+            Err(Error::InvalidArg(
+                "::graphics::post::effect::blur::Blur".to_string(),
+            ))
         }
     }
 }

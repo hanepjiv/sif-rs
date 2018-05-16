@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/01/17
-//  @date 2018/05/12
+//  @date 2018/05/17
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -16,7 +16,7 @@ use gl::types::*;
 // ----------------------------------------------------------------------------
 use sif_renderer::{gl_result, Bind, Frame, Render, Texture};
 // ----------------------------------------------------------------------------
-use super::Result;
+use super::{Error, Result};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Screen
@@ -47,9 +47,11 @@ impl Screen {
         is_depth: bool,
     ) -> Result<Self> {
         if 16 < size_colors {
-            panic!("Screen::new: invalid size_color,");
+            return Err(Error::InvalidArg(
+                "Screen::new: invalid size_color".to_string(),
+            ));
         }
-        let frame = Frame::new();
+        let frame = Frame::new()?;
         let mut colors = Vec::default();
         for i in 0..size_colors {
             colors.push(Texture::new_2d(
@@ -64,7 +66,7 @@ impl Screen {
                 height,
                 ::std::ptr::null(),
             )?);
-            frame.attach_2d(
+            let _ = frame.attach_2d(
                 ::gl::COLOR_ATTACHMENT0 + i as GLuint,
                 ::gl::TEXTURE_2D,
                 &colors[i],
@@ -72,7 +74,7 @@ impl Screen {
         }
         let depth = if is_depth {
             let depth = Render::new(::gl::DEPTH_COMPONENT16, width, height)?;
-            frame.attach_render(::gl::DEPTH_ATTACHMENT, &depth)?;
+            let _ = frame.attach_render(::gl::DEPTH_ATTACHMENT, &depth)?;
             Some(depth)
         } else {
             None
@@ -100,7 +102,7 @@ impl Screen {
         if let Some(ref depth) = self.depth {
             depth
         } else {
-            panic!("Screen::as_depth.");
+            panic!("Screen::as_depth: No depth");
         }
     }
 }
@@ -113,21 +115,25 @@ impl AsRef<Frame> for Screen {
 // ============================================================================
 impl Bind for Screen {
     // ========================================================================
+    type BindError = Error;
+    // ========================================================================
     fn id(&self) -> GLuint {
-        panic!("::graphics::Screen: No id.");
+        panic!("::graphics::Screen: No id");
     }
     // ========================================================================
-    fn bind(&self) {
-        self.frame.bind();
-        unwrap!(gl_result(|| -> StdResult<(), ()> {
+    fn bind(&self) -> Result<()> {
+        self.frame.bind()?;
+        gl_result(|| -> StdResult<(), ()> {
             unsafe {
                 ::gl::Viewport(0, 0, self.size[0], self.size[1]);
             }
             Ok(())
-        }));
+        })?;
+        Ok(())
     }
     // ------------------------------------------------------------------------
-    fn unbind(&self) {
-        self.frame.unbind();
+    fn unbind(&self) -> Result<()> {
+        self.frame.unbind()?;
+        Ok(())
     }
 }

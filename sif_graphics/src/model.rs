@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/19
-//  @date 2018/05/12
+//  @date 2018/05/17
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -72,7 +72,10 @@ impl AsMut<Vec<ManagedValue<Mesh>>> for Model {
                 panic!("AsMut<Vec<ManagedValue<Mesh>>> for Model");
             }
         } else {
-            panic!("AsMut<Vec<ManagedValue<Mesh>>> for Model: {:?}", self);
+            panic!(
+                "AsMut<Vec<ManagedValue<Mesh>>> for Model: {:?}",
+                self
+            );
         }
     }
 }

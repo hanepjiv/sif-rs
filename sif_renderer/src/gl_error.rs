@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2018/05/12
+//  @date 2018/05/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -86,27 +86,32 @@ where
 }
 // ============================================================================
 /// get_iv
-fn get_iv(type_: GLenum, id: GLuint, pname: GLenum) -> GLint {
-    gl_result(|| -> StdResult<GLint, ()> {
+fn get_iv(type_: GLenum, id: GLuint, pname: GLenum) -> GLResult<GLint, Error> {
+    gl_result(|| -> Result<GLint> {
+        let mut params = 0;
         unsafe {
-            let mut params = 0;
             match type_ {
                 ::gl::SHADER => ::gl::GetShaderiv(id, pname, &mut params),
                 ::gl::PROGRAM => ::gl::GetProgramiv(id, pname, &mut params),
-                _ => return Err(()),
+                _ => {
+                    return Err(Error::Renderer(format!(
+                        "get_iv: invalid type: {}",
+                        type_
+                    )));
+                }
             }
-            Ok(params)
         }
-    }).expect("gl_result::get_iv")
+        Ok(params)
+    })
 }
 // ============================================================================
 /// info_log
 pub fn info_log(type_: GLenum, id: GLuint, state: GLenum) -> Result<()> {
-    match get_iv(type_, id, state) as GLboolean {
+    match get_iv(type_, id, state)? as GLboolean {
         ::gl::FALSE => {
             gl_result(|| -> Result<()> {
                 unsafe {
-                    let loglen = get_iv(type_, id, ::gl::INFO_LOG_LENGTH);
+                    let loglen = get_iv(type_, id, ::gl::INFO_LOG_LENGTH)?;
                     if 0 >= loglen {
                         return Err(Error::Renderer("0 >= loglen".to_string()));
                     }

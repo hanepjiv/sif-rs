@@ -6,14 +6,12 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2018/05/12
+//  @date 2018/05/17
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::{
-    borrow::Borrow, cell::RefCell, f32::consts::PI, hash::Hash,
-    os::raw::c_void,
-};
+use std::{borrow::Borrow, cell::RefCell, f32::consts::PI, hash::Hash,
+          os::raw::c_void};
 // ----------------------------------------------------------------------------
 use gl::types::*;
 // ----------------------------------------------------------------------------
@@ -22,10 +20,8 @@ use sif_math::{Matrix4x4, Vector3, Vector4};
 use sif_renderer::{Bind, Program, ShaderSrc, Texture as RendererTexture};
 use sif_three::NodeHolder;
 // ----------------------------------------------------------------------------
-use super::{
-    light, post::DepthMap, Camera, ColorExponent, ColorIntensity, Object,
-    ObjectData, Result,
-};
+use super::{light, Camera, ColorExponent, ColorIntensity, Error, Object,
+            ObjectData, Result, post::DepthMap};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// const PIPELINE_MAX_BONE
@@ -229,7 +225,11 @@ impl Pipeline {
     }
     // ========================================================================
     /// set_matrix4
-    fn set_matrix4<Q: ?Sized>(&self, name: &Q, matrix: &Matrix4x4<GLfloat>)
+    fn set_matrix4<Q: ?Sized>(
+        &self,
+        name: &Q,
+        matrix: &Matrix4x4<GLfloat>,
+    ) -> Result<&Self>
     where
         String: Borrow<Q>,
         Q: Hash + Ord,
@@ -239,7 +239,8 @@ impl Pipeline {
             1,
             ::gl::FALSE,
             matrix.as_ptr(),
-        );
+        )?;
+        Ok(self)
     }
     // ========================================================================
     /// set_light
@@ -263,7 +264,7 @@ impl Pipeline {
                         ),
                         1,
                         pos.as_ptr(),
-                    );
+                    )?;
                 }
                 {
                     let mut dir = Vector3::from(
@@ -278,7 +279,7 @@ impl Pipeline {
                         ),
                         1,
                         dir.as_ptr(),
-                    );
+                    )?;
                 }
                 {
                     let l = managed_light.as_ref().borrow();
@@ -291,7 +292,7 @@ impl Pipeline {
                                 i
                             ),
                             if is_enable { 1 } else { 0 },
-                        );
+                        )?;
                         if !is_enable {
                             return Ok(self);
                         }
@@ -307,7 +308,7 @@ impl Pipeline {
                         } else {
                             0
                         },
-                    );
+                    )?;
                     Program::set_uniform3fv(
                         sif_renderer_program_location!(
                             self.program,
@@ -316,7 +317,7 @@ impl Pipeline {
                         ),
                         1,
                         (l.color * l.intensity).as_ptr(),
-                    );
+                    )?;
 
                     Program::set_uniform1f(
                         sif_renderer_program_location!(
@@ -325,7 +326,7 @@ impl Pipeline {
                             i
                         ),
                         l.exponent,
-                    );
+                    )?;
                     Program::set_uniform3fv(
                         sif_renderer_program_location!(
                             self.program,
@@ -334,7 +335,7 @@ impl Pipeline {
                         ),
                         1,
                         l.kcklkq.as_ptr(),
-                    );
+                    )?;
                     Program::set_uniform1f(
                         sif_renderer_program_location!(
                             self.program,
@@ -346,7 +347,7 @@ impl Pipeline {
                         } else {
                             -1.0
                         },
-                    );
+                    )?;
 
                     if l.flags.contains(light::Flags::SHADOW) {
                         Program::set_uniform1i(
@@ -356,7 +357,7 @@ impl Pipeline {
                                 i
                             ),
                             1,
-                        );
+                        )?;
                         Program::set_texture(
                             sif_renderer_program_location!(
                                 self.program,
@@ -364,7 +365,7 @@ impl Pipeline {
                             ),
                             (15 + i) as GLint,
                             l.as_shadow_color(),
-                        );
+                        )?;
                         let shadow_param = l.as_shadow_param();
                         {
                             let mat4_proj = Camera::frustum(
@@ -386,7 +387,7 @@ impl Pipeline {
                                 1,
                                 ::gl::FALSE,
                                 (mat4_proj * mat4_light).as_ptr(),
-                            );
+                            )?;
                         }
                         Program::set_uniform1f(
                             sif_renderer_program_location!(
@@ -395,7 +396,7 @@ impl Pipeline {
                                 i
                             ),
                             shadow_param.near,
-                        );
+                        )?;
                         Program::set_uniform1f(
                             sif_renderer_program_location!(
                                 self.program,
@@ -403,7 +404,7 @@ impl Pipeline {
                                 i
                             ),
                             shadow_param.far,
-                        );
+                        )?;
                     } else {
                         Program::set_uniform1i(
                             sif_renderer_program_location!(
@@ -412,7 +413,7 @@ impl Pipeline {
                                 i
                             ),
                             0,
-                        );
+                        )?;
                     }
                 }
                 false
@@ -429,7 +430,7 @@ impl Pipeline {
                     i
                 ),
                 0,
-            );
+            )?;
         }
         Ok(self)
     }
@@ -446,7 +447,7 @@ impl Pipeline {
                     ),
                     4 as GLint,
                     &self.bayer_matrix,
-                );
+                )?;
                 let mut shift = ::rand::random::<[GLfloat; 2]>();
                 shift[0] *= 16.0;
                 shift[1] *= 16.0;
@@ -457,7 +458,7 @@ impl Pipeline {
                     ),
                     1,
                     shift.as_ptr(),
-                );
+                )?;
             }
             {
                 // ambient
@@ -468,7 +469,7 @@ impl Pipeline {
                     ),
                     1,
                     (param.ambient.color * param.ambient.intensity).as_ptr(),
-                );
+                )?;
                 Program::set_uniform1i(
                     sif_renderer_program_location!(
                         self.program,
@@ -479,7 +480,7 @@ impl Pipeline {
                     } else {
                         0
                     },
-                );
+                )?;
                 Program::set_uniform3fv(
                     sif_renderer_program_location!(
                         self.program,
@@ -487,7 +488,7 @@ impl Pipeline {
                     ),
                     1,
                     param.ink.color.as_ptr(),
-                );
+                )?;
                 Program::set_uniform1f(
                     sif_renderer_program_location!(
                         self.program,
@@ -498,7 +499,7 @@ impl Pipeline {
                     } else {
                         0.0
                     },
-                );
+                )?;
                 Program::set_uniform3fv(
                     sif_renderer_program_location!(
                         self.program,
@@ -506,7 +507,7 @@ impl Pipeline {
                     ),
                     1,
                     param.rim.color.as_ptr(),
-                );
+                )?;
                 Program::set_uniform1f(
                     sif_renderer_program_location!(
                         self.program,
@@ -517,14 +518,17 @@ impl Pipeline {
                     } else {
                         0.0
                     },
-                );
+                )?;
             }
 
             let view = if let Some(ref m) = param.camera {
                 let obj = &*m.as_ref().borrow();
                 {
                     let c = AsRef::<RefCell<Camera>>::as_ref(obj).borrow_mut();
-                    self.set_matrix4("u_Mat4_Proj", &c.projection_matrix());
+                    let _ = self.set_matrix4(
+                        "u_Mat4_Proj",
+                        &c.projection_matrix(),
+                    )?;
                 }
 
                 let n = obj.as_node()?.borrow();
@@ -533,7 +537,10 @@ impl Pipeline {
                 // view        = inverse camera matrix
                 *n.as_inverse_matrix()
             } else {
-                panic!("::graphics::pipeline::Pipeline::emit: no Camera.");
+                return Err(Error::InvalidArg(
+                    "::graphics::pipeline::Pipeline::emit: no Camera"
+                        .to_string(),
+                ));
             };
 
             if param.flags.contains(Flags::DIRTY_LIGHTS) {
@@ -548,11 +555,11 @@ impl Pipeline {
                 let mut obj = m.as_ref().borrow_mut();
                 if let Ok(rc) = obj.as_node() {
                     let n = &*rc.borrow();
-                    self.set_matrix4("u_Mat4_Model", n.as_matrix());
-                    self.set_matrix4(
-                        "u_Mat4_ViewModel",
-                        &(view * *n.as_matrix()),
-                    );
+                    let _ = self.set_matrix4("u_Mat4_Model", n.as_matrix())?
+                        .set_matrix4(
+                            "u_Mat4_ViewModel",
+                            &(view * *n.as_matrix()),
+                        )?;
                 }
                 obj.draw(&self.program)?;
             }

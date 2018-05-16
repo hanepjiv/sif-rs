@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2018/05/12
+//  @date 2018/05/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -165,7 +165,7 @@ impl Material {
     }
     // ========================================================================
     /// set_material
-    pub fn set_material(&self, prog: &Program) {
+    pub fn set_material(&self, prog: &Program) -> Result<&Self> {
         if let Some(Ok(ref textures)) = self.textures {
             for i in 0..MATERIAL_TEXTURE_NAMES.len() {
                 if let Some(ref managed) = textures[i] {
@@ -177,7 +177,7 @@ impl Material {
                             MATERIAL_TEXTURE_FLAGS[i]
                         ),
                         1,
-                    );
+                    )?;
                     Program::set_texture(
                         sif_renderer_program_location!(
                             prog,
@@ -185,7 +185,7 @@ impl Material {
                         ),
                         i as GLint,
                         &*siftex.borrow(),
-                    );
+                    )?;
                 } else {
                     Program::set_uniform1i(
                         sif_renderer_program_location!(
@@ -193,7 +193,7 @@ impl Material {
                             MATERIAL_TEXTURE_FLAGS[i]
                         ),
                         0,
-                    );
+                    )?;
                 }
             }
         } else {
@@ -204,54 +204,54 @@ impl Material {
                 Program::set_uniform1i(
                     sif_renderer_program_location!(prog, *flag),
                     0,
-                );
+                )?;
             }
         }
         Program::set_uniform1f(
             sif_renderer_program_location!(prog, "u_Material.parallax.height"),
             self.parallax.height,
-        );
+        )?;
         Program::set_uniform1i(
             sif_renderer_program_location!(prog, "u_Material.parallax.loop"),
             self.parallax.loop_,
-        );
+        )?;
         Program::set_uniform1i(
             sif_renderer_program_location!(
                 prog,
                 "u_Material.parallax.shadow_loop"
             ),
             self.parallax.shadow_loop,
-        );
+        )?;
         Program::set_uniform1f(
             sif_renderer_program_location!(
                 prog,
                 "u_Material.parallax.shadow_exponent"
             ),
             self.parallax.shadow_exponent,
-        );
+        )?;
         Program::set_uniform3fv(
             sif_renderer_program_location!(prog, "u_Material.diffuse"),
             1,
             (self.diffuse.color * self.diffuse.intensity).as_ptr(),
-        );
+        )?;
         Program::set_uniform3fv(
             sif_renderer_program_location!(prog, "u_Material.specular"),
             1,
             (self.specular.color * self.specular.intensity).as_ptr(),
-        );
+        )?;
         Program::set_uniform1f(
             sif_renderer_program_location!(prog, "u_Material.shininess"),
             self.shininess,
-        );
+        )?;
         Program::set_uniform3fv(
             sif_renderer_program_location!(prog, "u_Material.emissive"),
             1,
             (self.emissive.color * self.emissive.intensity).as_ptr(),
-        );
+        )?;
         Program::set_uniform1f(
             sif_renderer_program_location!(prog, "u_Material.alpha"),
             self.alpha,
-        );
+        )?;
         Program::set_uniform1i(
             sif_renderer_program_location!(prog, "u_Material.is_anisotropic"),
             if self.flags.contains(Flags::ANISOTROPIC) {
@@ -259,7 +259,7 @@ impl Material {
             } else {
                 0
             },
-        );
+        )?;
         Program::set_uniform1i(
             sif_renderer_program_location!(prog, "u_Material.is_bump"),
             if self.flags.contains(Flags::BUMP) {
@@ -267,7 +267,7 @@ impl Material {
             } else {
                 0
             },
-        );
+        )?;
         Program::set_uniform1i(
             sif_renderer_program_location!(prog, "u_Material.is_parallax"),
             if self.flags.contains(Flags::PARALLAX) {
@@ -275,11 +275,12 @@ impl Material {
             } else {
                 0
             },
-        );
+        )?;
+        Ok(self)
     }
     // ------------------------------------------------------------------------
     /// set_material_silhouette
-    pub fn set_material_silhouette(&self, prog: &Program) {
+    pub fn set_material_silhouette(&self, prog: &Program) -> Result<&Self> {
         if let Some(Ok(ref textures)) = self.textures {
             if let Some(ref managed) = textures[0] {
                 let tex = managed.as_ref().borrow();
@@ -290,7 +291,7 @@ impl Material {
                         MATERIAL_TEXTURE_FLAGS[0]
                     ),
                     1,
-                );
+                )?;
                 Program::set_texture(
                     sif_renderer_program_location!(
                         prog,
@@ -298,7 +299,7 @@ impl Material {
                     ),
                     0,
                     &*siftex.borrow(),
-                );
+                )?;
             } else {
                 Program::set_uniform1i(
                     sif_renderer_program_location!(
@@ -306,7 +307,7 @@ impl Material {
                         MATERIAL_TEXTURE_FLAGS[0]
                     ),
                     0,
-                );
+                )?;
             }
         } else {
             Program::set_uniform1i(
@@ -315,11 +316,12 @@ impl Material {
                     MATERIAL_TEXTURE_FLAGS[0]
                 ),
                 0,
-            );
+            )?;
         }
         Program::set_uniform1f(
             sif_renderer_program_location!(prog, "u_Material.alpha"),
             self.alpha,
-        );
+        )?;
+        Ok(self)
     }
 }

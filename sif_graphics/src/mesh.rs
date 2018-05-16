@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2018/05/12
+//  @date 2018/05/17
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -213,13 +213,15 @@ impl Mesh {
                 1.0,
             ][..]),
             ::gl::STATIC_DRAW,
-            vec![SubMesh::new(
-                &[0, 1, 2, 0, 2, 3][..],
-                ::gl::STATIC_DRAW,
-                ::gl::TRIANGLES,
-                material_index,
-                flags,
-            )],
+            vec![
+                SubMesh::new(
+                    &[0, 1, 2, 0, 2, 3][..],
+                    ::gl::STATIC_DRAW,
+                    ::gl::TRIANGLES,
+                    material_index,
+                    flags,
+                ),
+            ],
         )
     }
     // ========================================================================
@@ -275,8 +277,8 @@ impl Mesh {
                     material: polygon.material_index,
                     flags: polygon.submesh_flags(),
                 };
-                let tmp =
-                    tmps.entry(tmp_key.clone()).or_insert_with(Tmp::default);
+                let tmp = tmps.entry(tmp_key.clone())
+                    .or_insert_with(Tmp::default);
 
                 let mut p = Vector3::<GLfloat>::from(
                     &lbf_mesh.elem(Element::POSITION, polygon.indices[1].0)?
@@ -416,7 +418,8 @@ impl Mesh {
                     }
                     if l == tmp_vertices.len() {
                         tmp_vertices.push(vtx);
-                        tmp.indices.push(tmp_vertices.len() as GLuint - 1);
+                        tmp.indices
+                            .push(tmp_vertices.len() as GLuint - 1);
                     } else {
                         tmp.indices.push(l as GLuint);
                     }
@@ -487,12 +490,12 @@ impl Mesh {
             ::gl::FALSE,
             size_of::<GLfloat>() * self.stride,
             size_of::<GLfloat>() * self.offsets[e] as usize,
-        );
+        )?;
         Ok(self)
     }
     // ========================================================================
     /// check_draw
-    fn check_draw(&mut self) -> Result<&mut Self> {
+    fn check_draw(&mut self) -> Result<()> {
         if self.buffer.is_none() {
             self.buffer = Some(Buffer::new_vertices(
                 self.vertices.as_ref().ok_or_else(|| {
@@ -515,16 +518,16 @@ impl Mesh {
                     )
                 })?;
                 unsafe {
-                    buffer.sub_data(
+                    let _ = buffer.sub_data(
                         0,
                         vs.len() * size_of::<GLfloat>(),
                         vs.as_ptr(),
-                    )?
+                    )?;
                 }
             }
             self.flags.remove(Flags::DIRTY);
         }
-        Ok(self)
+        Ok(())
     }
     // ------------------------------------------------------------------------
     /// draw

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/10
-//  @date 2018/05/12
+//  @date 2018/05/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -18,6 +18,8 @@ use uuid::Uuid;
 pub enum Error {
     /// OptNone
     OptNone(String),
+    /// InvalidArg
+    InvalidArg(String),
     /// InvalidEnum
     InvalidEnum,
     /// InvalidImage
@@ -28,6 +30,8 @@ pub enum Error {
     Path(String),
     /// Mesh
     Mesh(String),
+    /// Light
+    Light(String),
     /// LBF
     LBF(super::lbf::Error),
     /// IO
@@ -101,22 +105,7 @@ impl From<::sdl2::ttf::FontError> for Error {
 impl ::std::fmt::Display for Error {
     // ========================================================================
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
-            ref e @ Error::OptNone(_)
-            | ref e @ Error::InvalidEnum
-            | ref e @ Error::InvalidImage
-            | ref e @ Error::ManagedNotFound(_)
-            | ref e @ Error::Path(_)
-            | ref e @ Error::Mesh(_) => write!(f, "{:?}", e),
-            Error::LBF(ref e) => e.fmt(f),
-            Error::IO(ref e) => e.fmt(f),
-            Error::Sif(ref e) => e.fmt(f),
-            Error::SifManager(ref e) => e.fmt(f),
-            Error::SifRenderer(ref e) => e.fmt(f),
-            Error::SifThree(ref e) => e.fmt(f),
-            Error::GL(ref e) => e.fmt(f),
-            Error::SDL2TTFFont(ref e) => e.fmt(f),
-        }
+        write!(f, "{:?}", self)
     }
 }
 // ============================================================================
@@ -124,12 +113,16 @@ impl ::std::error::Error for Error {
     // ========================================================================
     fn description(&self) -> &str {
         match *self {
-            Error::OptNone(_) => "::graphics::OptNone",
-            Error::InvalidEnum => "::graphics::InvalidImage",
-            Error::InvalidImage => "::graphics::InvalidImage",
-            Error::ManagedNotFound(_) => "::graphics::ManagedNotFound",
-            Error::Path(_) => "::graphics::Path",
-            Error::Mesh(_) => "::graphics::Mesh",
+            Error::OptNone(_) => "::sif_graphics::Error::OptNone",
+            Error::InvalidArg(_) => "::sif_graphics::Error::InvalidArg",
+            Error::InvalidEnum => "::sif_graphics::Error::InvalidImage",
+            Error::InvalidImage => "::sif_graphics::Error::InvalidImage",
+            Error::ManagedNotFound(_) => {
+                "::sif_graphics::Error::ManagedNotFound"
+            }
+            Error::Path(_) => "::sif_graphics::Error::Path",
+            Error::Mesh(_) => "::sif_graphics::Error::Mesh",
+            Error::Light(_) => "::sif_graphics::Error::Light",
             Error::LBF(ref e) => e.description(),
             Error::IO(ref e) => e.description(),
             Error::Sif(ref e) => e.description(),
@@ -144,11 +137,13 @@ impl ::std::error::Error for Error {
     fn cause(&self) -> Option<&::std::error::Error> {
         match *self {
             Error::OptNone(_) => None,
+            Error::InvalidArg(_) => None,
             Error::InvalidEnum => None,
             Error::InvalidImage => None,
             Error::ManagedNotFound(_) => None,
             Error::Path(_) => None,
             Error::Mesh(_) => None,
+            Error::Light(_) => None,
             Error::LBF(ref e) => Some(e),
             Error::IO(ref e) => Some(e),
             Error::Sif(ref e) => Some(e),

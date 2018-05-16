@@ -6,14 +6,15 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2018/05/09
+//  @date 2018/05/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use gl::types::*;
 use std::result::Result as StdResult;
 // ----------------------------------------------------------------------------
-use super::{gl_result, Bind, GLError, Render, Texture};
+use gl::types::*;
+// ----------------------------------------------------------------------------
+use super::{gl_result, Bind, Error, Render, Result, Texture};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Frame
@@ -26,17 +27,15 @@ pub struct Frame {
 impl Frame {
     // ========================================================================
     /// new
-    pub fn new() -> Self {
-        match gl_result(|| -> StdResult<GLuint, ()> {
+    pub fn new() -> Result<Self> {
+        let id = gl_result(|| -> Result<GLuint> {
             let mut id = 0;
             unsafe {
                 ::gl::GenFramebuffers(1, &mut id);
             }
             Ok(id)
-        }) {
-            Ok(id) => Frame { id },
-            _ => panic!("Frame::new"),
-        }
+        })?;
+        Ok(Frame { id })
     }
     // ========================================================================
     /// attach_2d
@@ -45,9 +44,9 @@ impl Frame {
         attatchment: GLenum,
         textarget: GLenum,
         texture: &Texture,
-    ) -> StdResult<(), GLError<(), GLenum>> {
-        self.bind_with(|| -> StdResult<(), GLError<(), GLenum>> {
-            gl_result(|| -> StdResult<(), GLenum> {
+    ) -> Result<&Self> {
+        self.bind_with(|| -> Result<()> {
+            gl_result(|| -> Result<()> {
                 unsafe {
                     ::gl::FramebufferTexture2D(
                         ::gl::FRAMEBUFFER,
@@ -66,8 +65,10 @@ impl Frame {
                     ::gl::FRAMEBUFFER_COMPLETE => Ok(()),
                     x => Err(x),
                 }
-            })
-        })
+            })?;
+            Ok(())
+        })?;
+        Ok(self)
     }
     // ========================================================================
     /// attach_render
@@ -75,9 +76,9 @@ impl Frame {
         &self,
         attatchment: GLenum,
         renderbuffer: &Render,
-    ) -> StdResult<(), GLError<(), GLenum>> {
-        self.bind_with(|| {
-            gl_result(|| -> StdResult<(), GLenum> {
+    ) -> Result<&Self> {
+        self.bind_with(|| -> Result<()> {
+            gl_result(|| -> Result<()> {
                 unsafe {
                     ::gl::FramebufferRenderbuffer(
                         ::gl::FRAMEBUFFER,
@@ -95,8 +96,10 @@ impl Frame {
                     ::gl::FRAMEBUFFER_COMPLETE => Ok(()),
                     x => Err(x),
                 }
-            })
-        })
+            })?;
+            Ok(())
+        })?;
+        Ok(self)
     }
 }
 // ============================================================================
@@ -113,27 +116,29 @@ impl Drop for Frame {
 // ============================================================================
 impl Bind for Frame {
     // ========================================================================
+    type BindError = Error;
+    // ========================================================================
     fn id(&self) -> GLuint {
         self.id
     }
     // ========================================================================
-    /// bind
-    fn bind(&self) {
+    fn bind(&self) -> Result<()> {
         gl_result(|| -> StdResult<(), ()> {
             unsafe {
                 ::gl::BindFramebuffer(::gl::FRAMEBUFFER, self.id);
             }
             Ok(())
-        }).expect("Frame::bind");
+        })?;
+        Ok(())
     }
     // ========================================================================
-    /// unbind
-    fn unbind(&self) {
+    fn unbind(&self) -> Result<()> {
         gl_result(|| -> StdResult<(), ()> {
             unsafe {
                 ::gl::BindFramebuffer(::gl::FRAMEBUFFER, 0);
             }
             Ok(())
-        }).expect("Frame::unbind");
+        })?;
+        Ok(())
     }
 }

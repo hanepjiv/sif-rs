@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/27
-//  @date 2018/05/12
+//  @date 2018/05/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // const  =====================================================================
@@ -213,8 +213,8 @@ impl<'a, 'b> Font<'a, 'b> {
                 }
             }
 
-            surface.with_lock(|pxs| -> Result<()> {
-                self.textures
+            let _ = surface.with_lock(|pxs| -> Result<&Texture> {
+                Ok(self.textures
                     .last()
                     .ok_or_else(|| {
                         Error::OptNone(
@@ -229,8 +229,7 @@ impl<'a, 'b> Font<'a, 'b> {
                         rect.width() as GLsizei,
                         rect.height() as GLsizei,
                         pxs.as_ptr() as *const ::std::os::raw::c_void,
-                    )?;
-                Ok(())
+                    )?)
             })?;
 
             {

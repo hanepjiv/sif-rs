@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/23
-//  @date 2018/05/12
+//  @date 2018/05/17
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -18,13 +18,10 @@ use uuid::Uuid;
 use sif_manager::ManagedValue;
 use sif_math::{Vector3, Vector4};
 use sif_renderer::Program;
-use sif_three::{
-    Armature, AsNodeHolder, NodeHolder, NodeHolderField, Pose, TraRotSca,
-};
+use sif_three::{Armature, AsNodeHolder, NodeHolder, NodeHolderField, Pose,
+                TraRotSca};
 // ----------------------------------------------------------------------------
-use super::{
-    Result, {Camera, Light, Model},
-};
+use super::{Error, Result, {Camera, Light, Model}};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct ObjectSrc
@@ -362,7 +359,11 @@ impl Object {
     pub fn position(&self) -> Result<Vector3<GLfloat>> {
         let n = self.as_node()?.borrow();
         let m = n.as_matrix();
-        Ok(Vector3::<GLfloat>::new(m[3][0], m[3][1], m[3][2]))
+        Ok(Vector3::<GLfloat>::new(
+            m[3][0],
+            m[3][1],
+            m[3][2],
+        ))
     }
     // ------------------------------------------------------------------------
     /// front
@@ -389,25 +390,26 @@ impl Object {
     }
     // ========================================================================
     /// emit_pose
-    fn emit_pose(pose: &Pose<GLfloat>, prog: &Program) {
+    fn emit_pose(pose: &Pose<GLfloat>, prog: &Program) -> Result<()> {
         let l = pose.len();
         if 0 < l {
             Program::set_uniform1i(
                 sif_renderer_program_location!(prog, "u_Skinning"),
                 1,
-            );
+            )?;
             Program::set_uniform_matrix4fv(
                 sif_renderer_program_location!(prog, "u_Bones[0]"),
                 l as GLint,
                 ::gl::FALSE,
                 pose.matrix.as_ptr() as *const GLfloat,
-            );
+            )?;
         } else {
             Program::set_uniform1i(
                 sif_renderer_program_location!(prog, "u_Skinning"),
                 0,
-            );
+            )?;
         }
+        Ok(())
     }
     // ========================================================================
     /// draw_impl
@@ -418,19 +420,23 @@ impl Object {
     ) -> Result<()> {
         match self.object_data {
             ObjectData::Model(ref managed, Some(ref pose)) => {
-                Object::emit_pose(pose, prog);
+                Object::emit_pose(&pose, prog)?;
                 let mut model = managed.as_ref().borrow_mut();
-                func(&mut *model, prog)
+                func(&mut *model, prog)?;
+                Ok(())
             }
             ObjectData::Model(ref managed, None) => {
                 Program::set_uniform1i(
                     sif_renderer_program_location!(prog, "u_Skinning"),
                     0,
-                );
+                )?;
                 let mut model = managed.as_ref().borrow_mut();
-                func(&mut *model, prog)
+                func(&mut *model, prog)?;
+                Ok(())
             }
-            _ => panic!("Object::draw_impl: invalid object_data."),
+            _ => Err(Error::InvalidArg(
+                "Object::draw_impl: invalid object_data".to_string(),
+            )),
         }
     }
     // ------------------------------------------------------------------------

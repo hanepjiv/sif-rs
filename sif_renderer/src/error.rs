@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/09
-//  @date 2018/05/12
+//  @date 2018/05/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -22,8 +22,12 @@ pub enum Error {
     Renderer(String),
     /// Utf8
     Utf8(::std::str::Utf8Error),
+    /// FromUtf8
+    FromUtf8(::std::string::FromUtf8Error),
     /// FFINul
     FFINul(::std::ffi::NulError),
+    /// Image
+    Image(::image::ImageError),
     /// GL
     GL(Box<::std::error::Error>),
 }
@@ -34,9 +38,21 @@ impl From<::std::str::Utf8Error> for Error {
     }
 }
 // ----------------------------------------------------------------------------
+impl From<::std::string::FromUtf8Error> for Error {
+    fn from(e: ::std::string::FromUtf8Error) -> Self {
+        Error::FromUtf8(e)
+    }
+}
+// ----------------------------------------------------------------------------
 impl From<::std::ffi::NulError> for Error {
     fn from(e: ::std::ffi::NulError) -> Self {
         Error::FFINul(e)
+    }
+}
+// ----------------------------------------------------------------------------
+impl From<::image::ImageError> for Error {
+    fn from(e: ::image::ImageError) -> Self {
+        Error::Image(e)
     }
 }
 // ----------------------------------------------------------------------------
@@ -58,7 +74,9 @@ impl ::std::fmt::Display for Error {
                 write!(f, "{:?}", e)
             }
             Error::Utf8(ref e) => e.fmt(f),
+            Error::FromUtf8(ref e) => e.fmt(f),
             Error::FFINul(ref e) => e.fmt(f),
+            Error::Image(ref e) => e.fmt(f),
             Error::GL(ref e) => e.fmt(f),
         }
     }
@@ -71,7 +89,9 @@ impl ::std::error::Error for Error {
             Error::OptNone(_) => "::sif::renderer::Error::OptNone",
             Error::Renderer(_) => "::sif::renderer::Error::Renderer",
             Error::Utf8(ref e) => e.description(),
+            Error::FromUtf8(ref e) => e.description(),
             Error::FFINul(ref e) => e.description(),
+            Error::Image(ref e) => e.description(),
             Error::GL(ref e) => e.description(),
         }
     }
@@ -81,7 +101,9 @@ impl ::std::error::Error for Error {
             Error::OptNone(_) => None,
             Error::Renderer(_) => None,
             Error::Utf8(ref e) => Some(e),
+            Error::FromUtf8(ref e) => Some(e),
             Error::FFINul(ref e) => Some(e),
+            Error::Image(ref e) => Some(e),
             Error::GL(ref e) => Some(e.as_ref()),
         }
     }
