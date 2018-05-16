@@ -17,7 +17,7 @@ use sif_manager::ManagedValue;
 use sif_math::Vector3;
 use sif_renderer::{Bind, Program, Texture};
 // ----------------------------------------------------------------------------
-use super::{Error, Object, Result, Shadow, post::DepthMapParam};
+use super::{post::DepthMapParam, Error, Object, Result, Shadow};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// Flags
@@ -240,9 +240,7 @@ impl Bind for Light {
         if let Some(ref shadow) = self.shadow {
             shadow.unbind()
         } else {
-            Err(Error::Light(
-                "unbind: invalid shadow".to_string(),
-            ))
+            Err(Error::Light("unbind: invalid shadow".to_string()))
         }
     }
 }

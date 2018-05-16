@@ -213,15 +213,13 @@ impl Mesh {
                 1.0,
             ][..]),
             ::gl::STATIC_DRAW,
-            vec![
-                SubMesh::new(
-                    &[0, 1, 2, 0, 2, 3][..],
-                    ::gl::STATIC_DRAW,
-                    ::gl::TRIANGLES,
-                    material_index,
-                    flags,
-                ),
-            ],
+            vec![SubMesh::new(
+                &[0, 1, 2, 0, 2, 3][..],
+                ::gl::STATIC_DRAW,
+                ::gl::TRIANGLES,
+                material_index,
+                flags,
+            )],
         )
     }
     // ========================================================================
@@ -277,8 +275,8 @@ impl Mesh {
                     material: polygon.material_index,
                     flags: polygon.submesh_flags(),
                 };
-                let tmp = tmps.entry(tmp_key.clone())
-                    .or_insert_with(Tmp::default);
+                let tmp =
+                    tmps.entry(tmp_key.clone()).or_insert_with(Tmp::default);
 
                 let mut p = Vector3::<GLfloat>::from(
                     &lbf_mesh.elem(Element::POSITION, polygon.indices[1].0)?
@@ -418,8 +416,7 @@ impl Mesh {
                     }
                     if l == tmp_vertices.len() {
                         tmp_vertices.push(vtx);
-                        tmp.indices
-                            .push(tmp_vertices.len() as GLuint - 1);
+                        tmp.indices.push(tmp_vertices.len() as GLuint - 1);
                     } else {
                         tmp.indices.push(l as GLuint);
                     }

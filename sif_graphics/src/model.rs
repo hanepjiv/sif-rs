@@ -72,10 +72,7 @@ impl AsMut<Vec<ManagedValue<Mesh>>> for Model {
                 panic!("AsMut<Vec<ManagedValue<Mesh>>> for Model");
             }
         } else {
-            panic!(
-                "AsMut<Vec<ManagedValue<Mesh>>> for Model: {:?}",
-                self
-            );
+            panic!("AsMut<Vec<ManagedValue<Mesh>>> for Model: {:?}", self);
         }
     }
 }
