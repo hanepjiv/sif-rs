@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/23
-//  @date 2018/05/12
+//  @date 2018/05/23
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -110,31 +110,28 @@ where
     }
     // ========================================================================
     /// contains_key
-    pub fn contains_key<U: ?Sized>(&self, uuid: &U) -> bool
+    pub fn contains_key<U>(&self, uuid: &U) -> bool
     where
         Uuid: Borrow<U>,
-        U: Hash + Ord,
+        U: ?Sized + Hash + Ord,
     {
         self.nodes.contains_key(uuid)
     }
     // ========================================================================
     /// get
-    pub fn get<U: ?Sized>(&self, uuid: &U) -> Option<ManagedValue<Node<V>>>
+    pub fn get<U>(&self, uuid: &U) -> Option<ManagedValue<Node<V>>>
     where
         Uuid: Borrow<U>,
-        U: Hash + Ord,
+        U: ?Sized + Hash + Ord,
     {
         self.nodes.get(uuid).cloned()
     }
     // ========================================================================
     /// remove
-    pub fn remove<U: ?Sized>(
-        &mut self,
-        uuid: &U,
-    ) -> Option<ManagedValue<Node<V>>>
+    pub fn remove<U>(&mut self, uuid: &U) -> Option<ManagedValue<Node<V>>>
     where
         Uuid: Borrow<U>,
-        U: Hash + Ord,
+        U: ?Sized + Hash + Ord,
     {
         self.nodes.remove(uuid)
     }

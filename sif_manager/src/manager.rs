@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/02/27
-//  @date 2018/05/12
+//  @date 2018/05/23
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -145,28 +145,28 @@ where
     }
     // ========================================================================
     /// get
-    pub fn get<U: ?Sized>(&self, uuid: &U) -> Option<&ManagedValue<T>>
+    pub fn get<U>(&self, uuid: &U) -> Option<&ManagedValue<T>>
     where
         Uuid: Borrow<U>,
-        U: Hash + Ord,
+        U: ?Sized + Hash + Ord,
     {
         self.map.get(uuid)
     }
     // ========================================================================
     /// remove
-    pub fn remove<U: ?Sized>(&mut self, uuid: &U) -> Option<ManagedValue<T>>
+    pub fn remove<U>(&mut self, uuid: &U) -> Option<ManagedValue<T>>
     where
         Uuid: Borrow<U>,
-        U: Hash + Ord,
+        U: ?Sized + Hash + Ord,
     {
         self.map.remove(uuid)
     }
     // ========================================================================
     /// contains_key
-    pub fn contains_key<U: ?Sized>(&self, uuid: &U) -> bool
+    pub fn contains_key<U>(&self, uuid: &U) -> bool
     where
         Uuid: Borrow<U>,
-        U: Hash + Ord,
+        U: ?Sized + Hash + Ord,
     {
         self.map.contains_key(uuid)
     }

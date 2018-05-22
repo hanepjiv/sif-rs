@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/27
-//  @date 2018/05/16
+//  @date 2018/05/23
 
 // ////////////////////////////////////////////////////////////////////////////
 // const  =====================================================================
@@ -195,7 +195,8 @@ impl<'a, 'b> Font<'a, 'b> {
         while let Some(ref c) = self.added.pop() {
             let mut s = String::new();
             s.push(*c);
-            let surface = self.ttf_font
+            let surface = self
+                .ttf_font
                 .render(&s)
                 .blended(::sdl2::pixels::Color::RGBA(0xFF, 0xFF, 0xFF, 0xFF))?;
             let rect = surface.rect();
@@ -214,7 +215,8 @@ impl<'a, 'b> Font<'a, 'b> {
             }
 
             let _ = surface.with_lock(|pxs| -> Result<&Texture> {
-                Ok(self.textures
+                Ok(self
+                    .textures
                     .last()
                     .ok_or_else(|| {
                         Error::OptNone(
@@ -267,16 +269,16 @@ impl<'a, 'b> Font<'a, 'b> {
     }
     // ========================================================================
     /// advance
-    pub fn advance<C: ?Sized>(&self, c: &C) -> Option<GLfloat>
+    pub fn advance<C>(&self, c: &C) -> Option<GLfloat>
     where
         char: Borrow<C>,
-        C: Hash + Ord,
+        C: ?Sized + Hash + Ord,
     {
         self.glyph(c).map(|g| -> GLfloat { g.advance })
     }
     // ========================================================================
     /// draw
-    pub fn draw<C: ?Sized>(
+    pub fn draw<C>(
         &mut self,
         c: &C,
         metal: &Metal,
@@ -285,7 +287,7 @@ impl<'a, 'b> Font<'a, 'b> {
     ) -> Result<GLfloat>
     where
         char: Borrow<C>,
-        C: Hash + Ord,
+        C: ?Sized + Hash + Ord,
     {
         let _ = self.update()?;
         let glyph = self.glyph(c).ok_or_else(|| {

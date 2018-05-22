@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/27
-//  @date 2018/05/12
+//  @date 2018/05/23
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -118,14 +118,14 @@ impl<'a, 'b> Layer<'a, 'b> {
     }
     // ========================================================================
     /// append
-    pub fn append<S: ?Sized + TLayerAppend>(&mut self, s: &S) {
+    pub fn append(&mut self, s: &impl TLayerAppend) {
         s.append(self)
     }
     // ------------------------------------------------------------------------
     /// append_str
-    fn append_str<S: ?Sized>(&mut self, s: &S)
+    fn append_str<S>(&mut self, s: &S)
     where
-        S: AsRef<str> + TFontReserve,
+        S: ?Sized + AsRef<str> + TFontReserve,
     {
         self.font.as_ref().borrow_mut().reserve(s);
         self.string.push_str(s.as_ref())

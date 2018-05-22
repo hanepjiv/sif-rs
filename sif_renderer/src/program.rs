@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2018/05/16
+//  @date 2018/05/23
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -177,10 +177,10 @@ impl Program {
     }
     // ========================================================================
     /// location
-    pub fn location<Q: ?Sized>(&self, name: &Q) -> Option<GLint>
+    pub fn location<Q>(&self, name: &Q) -> Option<GLint>
     where
         String: ::std::borrow::Borrow<Q>,
-        Q: ::std::hash::Hash + Ord,
+        Q: ?Sized + ::std::hash::Hash + Ord,
     {
         self.location_map.get(name).cloned()
     }

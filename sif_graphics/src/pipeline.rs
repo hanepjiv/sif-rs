@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2018/05/17
+//  @date 2018/05/23
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -104,8 +104,12 @@ bitflags! {
 // ============================================================================
 impl Default for Flags {
     fn default() -> Self {
-        Flags::AMBIENT | Flags::FOG | Flags::INK | Flags::RIM
-            | Flags::DIRTY_AMBIENTS | Flags::DIRTY_LIGHTS
+        Flags::AMBIENT
+            | Flags::FOG
+            | Flags::INK
+            | Flags::RIM
+            | Flags::DIRTY_AMBIENTS
+            | Flags::DIRTY_LIGHTS
     }
 }
 // ////////////////////////////////////////////////////////////////////////////
@@ -229,14 +233,14 @@ impl Pipeline {
     }
     // ========================================================================
     /// set_matrix4
-    fn set_matrix4<Q: ?Sized>(
+    fn set_matrix4<Q>(
         &self,
         name: &Q,
         matrix: &Matrix4x4<GLfloat>,
     ) -> Result<&Self>
     where
         String: Borrow<Q>,
-        Q: Hash + Ord,
+        Q: ?Sized + Hash + Ord,
     {
         Program::set_uniform_matrix4fv(
             sif_renderer_program_location!(self.program, name),
@@ -529,10 +533,8 @@ impl Pipeline {
                 let obj = &*m.as_ref().borrow();
                 {
                     let c = AsRef::<RefCell<Camera>>::as_ref(obj).borrow_mut();
-                    let _ = self.set_matrix4(
-                        "u_Mat4_Proj",
-                        &c.projection_matrix(),
-                    )?;
+                    let _ = self
+                        .set_matrix4("u_Mat4_Proj", &c.projection_matrix())?;
                 }
 
                 let n = obj.as_node()?.borrow();
@@ -559,7 +561,8 @@ impl Pipeline {
                 let mut obj = m.as_ref().borrow_mut();
                 if let Ok(rc) = obj.as_node() {
                     let n = &*rc.borrow();
-                    let _ = self.set_matrix4("u_Mat4_Model", n.as_matrix())?
+                    let _ = self
+                        .set_matrix4("u_Mat4_Model", n.as_matrix())?
                         .set_matrix4(
                             "u_Mat4_ViewModel",
                             &(view * *n.as_matrix()),

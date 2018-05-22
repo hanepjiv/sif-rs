@@ -444,13 +444,21 @@ where
     type Output = Vector4<V>;
     fn mul(self, rhs: Vector4<V>) -> Self::Output {
         Vector4::<V>::from([
-            (self[0][0] * rhs[0] + self[1][0] * rhs[1] + self[2][0] * rhs[2]
+            (self[0][0] * rhs[0]
+                + self[1][0] * rhs[1]
+                + self[2][0] * rhs[2]
                 + self[3][0] * rhs[3]),
-            (self[0][1] * rhs[0] + self[1][1] * rhs[1] + self[2][1] * rhs[2]
+            (self[0][1] * rhs[0]
+                + self[1][1] * rhs[1]
+                + self[2][1] * rhs[2]
                 + self[3][1] * rhs[3]),
-            (self[0][2] * rhs[0] + self[1][2] * rhs[1] + self[2][2] * rhs[2]
+            (self[0][2] * rhs[0]
+                + self[1][2] * rhs[1]
+                + self[2][2] * rhs[2]
                 + self[3][2] * rhs[3]),
-            (self[0][3] * rhs[0] + self[1][3] * rhs[1] + self[2][3] * rhs[2]
+            (self[0][3] * rhs[0]
+                + self[1][3] * rhs[1]
+                + self[2][3] * rhs[2]
                 + self[3][3] * rhs[3]),
         ])
     }

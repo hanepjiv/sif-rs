@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/06
-//  @date 2018/05/16
+//  @date 2018/05/23
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -59,8 +59,8 @@ impl Buffer {
     }
     // ========================================================================
     /// new_vertices
-    pub fn new_vertices<T: ?Sized + AsRef<[GLfloat]>>(
-        data: &T,
+    pub fn new_vertices(
+        data: impl AsRef<[GLfloat]>,
         usage: GLenum,
     ) -> Result<Self> {
         Buffer::new(
@@ -72,8 +72,8 @@ impl Buffer {
     }
     // ========================================================================
     /// new_indices
-    pub fn new_indices<T: ?Sized + AsRef<[GLuint]>>(
-        data: &T,
+    pub fn new_indices(
+        data: impl AsRef<[GLuint]>,
         usage: GLenum,
     ) -> Result<Self> {
         Buffer::new(
