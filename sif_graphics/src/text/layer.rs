@@ -19,9 +19,7 @@ use sif_manager::ManagedValue;
 use sif_math::Matrix4x4;
 use sif_three::{new_mat4_tra, new_mat4_trarotsca};
 // ----------------------------------------------------------------------------
-use super::{
-    super::{Error, Result}, Font, Metal, TFontReserve,
-};
+use super::{Font, Metal, TFontReserve, super::{Error, Result}};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// trait TLayerAppend
@@ -118,7 +116,10 @@ impl<'a, 'b> Layer<'a, 'b> {
     }
     // ========================================================================
     /// append
-    pub fn append(&mut self, s: &impl TLayerAppend) {
+    pub fn append<S>(&mut self, s: &S)
+    where
+        S: ?Sized + TLayerAppend,
+    {
         s.append(self)
     }
     // ------------------------------------------------------------------------
