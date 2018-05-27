@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/02
-//  @date 2018/05/15
+//  @date 2018/05/26
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -272,9 +272,9 @@ where
     }
     fn from_lua(state: &mut LuaState, idx: ::lua::Index) -> Result<Self> {
         Ok(TraRotSca::<T>::new(
-            state.idxtbl::<Vector3<T>, _>(idx, "translation")?,
-            state.idxtbl::<Quaternion<T>, _>(idx, "rotation")?,
-            state.idxtbl::<Vector3<T>, _>(idx, "scaling")?,
+            state.idxtbl(idx, "translation")?,
+            state.idxtbl(idx, "rotation")?,
+            state.idxtbl(idx, "scaling")?,
         ))
     }
 }
@@ -409,7 +409,7 @@ impl LuaType for Texture {
     fn from_lua(state: &mut LuaState, idx: ::lua::Index) -> Result<Self> {
         let uuid = Uuid::from_lua(state, idx - 1)?;
         let name = state.idxtbl::<String, _>(idx, "name")?;
-        let image = state.idxtbl::<Uuid, _>(idx, "image")?;
+        let image = state.idxtbl(idx, "image")?;
 
         let wrap_match = |s: String| -> Result<GLenum> {
             match s.as_str() {
@@ -442,7 +442,7 @@ impl LuaType for Texture {
         let filter_mag = filter_match(state.idxtbl(idx, "filter_mag")?)?;
         let filter_min = filter_match(state.idxtbl(idx, "filter_min")?)?;
 
-        let mipmap = state.idxtbl::<bool, _>(idx, "mipmap")?;
+        let mipmap = state.idxtbl(idx, "mipmap")?;
 
         Ok(Texture::new(
             uuid, name, wrap_s, wrap_t, filter_mag, filter_min, mipmap, image,
@@ -620,18 +620,18 @@ impl LuaType for LightSrc {
             state.idxtbl::<String, _>(idx, "name")?,
         );
         light.color = state.idxtbl::<Vector3<GLfloat>, _>(idx, "color")?;
-        light.intensity = state.idxtbl::<GLfloat, _>(idx, "intensity")?;
+        light.intensity = state.idxtbl(idx, "intensity")?;
         let light_type = state.idxtbl::<String, _>(idx, "light_type")?;
         if "SUN" != light_type.as_str() {
             light.flags.insert(light::Flags::POINT);
             light.kcklkq = state.idxtbl::<Vector3<GLfloat>, _>(idx, "kcklkq")?;
             if "SPOT" == light_type.as_str() {
                 light.flags.insert(light::Flags::SPOT);
-                light.exponent = state.idxtbl::<GLfloat, _>(idx, "exponent")?;
-                light.cutoff = state.idxtbl::<GLfloat, _>(idx, "cutoff")?;
+                light.exponent = state.idxtbl(idx, "exponent")?;
+                light.cutoff = state.idxtbl(idx, "cutoff")?;
             }
         }
-        if state.idxtbl::<bool, _>(idx, "shadow").unwrap_or(false) {
+        if state.idxtbl(idx, "shadow").unwrap_or(false) {
             light.flags.insert(light::Flags::SHADOW);
         }
         Ok(light)
@@ -645,13 +645,13 @@ impl LuaType for Camera {
     fn from_lua(state: &mut LuaState, idx: ::lua::Index) -> Result<Self> {
         let uuid = Uuid::from_lua(state, idx - 1)?;
         let name = state.idxtbl::<String, _>(idx, "name")?;
-        let near = state.idxtbl::<GLfloat, _>(idx, "near")?;
-        let far = state.idxtbl::<GLfloat, _>(idx, "far")?;
+        let near = state.idxtbl(idx, "near")?;
+        let far = state.idxtbl(idx, "far")?;
         let camera_type = state.idxtbl::<String, _>(idx, "camera_type")?;
         match camera_type.as_str() {
             "FRUSTUM" => {
-                let alpha = state.idxtbl::<GLfloat, _>(idx, "alpha")?;
-                let aspect = state.idxtbl::<GLfloat, _>(idx, "aspect")?;
+                let alpha = state.idxtbl(idx, "alpha")?;
+                let aspect = state.idxtbl(idx, "aspect")?;
                 Ok(Camera::new_frustum(
                     uuid,
                     name,
@@ -662,8 +662,8 @@ impl LuaType for Camera {
                 ))
             }
             "ORTHO" => {
-                let width = state.idxtbl::<GLfloat, _>(idx, "width")?;
-                let height = state.idxtbl::<GLfloat, _>(idx, "height")?;
+                let width = state.idxtbl(idx, "width")?;
+                let height = state.idxtbl(idx, "height")?;
                 Ok(Camera::new_ortho(uuid, name, near, far, width, height))
             }
             _ => Err(Error::Type(format!(
@@ -682,10 +682,10 @@ impl LuaType for ObjectSrc {
         let object = ObjectSrc::new(
             state.idxtbl::<Uuid, _>(idx, "uuid")?,
             state.idxtbl::<String, _>(idx, "name")?,
-            state.idxtbl::<Uuid, _>(idx, "parent").ok(),
+            state.idxtbl(idx, "parent").ok(),
             state.idxtbl::<String, _>(idx, "data_type")?,
             state.idxtbl::<Uuid, _>(idx, "data_uuid")?,
-            state.idxtbl::<TraRotSca<GLfloat>, _>(idx, "trarotsca")?,
+            state.idxtbl(idx, "trarotsca")?,
         );
         Ok(object)
     }
@@ -865,7 +865,7 @@ impl LBF {
     // ========================================================================
     /// get_current
     fn get_current(state: &mut LuaState, idx: i32) -> Result<lua_Integer> {
-        let current = state.idxtbl::<lua_Integer, _>(idx, "current")?;
+        let current = state.idxtbl(idx, "current")?;
         if current < (CURRENT - AGE) || CURRENT < current {
             Err(Error::Current)
         } else {
