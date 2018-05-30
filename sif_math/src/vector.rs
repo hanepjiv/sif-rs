@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2018/05/15
+//  @date 2018/05/30
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -287,12 +287,12 @@ macro_rules! vector_define {
             }
             // ================================================================
             /// iter
-            pub fn iter<'a>(&'a self) -> ::std::slice::Iter<'a, V> {
+            pub fn iter(&self) -> ::std::slice::Iter<V> {
                 self.0.iter()
             }
             // ----------------------------------------------------------------
             /// iter_mut
-            pub fn iter_mut<'a>(&'a mut self) -> ::std::slice::IterMut<'a, V> {
+            pub fn iter_mut(&mut self) -> ::std::slice::IterMut<V> {
                 self.0.iter_mut()
             }
             // ================================================================

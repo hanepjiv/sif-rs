@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2018/05/23
+//  @date 2018/05/30
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -453,7 +453,7 @@ impl Pipeline {
                         self.program,
                         "u_Texture_BayerMatrix"
                     ),
-                    4 as GLint,
+                    4,
                     &self.bayer_matrix,
                 )?;
                 let mut shift = ::rand::random::<[GLfloat; 2]>();

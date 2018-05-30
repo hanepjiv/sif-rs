@@ -6,11 +6,11 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/12
-//  @date 2018/05/26
+//  @date 2018/05/30
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
-// rustc 1.26.0 (a77568041 2018-05-07)
+// rustc 1.26.1 (827013a31 2018-05-25)
 #![deny(
     anonymous_parameters, missing_copy_implementations,
     missing_debug_implementations, missing_docs, unstable_features,
@@ -36,12 +36,10 @@
     safe_extern_statics, unknown_crate_types
 )]
 #![warn(
-    bare_trait_object, dead_code, renamed_and_removed_lints, unreachable_pub
+    bare_trait_object, dead_code, elided_lifetime_in_path,
+    renamed_and_removed_lints, single_use_lifetime, unreachable_pub
 )]
-#![allow(
-    box_pointers, elided_lifetime_in_path, unsafe_code, trivial_casts,
-    single_use_lifetime, trivial_numeric_casts
-)]
+#![allow(box_pointers, trivial_casts, trivial_numeric_casts, unsafe_code)]
 // extern  ====================================================================
 #[macro_use]
 extern crate bitflags;
@@ -64,24 +62,28 @@ extern crate sif_manager;
 extern crate sif_math;
 extern crate sif_three;
 // use  =======================================================================
-pub use self::{
-    camera::{Camera, CameraType}, color::{ColorExponent, ColorIntensity},
-    element::{Element, ELEMENT_SIZE}, error::{Error, Result},
-    image::{Image, ImageFile, ImageProcedual, ImageProcedualMethod},
-    light::{Light, LightSrc}, material::Material, mesh::Mesh, model::Model,
-    object::{Object, ObjectData, ObjectSrc}, offsets::Offsets,
-    pipeline::{
-        Flags as PipelineFlags, Pipeline, PipelineParam, PIPELINE_MAX_BONE,
-        PIPELINE_MAX_LIGHT,
-    },
-    post::{
-        Blur, DepthMap, DepthMapParam, Effect, EffectArgs, Pass, Screen,
-        SquareBuffer,
-    },
-    scene::Scene, shadow::Shadow, submesh::SubMesh,
-    text::{Font, Layer as TextLayer, Metal as TextMetal, TFontReserve},
-    texture::Texture,
-};
+pub use self::{camera::{Camera, CameraType},
+               color::{ColorExponent, ColorIntensity},
+               element::{Element, ELEMENT_SIZE},
+               error::{Error, Result},
+               image::{Image, ImageFile, ImageProcedual,
+                       ImageProcedualMethod},
+               light::{Light, LightSrc},
+               material::Material,
+               mesh::Mesh,
+               model::Model,
+               object::{Object, ObjectData, ObjectSrc},
+               offsets::Offsets,
+               pipeline::{Flags as PipelineFlags, Pipeline, PipelineParam,
+                          PIPELINE_MAX_BONE, PIPELINE_MAX_LIGHT},
+               post::{Blur, DepthMap, DepthMapParam, Effect, EffectArgs,
+                      Pass, Screen, SquareBuffer},
+               scene::Scene,
+               shadow::Shadow,
+               submesh::SubMesh,
+               text::{Font, Layer as TextLayer, Metal as TextMetal,
+                      TFontReserve},
+               texture::Texture};
 // mod  =======================================================================
 mod camera;
 mod color;
