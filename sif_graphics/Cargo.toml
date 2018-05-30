@@ -30,7 +30,7 @@ sif_three               = { default-features = false, path="../sif_three" }
 # -----------------------------------------------------------------------------
 [dependencies.rand]
 default-features        = false
-version                 = "^0.4"
+version                 = "^0.5"
 features                = ["std"]
 # -----------------------------------------------------------------------------
 [dependencies.sdl2]
