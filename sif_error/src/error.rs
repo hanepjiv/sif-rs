@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/11/27
-//  @date 2018/05/12
+//  @date 2018/06/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -14,7 +14,7 @@ use std::error::Error as StdError;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum Error
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Error {
     /// Sif
     Sif(String),

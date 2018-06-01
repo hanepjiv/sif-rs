@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "sif"
-version                 = "0.4.2-alpha.0"
+version                 = "0.4.2-alpha.1"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
 keywords                = ["subsystem", "game", "math", "graphics"]
@@ -34,7 +34,6 @@ sif_renderer            = { default-features = false, path="sif_renderer" }
 sif_three               = { default-features = false, path="sif_three" }
 # =============================================================================
 [replace]
-#"sif:0.4.1"            = { default-features = false, path="./" }
 #"sif_error:0.1.0"      = { default-features = false, path="./sif_error" }
 #"sif_graphics:0.1.0"   = { default-features = false, path="./sif_graphics" }
 #"sif_manager:0.1.0"    = { default-features = false, path="./sif_manager" }

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/12
-//  @date 2018/05/30
+//  @date 2018/06/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -36,10 +36,12 @@
     safe_extern_statics, unknown_crate_types
 )]
 #![warn(
-    bare_trait_object, dead_code, elided_lifetime_in_path,
-    renamed_and_removed_lints, single_use_lifetime, unreachable_pub
+    bare_trait_object, dead_code, renamed_and_removed_lints, unreachable_pub
 )]
-#![allow(box_pointers, trivial_casts, trivial_numeric_casts, unsafe_code)]
+#![allow(
+    box_pointers, elided_lifetime_in_path, single_use_lifetime, trivial_casts,
+    trivial_numeric_casts, unsafe_code
+)]
 // extern  ====================================================================
 #[macro_use]
 extern crate bitflags;
@@ -52,10 +54,13 @@ extern crate sif_math;
 // use  =======================================================================
 pub use self::armature::{Armature, Bone, Pose};
 pub use self::error::{Error, Result};
-pub use self::graph::{AsNodeHolder, Graph, Node, NodeHolder, NodeHolderField};
-pub use self::trarotsca::{new_mat4_inverse_trarotsca, new_mat4_rot,
-                          new_mat4_sca, new_mat4_tra, new_mat4_trarotsca,
-                          new_quaternion_rot, TraRotSca};
+pub use self::graph::{
+    AsNodeHolder, Graph, Node, NodeHolder, NodeHolderField,
+};
+pub use self::trarotsca::{
+    new_mat4_inverse_trarotsca, new_mat4_rot, new_mat4_sca, new_mat4_tra,
+    new_mat4_trarotsca, new_quaternion_rot, TraRotSca,
+};
 // mod  =======================================================================
 mod armature;
 mod error;

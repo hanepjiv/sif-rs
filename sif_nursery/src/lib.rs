@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/06/18
-//  @date 2018/05/30
+//  @date 2018/06/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -36,10 +36,12 @@
     safe_extern_statics, unknown_crate_types
 )]
 #![warn(
-    bare_trait_object, dead_code, elided_lifetime_in_path,
-    renamed_and_removed_lints, single_use_lifetime, unreachable_pub
+    bare_trait_object, dead_code, renamed_and_removed_lints, unreachable_pub
 )]
-#![allow(box_pointers, trivial_casts, trivial_numeric_casts, unsafe_code)]
+#![allow(
+    box_pointers, elided_lifetime_in_path, single_use_lifetime, trivial_casts,
+    trivial_numeric_casts, unsafe_code
+)]
 // use  =======================================================================
 pub use sif_error::{Error, Result};
 // extern  ====================================================================

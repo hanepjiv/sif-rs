@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/12
-//  @date 2018/05/12
+//  @date 2018/06/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -17,7 +17,7 @@ use uuid::Uuid;
 // ============================================================================
 /// enum Error
 #[allow(missing_copy_implementations)]
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Error {
     /// Insert
     Insert(Uuid),
@@ -49,3 +49,24 @@ impl StdError for Error {
 // ============================================================================
 /// type Result
 pub type Result<T> = ::std::result::Result<T, Error>;
+// ////////////////////////////////////////////////////////////////////////////
+// ============================================================================
+#[cfg(test)]
+mod tests {
+    // use  ===================================================================
+    use super::{Error, Result};
+    // ========================================================================
+    #[test]
+    fn test_send() {
+        fn assert_send<T: Send>() {}
+        assert_send::<Error>();
+        assert_send::<Result<()>>();
+    }
+    // ------------------------------------------------------------------------
+    #[test]
+    fn test_sync() {
+        fn assert_sync<T: Sync>() {}
+        assert_sync::<Error>();
+        assert_sync::<Result<()>>();
+    }
+}

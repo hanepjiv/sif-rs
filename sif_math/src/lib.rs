@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/12
-//  @date 2018/05/30
+//  @date 2018/06/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -36,10 +36,12 @@
     safe_extern_statics, unknown_crate_types
 )]
 #![warn(
-    bare_trait_object, dead_code, elided_lifetime_in_path,
-    renamed_and_removed_lints, single_use_lifetime, unreachable_pub
+    bare_trait_object, dead_code, renamed_and_removed_lints, unreachable_pub
 )]
-#![allow(box_pointers, trivial_casts, trivial_numeric_casts, unsafe_code)]
+#![allow(
+    box_pointers, elided_lifetime_in_path, single_use_lifetime, trivial_casts,
+    trivial_numeric_casts, unsafe_code
+)]
 // extern  ====================================================================
 extern crate num;
 // ----------------------------------------------------------------------------
@@ -48,8 +50,10 @@ extern crate sif_error;
 pub use sif_error::*;
 // ----------------------------------------------------------------------------
 pub use self::cleanup::Cleanup;
-pub use self::matrix::{Matrix2x2, Matrix2x3, Matrix3x2, Matrix3x3, Matrix3x4,
-                       Matrix4x3, Matrix4x4};
+pub use self::matrix::{
+    Matrix2x2, Matrix2x3, Matrix3x2, Matrix3x3, Matrix3x4, Matrix4x3,
+    Matrix4x4,
+};
 pub use self::number::Number;
 pub use self::quaternion::Quaternion;
 pub use self::vector::{Vector2, Vector3, Vector4};
