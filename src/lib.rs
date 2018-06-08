@@ -6,16 +6,16 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/12
-//  @date 2018/05/30
+//  @date 2018/06/07
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
-// rustc 1.26.1 (827013a31 2018-05-25)
+// rustc 1.26.2 (594fb253c 2018-06-01)
 #![deny(
     anonymous_parameters, missing_copy_implementations,
     missing_debug_implementations, missing_docs, unstable_features,
     unused_extern_crates, unused_import_braces, unused_qualifications,
-    unused_results, variant_size_differences, const_err, deprecated,
+    unused_results, variant_size_differences, const_err,
     illegal_floating_point_literal_pattern, improper_ctypes,
     incoherent_fundamental_impls, late_bound_lifetime_arguments,
     non_camel_case_types, non_shorthand_field_patterns, non_snake_case,
@@ -35,11 +35,11 @@
     parenthesized_params_in_types_and_modules, pub_use_of_private_extern_crate,
     safe_extern_statics, unknown_crate_types
 )]
-#![warn(
-    bare_trait_object, dead_code, elided_lifetime_in_path,
-    renamed_and_removed_lints, single_use_lifetime, unreachable_pub
+#![warn(bare_trait_object, dead_code, deprecated, renamed_and_removed_lints)]
+#![allow(
+    box_pointers, elided_lifetime_in_path, single_use_lifetime, trivial_casts,
+    trivial_numeric_casts, unsafe_code
 )]
-#![allow(box_pointers, trivial_casts, trivial_numeric_casts, unsafe_code)]
 // use  =======================================================================
 pub use sif_error::*;
 pub use sif_nursery::*;
