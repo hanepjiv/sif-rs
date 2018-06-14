@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/23
-//  @date 2018/05/17
+//  @date 2018/06/13
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -18,65 +18,11 @@ use uuid::Uuid;
 use sif_manager::ManagedValue;
 use sif_math::{Vector3, Vector4};
 use sif_renderer::Program;
-use sif_three::{
-    Armature, AsNodeHolder, NodeHolder, NodeHolderField, Pose, TraRotSca,
-};
+use sif_three::{Armature, AsNodeHolder, NodeHolder, NodeHolderField, Pose};
 // ----------------------------------------------------------------------------
-use super::{
-    Error, Result, {Camera, Light, Model},
-};
-// ////////////////////////////////////////////////////////////////////////////
-// ============================================================================
-/// struct ObjectSrc
-#[derive(Debug, Clone)]
-pub struct ObjectSrc {
-    /// uuid
-    pub uuid: Uuid,
-    /// name
-    pub name: String,
-    /// parent
-    pub parent: Option<Uuid>,
-    /// data_type
-    pub data_type: String,
-    /// data_uuid
-    pub data_uuid: Uuid,
-    /// trarotsca
-    pub trarotsca: TraRotSca<GLfloat>,
-}
-// ============================================================================
-impl ObjectSrc {
-    // ========================================================================
-    /// new
-    pub fn new(
-        uuid: Uuid,
-        name: impl Into<String>,
-        parent: Option<Uuid>,
-        data_type: impl Into<String>,
-        data_uuid: Uuid,
-        trarotsca: TraRotSca<GLfloat>,
-    ) -> Self {
-        ObjectSrc {
-            uuid,
-            name: name.into(),
-            parent,
-            data_type: data_type.into(),
-            data_uuid,
-            trarotsca,
-        }
-    }
-}
-// ============================================================================
-impl AsRef<Uuid> for ObjectSrc {
-    fn as_ref(&self) -> &Uuid {
-        &self.uuid
-    }
-}
-// ============================================================================
-impl AsRef<String> for ObjectSrc {
-    fn as_ref(&self) -> &String {
-        &self.name
-    }
-}
+use super::{Error,
+            Result,
+            {Camera, Light, Model}};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum ObjectData
@@ -362,7 +308,9 @@ impl Object {
     pub fn position(&self) -> Result<Vector3<GLfloat>> {
         let n = self.as_node()?.borrow();
         let m = n.as_matrix();
-        Ok(Vector3::<GLfloat>::new(m[3][0], m[3][1], m[3][2]))
+        Ok(Vector3::<GLfloat>::new(
+            m[3][0], m[3][1], m[3][2],
+        ))
     }
     // ------------------------------------------------------------------------
     /// front

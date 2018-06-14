@@ -6,16 +6,16 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/12
-//  @date 2018/06/07
+//  @date 2018/06/13
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
 // rustc 1.26.2 (594fb253c 2018-06-01)
 #![deny(
     anonymous_parameters, missing_copy_implementations,
-    missing_debug_implementations, missing_docs, unstable_features,
-    unused_extern_crates, unused_import_braces, unused_qualifications,
-    unused_results, variant_size_differences, const_err,
+    missing_debug_implementations, unstable_features, unused_extern_crates,
+    unused_import_braces, unused_qualifications, unused_results,
+    variant_size_differences, const_err,
     illegal_floating_point_literal_pattern, improper_ctypes,
     incoherent_fundamental_impls, late_bound_lifetime_arguments,
     non_camel_case_types, non_shorthand_field_patterns, non_snake_case,
@@ -35,7 +35,10 @@
     parenthesized_params_in_types_and_modules, pub_use_of_private_extern_crate,
     safe_extern_statics, unknown_crate_types
 )]
-#![warn(bare_trait_object, dead_code, deprecated, renamed_and_removed_lints)]
+#![warn(
+    bare_trait_object, dead_code, deprecated, missing_docs,
+    renamed_and_removed_lints
+)]
 #![allow(
     box_pointers, elided_lifetime_in_path, single_use_lifetime, trivial_casts,
     trivial_numeric_casts, unsafe_code
@@ -47,9 +50,12 @@ extern crate bitflags;
 extern crate log;
 // ----------------------------------------------------------------------------
 extern crate gl;
+#[cfg(feature = "lbf-lua")]
 extern crate lua;
 extern crate num;
 extern crate rand;
+#[cfg(feature = "lbf-rlua")]
+extern crate rlua;
 extern crate sdl2;
 extern crate uuid;
 // ----------------------------------------------------------------------------
@@ -62,24 +68,28 @@ extern crate sif_manager;
 extern crate sif_math;
 extern crate sif_three;
 // use  =======================================================================
-pub use self::{
-    camera::{Camera, CameraType}, color::{ColorExponent, ColorIntensity},
-    element::{Element, ELEMENT_SIZE}, error::{Error, Result},
-    image::{Image, ImageFile, ImageProcedual, ImageProcedualMethod},
-    light::{Light, LightSrc}, material::Material, mesh::Mesh, model::Model,
-    object::{Object, ObjectData, ObjectSrc}, offsets::Offsets,
-    pipeline::{
-        Flags as PipelineFlags, Pipeline, PipelineParam, PIPELINE_MAX_BONE,
-        PIPELINE_MAX_LIGHT,
-    },
-    post::{
-        Blur, DepthMap, DepthMapParam, Effect, EffectArgs, Pass, Screen,
-        SquareBuffer,
-    },
-    scene::Scene, shadow::Shadow, submesh::SubMesh,
-    text::{Font, Layer as TextLayer, Metal as TextMetal, TFontReserve},
-    texture::Texture,
-};
+pub use self::{camera::{Camera, CameraType},
+               color::{ColorExponent, ColorIntensity},
+               element::{Element, ELEMENT_SIZE},
+               error::{Error, Result},
+               image::{Image, ImageFile, ImageProcedual,
+                       ImageProcedualMethod},
+               light::{Flags as LightFlags, Light},
+               material::Material,
+               mesh::Mesh,
+               model::Model,
+               object::{Object, ObjectData},
+               offsets::Offsets,
+               pipeline::{Flags as PipelineFlags, Pipeline, PipelineParam,
+                          PIPELINE_MAX_BONE, PIPELINE_MAX_LIGHT},
+               post::{Blur, DepthMap, DepthMapParam, Effect, EffectArgs,
+                      Pass, Screen, SquareBuffer},
+               scene::Scene,
+               shadow::Shadow,
+               submesh::SubMesh,
+               text::{Font, Layer as TextLayer, Metal as TextMetal,
+                      TFontReserve},
+               texture::Texture};
 // mod  =======================================================================
 mod camera;
 mod color;

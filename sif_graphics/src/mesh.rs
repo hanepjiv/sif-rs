@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2018/05/17
+//  @date 2018/06/14
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -25,12 +25,10 @@ use super::Material;
 use super::{lbf, submesh, Element, Error, Offsets, Result, SubMesh};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-bitflags! {
-    /// Flags
-    pub struct Flags: u32 {
-    const DIRTY     = 0b0000_0000_0000_0000_0000_0000_0001_0000u32;
-    }
-}
+/// Flags
+bitflags! { pub struct Flags: u32 {
+    const DIRTY                 = 0b0000_0000_0000_0000_0000_0000_0001_0000u32;
+} }
 // ============================================================================
 impl Default for Flags {
     fn default() -> Self {
@@ -236,7 +234,7 @@ impl Mesh {
     }
     // ========================================================================
     /// from_lbf
-    pub fn from_lbf(lbf_mesh: &lbf::Mesh) -> Result<Mesh> {
+    pub fn from_lbf(lbf_mesh: &lbf::LBFMesh) -> Result<Mesh> {
         // --------------------------------------------------------------------
         /// struct TmpKey
         #[derive(Debug, Default, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -275,8 +273,8 @@ impl Mesh {
                     material: polygon.material_index,
                     flags: polygon.submesh_flags(),
                 };
-                let tmp =
-                    tmps.entry(tmp_key.clone()).or_insert_with(Tmp::default);
+                let tmp = tmps.entry(tmp_key.clone())
+                    .or_insert_with(Tmp::default);
 
                 let mut p = Vector3::<GLfloat>::from(
                     &lbf_mesh.elem(Element::POSITION, polygon.indices[1].0)?
@@ -416,7 +414,8 @@ impl Mesh {
                     }
                     if l == tmp_vertices.len() {
                         tmp_vertices.push(vtx);
-                        tmp.indices.push(tmp_vertices.len() as GLuint - 1);
+                        tmp.indices
+                            .push(tmp_vertices.len() as GLuint - 1);
                     } else {
                         tmp.indices.push(l as GLuint);
                     }

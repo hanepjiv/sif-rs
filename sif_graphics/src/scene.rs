@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/27
-//  @date 2018/05/12
+//  @date 2018/06/14
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -19,10 +19,8 @@ use uuid::Uuid;
 use sif_manager::{ManagedValue, Manager};
 use sif_three::{Armature, Graph, Node, NodeHolder, Pose, TraRotSca};
 // ----------------------------------------------------------------------------
-use super::{
-    lbf, lbf::LBF, Camera, Error, Image, Light, LightSrc, Material, Mesh,
-    Model, Object, ObjectData, ObjectSrc, Result, Texture,
-};
+use super::{lbf, lbf::LBF, Camera, Error, Image, Light, Material, Mesh,
+            Model, Object, ObjectData, Result, Texture};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Scene
@@ -113,8 +111,7 @@ impl Scene {
                         k,
                         k.as_bytes()
                     );
-                    let _ = self
-                        .textures
+                    let _ = self.textures
                         .insert(Texture::from_lbf(v, &self.images)?);
                 }
             }
@@ -138,7 +135,7 @@ impl Scene {
         }
         {
             // mesh
-            let r: &mut BTreeMap<Uuid, lbf::Mesh> = lbf.as_mut();
+            let r: &mut BTreeMap<Uuid, lbf::LBFMesh> = lbf.as_mut();
             let keys: Vec<_> = r.keys().cloned().collect();
             for k in keys {
                 if let Some(ref v) = r.remove(&k) {
@@ -187,7 +184,7 @@ impl Scene {
         }
         {
             // lights
-            let r: &mut BTreeMap<Uuid, LightSrc> = lbf.as_mut();
+            let r: &mut BTreeMap<Uuid, lbf::LBFLight> = lbf.as_mut();
             let keys: Vec<_> = r.keys().cloned().collect();
             for k in keys {
                 if let Some(v) = r.remove(&k) {
@@ -197,8 +194,8 @@ impl Scene {
                         k,
                         k.as_bytes()
                     );
-                    let _ =
-                        self.lights.insert(Light::from_src(v, texture_size)?)?;
+                    let _ = self.lights
+                        .insert(Light::from_lbf(v, texture_size)?)?;
                 }
             }
         }
@@ -220,7 +217,7 @@ impl Scene {
         }
         {
             // objects
-            for v in AsRef::<Vec<ObjectSrc>>::as_ref(lbf).iter() {
+            for v in AsRef::<Vec<lbf::LBFObject>>::as_ref(lbf).iter() {
                 let u = AsRef::<Uuid>::as_ref(&v);
                 info!(
                     "Object: \"{}\", {:?}, {:?}",
@@ -278,8 +275,7 @@ impl Scene {
                     } else {
                         Ok(None)
                     };
-                    let _ = self
-                        .graph
+                    let _ = self.graph
                         .insert(AsRef::<Uuid>::as_ref(&v).clone(), parent?)?;
                     let node = self.graph.get(v.as_ref()).ok_or_else(|| {
                         Error::OptNone(

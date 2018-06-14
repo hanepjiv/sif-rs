@@ -27,8 +27,7 @@ pub trait Number:
 {
 }
 // ============================================================================
-impl<T> Number for T
-where
+impl<T> Number for T where
     T: ::std::fmt::Debug
         + ::std::default::Default
         + ::std::ops::Neg
@@ -40,6 +39,5 @@ where
         + ::std::ops::MulAssign
         + ::std::ops::Div
         + ::std::ops::DivAssign
-        + ::num::Float,
-{
-}
+        + ::num::Float
+{}

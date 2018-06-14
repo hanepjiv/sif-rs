@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/24
-//  @date 2018/05/17
+//  @date 2018/06/14
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -17,69 +17,18 @@ use sif_manager::ManagedValue;
 use sif_math::Vector3;
 use sif_renderer::{Bind, Program, Texture};
 // ----------------------------------------------------------------------------
-use super::{post::DepthMapParam, Error, Object, Result, Shadow};
+use super::{lbf, post::DepthMapParam, Error, Object, Result, Shadow};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// Flags
+/// struct Flags
 bitflags! { pub struct Flags: u32 {
-    const ENABLE            = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
-    const POINT             = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
-    const SPOT              = 0b0000_0000_0000_0000_0000_0000_0000_0100u32;
-    const SHADOW            = 0b0000_0000_0000_0000_0000_0000_0000_1000u32;
+    const ENABLE                = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
+    const POINT                 = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
+    const SPOT                  = 0b0000_0000_0000_0000_0000_0000_0000_0100u32;
+    const SHADOW                = 0b0000_0000_0000_0000_0000_0000_0000_1000u32;
 
-    const DO_NOT_USE        = 0b1000_0000_0000_0000_0000_0000_0000_0000u32;
-} }
-// ////////////////////////////////////////////////////////////////////////////
-// ============================================================================
-/// struct LightSrc
-#[derive(Debug, Clone)]
-pub struct LightSrc {
-    /// uuid
-    pub uuid: Uuid,
-    /// name
-    pub name: String,
-    /// color
-    pub color: Vector3<GLfloat>,
-    /// kcklkq
-    pub kcklkq: Vector3<GLfloat>,
-    /// intensity
-    pub intensity: GLfloat,
-    /// exponent
-    pub exponent: GLfloat,
-    /// cutoff
-    pub cutoff: GLfloat,
-    /// flags
-    pub flags: Flags,
-}
-// ============================================================================
-impl AsRef<Uuid> for LightSrc {
-    fn as_ref(&self) -> &Uuid {
-        &self.uuid
-    }
-}
-// ============================================================================
-impl AsRef<String> for LightSrc {
-    fn as_ref(&self) -> &String {
-        &self.name
-    }
-}
-// ============================================================================
-impl LightSrc {
-    // ========================================================================
-    /// new
-    pub fn new(uuid: Uuid, name: impl Into<String>) -> Self {
-        LightSrc {
-            uuid,
-            name: name.into(),
-            color: Vector3::new(1.0, 1.0, 1.0),
-            kcklkq: Vector3::new(1.0, 0.01, 0.0001),
-            intensity: 0.8,
-            exponent: 2.0,
-            cutoff: 0.9,
-            flags: Flags::ENABLE,
-        }
-    }
-}
+    const DO_NOT_USE            = 0b1000_0000_0000_0000_0000_0000_0000_0000u32;
+}}
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Light
@@ -119,8 +68,8 @@ impl AsRef<String> for Light {
 // ============================================================================
 impl Light {
     // ========================================================================
-    /// from_src
-    pub fn from_src(src: LightSrc, texture_size: GLint) -> Result<Self> {
+    /// from_lbf
+    pub fn from_lbf(src: lbf::LBFLight, texture_size: GLint) -> Result<Self> {
         Ok(Light {
             uuid: src.uuid,
             name: src.name,
@@ -240,7 +189,9 @@ impl Bind for Light {
         if let Some(ref shadow) = self.shadow {
             shadow.unbind()
         } else {
-            Err(Error::Light("unbind: invalid shadow".to_string()))
+            Err(Error::Light(
+                "unbind: invalid shadow".to_string(),
+            ))
         }
     }
 }

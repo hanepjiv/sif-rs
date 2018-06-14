@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/01
-//  @date 2018/05/12
+//  @date 2018/06/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -20,7 +20,7 @@ bitflags! {
     #[allow(missing_docs)]
     pub struct Flags: u32 {
     #[allow(missing_docs)]
-    const SMOOTH                = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
+    const SMOOTH        = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
     #[allow(missing_docs)]
     const DOUBLE_SIDED  = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
     }

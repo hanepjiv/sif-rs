@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/03
-//  @date 2018/06/01
+//  @date 2018/06/13
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -15,10 +15,10 @@
 pub enum Error {
     /// OptNone
     OptNone(String),
-    /// Load
-    Load(::lua::ThreadStatus),
+    /// Loader
+    Loader(super::loader::LoaderError),
     /// Current
-    Current,
+    Current(i64, i64, i64),
     /// Insert
     Insert(String),
     /// Type
@@ -33,6 +33,13 @@ pub enum Error {
     UuidParse(::uuid::ParseError),
     /// IO
     IO(::std::io::Error),
+}
+// ============================================================================
+impl From<super::loader::LoaderError> for Error {
+    // ========================================================================
+    fn from(e: super::loader::LoaderError) -> Self {
+        Error::Loader(e)
+    }
 }
 // ============================================================================
 impl From<::uuid::ParseError> for Error {
@@ -53,16 +60,16 @@ impl ::std::fmt::Display for Error {
     // ========================================================================
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         match *self {
-            ref e @ Error::OptNone(_)
-            | ref e @ Error::Load(_)
-            | ref e @ Error::Current
+            | ref e @ Error::OptNone(_)
+            | ref e @ Error::Loader(_)
+            | ref e @ Error::Current(_, _, _)
             | ref e @ Error::Insert(_)
             | ref e @ Error::Type(_)
             | ref e @ Error::Mesh(_)
             | ref e @ Error::Polygon(_)
             | ref e @ Error::Elem(_) => write!(f, "{:?}", e),
-            Error::UuidParse(ref e) => e.fmt(f),
-            Error::IO(ref e) => e.fmt(f),
+            | Error::UuidParse(ref e) => e.fmt(f),
+            | Error::IO(ref e) => e.fmt(f),
         }
     }
 }
@@ -72,8 +79,8 @@ impl ::std::error::Error for Error {
     fn description(&self) -> &str {
         match *self {
             Error::OptNone(_) => "LBF opt none",
-            Error::Load(_) => "LBF load failed",
-            Error::Current => "LBF unsupported version",
+            Error::Loader(_) => "LBF load failed",
+            Error::Current(_, _, _) => "LBF unsupported version",
             Error::Insert(_) => "LBF insert error",
             Error::Type(_) => "LBF type error",
             Error::Mesh(_) => "LBF mesh error",
@@ -87,8 +94,8 @@ impl ::std::error::Error for Error {
     fn cause(&self) -> Option<&::std::error::Error> {
         match *self {
             Error::OptNone(_) => None,
-            Error::Load(_) => None,
-            Error::Current => None,
+            Error::Loader(_) => None,
+            Error::Current(_, _, _) => None,
             Error::Insert(_) => None,
             Error::Type(_) => None,
             Error::Mesh(_) => None,

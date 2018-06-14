@@ -17,7 +17,8 @@ use sif_math::Number;
 use super::{Error, Result};
 // ----------------------------------------------------------------------------
 pub use self::{
-    bone::Bone, pose::{Flags as PoseFlags, Pose},
+    bone::Bone,
+    pose::{Flags as PoseFlags, Pose},
 };
 // mod  =======================================================================
 mod bone;

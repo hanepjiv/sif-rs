@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/04/10
-//  @date 2018/05/12
+//  @date 2018/06/14
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -39,9 +39,9 @@ where
     // ========================================================================
     fn default() -> Self {
         TraRotSca {
+            translation: Vector3::<V>::new(V::zero(), V::zero(), V::zero()),
             rotation: Quaternion::<V>::default(),
             scaling: Vector3::<V>::new(V::one(), V::one(), V::one()),
-            translation: Vector3::<V>::new(V::zero(), V::zero(), V::zero()),
         }
     }
 }

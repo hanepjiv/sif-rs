@@ -16,7 +16,8 @@ use sif_manager::ManagedValue;
 use sif_renderer::{Bind, Program, Texture};
 // ----------------------------------------------------------------------------
 use super::{
-    post::{DepthMap, DepthMapParam}, Error, Object, Result,
+    post::{DepthMap, DepthMapParam},
+    Error, Object, Result,
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================

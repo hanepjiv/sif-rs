@@ -13,7 +13,10 @@
 const PADDING: GLsizei = 3;
 // use  =======================================================================
 use std::{
-    borrow::Borrow, collections::BTreeMap, fmt::{Debug, Formatter}, hash::Hash,
+    borrow::Borrow,
+    collections::BTreeMap,
+    fmt::{Debug, Formatter},
+    hash::Hash,
 };
 // ----------------------------------------------------------------------------
 use gl::types::*;
@@ -24,7 +27,9 @@ use sif_renderer::Texture;
 use sif_three::new_mat4_tra;
 // ----------------------------------------------------------------------------
 use super::{
-    super::{Error, Result}, glyph::Glyph, Metal,
+    super::{Error, Result},
+    glyph::Glyph,
+    Metal,
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================

@@ -20,7 +20,8 @@ use sif_math::Matrix4x4;
 use sif_three::{new_mat4_tra, new_mat4_trarotsca};
 // ----------------------------------------------------------------------------
 use super::{
-    super::{Error, Result}, Font, Metal, TFontReserve,
+    super::{Error, Result},
+    Font, Metal, TFontReserve,
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================

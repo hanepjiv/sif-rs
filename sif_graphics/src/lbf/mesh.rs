@@ -14,7 +14,9 @@ use gl::types::*;
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
 use super::{
-    super::{Element, Offsets, ELEMENT_SIZE}, polygon::Polygon, Error, Result,
+    super::{Element, Offsets, ELEMENT_SIZE},
+    polygon::Polygon,
+    Error, Result,
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================

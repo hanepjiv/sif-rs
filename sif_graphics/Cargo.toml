@@ -5,7 +5,7 @@ name                    = "sif_graphics"
 version                 = "0.1.0"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
-keywords                = ["subsystem", "game", "math", "graphics"]
+keywords                = ["subsystem", "game", "graphics"]
 description             = "Game libraries"
 readme                  = "README.md"
 documentation           = "https://github.com/hanepjiv/sif-rs/wiki"
@@ -13,13 +13,14 @@ homepage                = "https://github.com/hanepjiv/sif-rs"
 repository              = "https://github.com/hanepjiv/sif-rs.git"
 publish                 = false
 # =============================================================================
+[features]
+lbf-lua                 = ["lua"]
+lbf-rlua                = ["rlua"]
+# =============================================================================
 [dependencies]
 bitflags                = { default-features = false, version = "^1.0" }
 gl                      = { default-features = false, version = "^0.10" }
 log                     = { default-features = false, version = "^0.4" }
-#lua                     = { default-features = false, git = "https://github.com/jcmoyer/rust-lua53.git" }
-#lua                     = { default-features = false, path = "../../lua/orig" }
-lua                     = { default-features = false, version = "^0.0" }
 num                     = { default-features = false, version = "^0.1" }
 # -----------------------------------------------------------------------------
 sif_error               = { default-features = false, path="../sif_error" }
@@ -27,6 +28,17 @@ sif_manager             = { default-features = false, path="../sif_manager" }
 sif_math                = { default-features = false, path="../sif_math" }
 sif_renderer            = { default-features = false, path="../sif_renderer" }
 sif_three               = { default-features = false, path="../sif_three" }
+# -----------------------------------------------------------------------------
+[dependencies.lua]
+default-features        = false
+version                 = "^0.0"
+optional                = true
+# -----------------------------------------------------------------------------
+[dependencies.rlua]
+default-features        = false
+version                 = "^0.13"
+optional                = true
+features                = ["builtin-lua"]
 # -----------------------------------------------------------------------------
 [dependencies.rand]
 default-features        = false
