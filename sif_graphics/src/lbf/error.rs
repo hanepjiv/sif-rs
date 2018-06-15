@@ -6,17 +6,17 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/03
-//  @date 2018/06/13
+//  @date 2018/06/15
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum Error
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Error {
     /// OptNone
     OptNone(String),
     /// Loader
-    Loader(super::loader::LoaderError),
+    Loader(String),
     /// Current
     Current(i64, i64, i64),
     /// Insert
@@ -30,47 +30,36 @@ pub enum Error {
     /// Elem
     Elem(String),
     /// UuidParse
-    UuidParse(::uuid::ParseError),
+    UuidParse(String),
     /// IO
-    IO(::std::io::Error),
+    IO(String),
 }
 // ============================================================================
 impl From<super::loader::LoaderError> for Error {
     // ========================================================================
     fn from(e: super::loader::LoaderError) -> Self {
-        Error::Loader(e)
+        Error::Loader(format!("{}", e))
     }
 }
 // ============================================================================
 impl From<::uuid::ParseError> for Error {
     // ========================================================================
     fn from(e: ::uuid::ParseError) -> Self {
-        Error::UuidParse(e)
+        Error::UuidParse(format!("{}", e))
     }
 }
 // ============================================================================
 impl From<::std::io::Error> for Error {
     // ========================================================================
     fn from(e: ::std::io::Error) -> Self {
-        Error::IO(e)
+        Error::IO(format!("{}", e))
     }
 }
 // ============================================================================
 impl ::std::fmt::Display for Error {
     // ========================================================================
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
-            | ref e @ Error::OptNone(_)
-            | ref e @ Error::Loader(_)
-            | ref e @ Error::Current(_, _, _)
-            | ref e @ Error::Insert(_)
-            | ref e @ Error::Type(_)
-            | ref e @ Error::Mesh(_)
-            | ref e @ Error::Polygon(_)
-            | ref e @ Error::Elem(_) => write!(f, "{:?}", e),
-            | Error::UuidParse(ref e) => e.fmt(f),
-            | Error::IO(ref e) => e.fmt(f),
-        }
+        write!(f, "{:?}", self)
     }
 }
 // ============================================================================
@@ -86,8 +75,8 @@ impl ::std::error::Error for Error {
             Error::Mesh(_) => "LBF mesh error",
             Error::Polygon(_) => "LBF polygon error",
             Error::Elem(_) => "LBF elem error",
-            Error::UuidParse(_) => "LBG uuid parse error",
-            Error::IO(ref e) => e.description(),
+            Error::UuidParse(_) => "LBF uuid parse error",
+            Error::IO(_) => "LBF io error",
         }
     }
     // ========================================================================
@@ -102,7 +91,7 @@ impl ::std::error::Error for Error {
             Error::Polygon(_) => None,
             Error::Elem(_) => None,
             Error::UuidParse(_) => None,
-            Error::IO(ref e) => Some(e),
+            Error::IO(_) => None,
         }
     }
 }

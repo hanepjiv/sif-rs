@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "sif"
-version                 = "0.4.3-alpha.1"
+version                 = "0.4.3-alpha.2"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
 keywords                = ["subsystem", "game", "math", "graphics"]

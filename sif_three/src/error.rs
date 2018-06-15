@@ -6,12 +6,12 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/10
-//  @date 2018/06/01
+//  @date 2018/06/15
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum Error
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Error {
     /// OptNone
     OptNone(String),
@@ -22,14 +22,14 @@ pub enum Error {
     /// InvalidPose
     InvalidPose,
     /// IO
-    IO(::std::io::Error),
+    IO(String),
     /// SifManager
     SifManager(::sif_manager::Error),
 }
 // ============================================================================
 impl From<::std::io::Error> for Error {
     fn from(e: ::std::io::Error) -> Self {
-        Error::IO(e)
+        Error::IO(format!("{}", e))
     }
 }
 // ----------------------------------------------------------------------------
@@ -42,14 +42,7 @@ impl From<::sif_manager::Error> for Error {
 impl ::std::fmt::Display for Error {
     // ========================================================================
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
-            ref e @ Error::OptNone(_)
-            | ref e @ Error::InvalidArgument(_)
-            | ref e @ Error::NoNode
-            | ref e @ Error::InvalidPose => write!(f, "{:?}", e),
-            Error::IO(ref e) => e.fmt(f),
-            Error::SifManager(ref e) => e.fmt(f),
-        }
+        write!(f, "{:?}", self)
     }
 }
 // ============================================================================
@@ -57,11 +50,11 @@ impl ::std::error::Error for Error {
     // ========================================================================
     fn description(&self) -> &str {
         match *self {
-            Error::OptNone(_) => "::three::OptNone",
-            Error::InvalidArgument(_) => "::three::InvalidArgument",
-            Error::NoNode => "::three::NoNode",
-            Error::InvalidPose => "::three::InvalidPose",
-            Error::IO(ref e) => e.description(),
+            Error::OptNone(_) => "::sif_three::Error::OptNone",
+            Error::InvalidArgument(_) => "::sif_three::Error::InvalidArgument",
+            Error::NoNode => "::sif_three::Error::NoNode",
+            Error::InvalidPose => "::sif_three::Error::InvalidPose",
+            Error::IO(_) => "::sif_three::Error::Io",
             Error::SifManager(ref e) => e.description(),
         }
     }
@@ -72,7 +65,7 @@ impl ::std::error::Error for Error {
             Error::InvalidArgument(_) => None,
             Error::NoNode => None,
             Error::InvalidPose => None,
-            Error::IO(ref e) => Some(e),
+            Error::IO(_) => None,
             Error::SifManager(ref e) => Some(e),
         }
     }

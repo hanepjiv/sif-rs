@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/09
-//  @date 2018/06/01
+//  @date 2018/06/15
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -14,45 +14,45 @@ use super::GLError;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum Error
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Error {
     /// OptNone
     OptNone(String),
     /// Renderer
     Renderer(String),
     /// Utf8
-    Utf8(::std::str::Utf8Error),
+    Utf8(String),
     /// FromUtf8
-    FromUtf8(::std::string::FromUtf8Error),
+    FromUtf8(String),
     /// FFINul
-    FFINul(::std::ffi::NulError),
+    FFINul(String),
     /// Image
-    Image(::image::ImageError),
+    Image(String),
     /// GL
-    GL(Box<::std::error::Error>),
+    GL(String),
 }
 // ============================================================================
 impl From<::std::str::Utf8Error> for Error {
     fn from(e: ::std::str::Utf8Error) -> Self {
-        Error::Utf8(e)
+        Error::Utf8(format!("{}", e))
     }
 }
 // ----------------------------------------------------------------------------
 impl From<::std::string::FromUtf8Error> for Error {
     fn from(e: ::std::string::FromUtf8Error) -> Self {
-        Error::FromUtf8(e)
+        Error::FromUtf8(format!("{}", e))
     }
 }
 // ----------------------------------------------------------------------------
 impl From<::std::ffi::NulError> for Error {
     fn from(e: ::std::ffi::NulError) -> Self {
-        Error::FFINul(e)
+        Error::FFINul(format!("{}", e))
     }
 }
 // ----------------------------------------------------------------------------
 impl From<::image::ImageError> for Error {
     fn from(e: ::image::ImageError) -> Self {
-        Error::Image(e)
+        Error::Image(format!("{}", e))
     }
 }
 // ----------------------------------------------------------------------------
@@ -62,23 +62,14 @@ where
     E: ::std::fmt::Debug + 'static,
 {
     fn from(e: GLError<R, E>) -> Self {
-        Error::GL(Box::new(e))
+        Error::GL(format!("{}", e))
     }
 }
 // ============================================================================
 impl ::std::fmt::Display for Error {
     // ========================================================================
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
-            ref e @ Error::OptNone(_) | ref e @ Error::Renderer(_) => {
-                write!(f, "{:?}", e)
-            }
-            Error::Utf8(ref e) => e.fmt(f),
-            Error::FromUtf8(ref e) => e.fmt(f),
-            Error::FFINul(ref e) => e.fmt(f),
-            Error::Image(ref e) => e.fmt(f),
-            Error::GL(ref e) => e.fmt(f),
-        }
+        write!(f, "{:?}", self)
     }
 }
 // ============================================================================
@@ -88,11 +79,11 @@ impl ::std::error::Error for Error {
         match *self {
             Error::OptNone(_) => "::sif::renderer::Error::OptNone",
             Error::Renderer(_) => "::sif::renderer::Error::Renderer",
-            Error::Utf8(ref e) => e.description(),
-            Error::FromUtf8(ref e) => e.description(),
-            Error::FFINul(ref e) => e.description(),
-            Error::Image(ref e) => e.description(),
-            Error::GL(ref e) => e.description(),
+            Error::Utf8(_) => "::sif::renderer::Error::Utf8",
+            Error::FromUtf8(_) => "::sif::renderer::Error::FromUtf8",
+            Error::FFINul(_) => "::sif::renderer::Error::FFINul",
+            Error::Image(_) => "::sif::renderer::Error::Image",
+            Error::GL(_) => "::sif::renderer::Error::GL",
         }
     }
     // ========================================================================
@@ -100,11 +91,11 @@ impl ::std::error::Error for Error {
         match *self {
             Error::OptNone(_) => None,
             Error::Renderer(_) => None,
-            Error::Utf8(ref e) => Some(e),
-            Error::FromUtf8(ref e) => Some(e),
-            Error::FFINul(ref e) => Some(e),
-            Error::Image(ref e) => Some(e),
-            Error::GL(ref e) => Some(e.as_ref()),
+            Error::Utf8(_) => None,
+            Error::FromUtf8(_) => None,
+            Error::FFINul(_) => None,
+            Error::Image(_) => None,
+            Error::GL(_) => None,
         }
     }
 }

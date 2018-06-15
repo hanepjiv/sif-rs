@@ -14,6 +14,7 @@ repository              = "https://github.com/hanepjiv/sif-rs.git"
 publish                 = false
 # =============================================================================
 [features]
+default                 = ["lbf-rlua"]
 lbf-lua                 = ["lua"]
 lbf-rlua                = ["rlua"]
 # =============================================================================

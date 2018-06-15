@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/10
-//  @date 2018/06/01
+//  @date 2018/06/15
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -14,7 +14,7 @@ use uuid::Uuid;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum Error
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Error {
     /// OptNone
     OptNone(String),
@@ -35,7 +35,7 @@ pub enum Error {
     /// LBF
     LBF(super::lbf::Error),
     /// IO
-    IO(::std::io::Error),
+    IO(String),
     /// Sif
     Sif(::sif_error::Error),
     /// SifManager
@@ -45,9 +45,9 @@ pub enum Error {
     /// SifThree
     SifThree(::sif_three::Error),
     /// GL
-    GL(Box<::std::error::Error>),
+    GL(String),
     /// SDL2TTFFont
-    SDL2TTFFont(::sdl2::ttf::FontError),
+    SDL2TTFFont(String),
 }
 // ============================================================================
 impl From<super::lbf::Error> for Error {
@@ -58,7 +58,7 @@ impl From<super::lbf::Error> for Error {
 // ----------------------------------------------------------------------------
 impl From<::std::io::Error> for Error {
     fn from(e: ::std::io::Error) -> Self {
-        Error::IO(e)
+        Error::IO(format!("{}", e))
     }
 }
 // ----------------------------------------------------------------------------
@@ -92,13 +92,13 @@ where
     E: ::std::fmt::Debug + 'static,
 {
     fn from(e: ::sif_renderer::GLError<R, E>) -> Self {
-        Error::GL(Box::new(e))
+        Error::GL(format!("{}", e))
     }
 }
 // ----------------------------------------------------------------------------
 impl From<::sdl2::ttf::FontError> for Error {
     fn from(e: ::sdl2::ttf::FontError) -> Self {
-        Error::SDL2TTFFont(e)
+        Error::SDL2TTFFont(format!("{}", e))
     }
 }
 // ============================================================================
@@ -124,13 +124,13 @@ impl ::std::error::Error for Error {
             Error::Mesh(_) => "::sif_graphics::Error::Mesh",
             Error::Light(_) => "::sif_graphics::Error::Light",
             Error::LBF(ref e) => e.description(),
-            Error::IO(ref e) => e.description(),
+            Error::IO(_) => "::sif_graphics::Error::IO",
             Error::Sif(ref e) => e.description(),
             Error::SifManager(ref e) => e.description(),
             Error::SifRenderer(ref e) => e.description(),
             Error::SifThree(ref e) => e.description(),
-            Error::GL(ref e) => e.description(),
-            Error::SDL2TTFFont(ref e) => e.description(),
+            Error::GL(_) => "::sif_graphics::Error::GL",
+            Error::SDL2TTFFont(_) => "::sif_graphics::Error::SDL2TTFFont",
         }
     }
     // ========================================================================
@@ -145,13 +145,13 @@ impl ::std::error::Error for Error {
             Error::Mesh(_) => None,
             Error::Light(_) => None,
             Error::LBF(ref e) => Some(e),
-            Error::IO(ref e) => Some(e),
+            Error::IO(_) => None,
             Error::Sif(ref e) => Some(e),
             Error::SifManager(ref e) => Some(e),
             Error::SifRenderer(ref e) => Some(e),
             Error::SifThree(ref e) => Some(e),
-            Error::GL(ref e) => Some(e.as_ref()),
-            Error::SDL2TTFFont(ref e) => Some(e),
+            Error::GL(_) => None,
+            Error::SDL2TTFFont(_) => None,
         }
     }
 }

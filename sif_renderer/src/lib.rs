@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/12
-//  @date 2018/06/07
+//  @date 2018/06/15
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -56,12 +56,14 @@ pub use self::render::Render;
 pub use self::shader::{Shader, ShaderSrc};
 pub use self::texture::{max_texture_size, Texture};
 // mod  =======================================================================
+#[macro_use]
+mod program;
+// ----------------------------------------------------------------------------
 mod bind;
 mod buffer;
 mod error;
 mod frame;
 mod gl_error;
-mod program;
 mod render;
 mod shader;
 mod texture;
