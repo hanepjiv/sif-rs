@@ -19,12 +19,14 @@ use sif_three::Armature;
 // ----------------------------------------------------------------------------
 use super::{Camera, Image, Material, Model, Texture};
 // ============================================================================
-pub use self::{error::{Error, Result},
-               light::Light as LBFLight,
-               mesh::Mesh as LBFMesh,
-               object::Object as LBFObject,
-               polygon::Flags as LBFPolygonFlags,
-               polygon::Polygon as LBFPolygon};
+pub use self::{
+    error::{Error, Result},
+    light::Light as LBFLight,
+    mesh::Mesh as LBFMesh,
+    object::Object as LBFObject,
+    polygon::Flags as LBFPolygonFlags,
+    polygon::Polygon as LBFPolygon,
+};
 // mod  =======================================================================
 pub mod error;
 mod light;

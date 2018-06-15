@@ -15,9 +15,10 @@ use std::{collections::BTreeMap, path::Path};
 use lua::{ffi::lua_Integer, State as LuaState};
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
-use super::{super::{super::Image, LBF},
-            Error,
-            Result};
+use super::{
+    super::{super::Image, LBF},
+    Error, Result,
+};
 // ----------------------------------------------------------------------------
 use self::lua_state_ex::LuaStateEx;
 // mod  =======================================================================
@@ -61,16 +62,10 @@ pub fn from_str(path: impl AsRef<Path>, src: impl AsRef<str>) -> Result<LBF> {
         }
         Ok(LBF {
             images,
-            textures: state
-                .idxtbl(-1, &"textures")
-                .unwrap_or_default(),
-            materials: state
-                .idxtbl(-1, &"materials")
-                .unwrap_or_default(),
+            textures: state.idxtbl(-1, &"textures").unwrap_or_default(),
+            materials: state.idxtbl(-1, &"materials").unwrap_or_default(),
             meshes: state.idxtbl(-1, &"meshes").unwrap_or_default(),
-            armatures: state
-                .idxtbl(-1, &"armatures")
-                .unwrap_or_default(),
+            armatures: state.idxtbl(-1, &"armatures").unwrap_or_default(),
             models: state.idxtbl(-1, &"models").unwrap_or_default(),
             lights: state.idxtbl(-1, &"lights").unwrap_or_default(),
             cameras: state.idxtbl(-1, &"cameras").unwrap_or_default(),

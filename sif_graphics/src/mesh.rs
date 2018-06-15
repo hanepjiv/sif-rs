@@ -273,8 +273,8 @@ impl Mesh {
                     material: polygon.material_index,
                     flags: polygon.submesh_flags(),
                 };
-                let tmp = tmps.entry(tmp_key.clone())
-                    .or_insert_with(Tmp::default);
+                let tmp =
+                    tmps.entry(tmp_key.clone()).or_insert_with(Tmp::default);
 
                 let mut p = Vector3::<GLfloat>::from(
                     &lbf_mesh.elem(Element::POSITION, polygon.indices[1].0)?
@@ -402,11 +402,10 @@ impl Mesh {
                     }
 
                     let mut l = tmp_vertices.len();
-                    'same_check: for (i, v) in tmp_vertices.iter().enumerate()
-                    {
+                    'same_loop: for (i, v) in tmp_vertices.iter().enumerate() {
                         for j in 0..v.len() {
                             if (v[j] - vtx[j]).abs() > GLfloat::epsilon() {
-                                continue 'same_check;
+                                continue 'same_loop;
                             }
                         }
                         l = i;
@@ -414,8 +413,7 @@ impl Mesh {
                     }
                     if l == tmp_vertices.len() {
                         tmp_vertices.push(vtx);
-                        tmp.indices
-                            .push(tmp_vertices.len() as GLuint - 1);
+                        tmp.indices.push(tmp_vertices.len() as GLuint - 1);
                     } else {
                         tmp.indices.push(l as GLuint);
                     }

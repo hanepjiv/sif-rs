@@ -189,9 +189,7 @@ impl Bind for Light {
         if let Some(ref shadow) = self.shadow {
             shadow.unbind()
         } else {
-            Err(Error::Light(
-                "unbind: invalid shadow".to_string(),
-            ))
+            Err(Error::Light("unbind: invalid shadow".to_string()))
         }
     }
 }

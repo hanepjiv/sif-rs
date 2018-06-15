@@ -19,17 +19,14 @@ use uuid::Uuid;
 use sif_math::{Number, Quaternion, Vector3, Vector4};
 use sif_three::{Armature, Bone, TraRotSca};
 // ----------------------------------------------------------------------------
-use super::{super::super::{super::{Camera, Image, LightFlags, Material,
-                                   Model, Texture},
-                           texture_filter_match,
-                           texture_wrap_match,
-                           LBFLight,
-                           LBFMesh,
-                           LBFObject,
-                           LBFPolygon,
-                           LBFPolygonFlags},
-            Error,
-            Result};
+use super::{
+    super::super::{
+        super::{Camera, Image, LightFlags, Material, Model, Texture},
+        texture_filter_match, texture_wrap_match, LBFLight, LBFMesh,
+        LBFObject, LBFPolygon, LBFPolygonFlags,
+    },
+    Error, Result,
+};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// trait NotNil
@@ -57,9 +54,9 @@ impl LuaType for Integer {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
             Value::Integer(ret) => Ok(ret),
-            _ => Err(Error::Type(
-                "<Integer as LuaType>::from_lua".to_string(),
-            )),
+            _ => {
+                Err(Error::Type("<Integer as LuaType>::from_lua".to_string()))
+            }
         }
     }
 }
@@ -68,9 +65,7 @@ impl LuaType for bool {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
             Value::Boolean(ret) => Ok(ret),
-            _ => Err(Error::Type(
-                "<bool as LuaType>::from_lua".to_string(),
-            )),
+            _ => Err(Error::Type("<bool as LuaType>::from_lua".to_string())),
         }
     }
 }
@@ -79,9 +74,7 @@ impl LuaType for u8 {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
             Value::Integer(ret) => Ok(ret as Self),
-            _ => Err(Error::Type(
-                "<u8 as LuaType>::from_lua".to_string(),
-            )),
+            _ => Err(Error::Type("<u8 as LuaType>::from_lua".to_string())),
         }
     }
 }
@@ -90,9 +83,7 @@ impl LuaType for u32 {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
             Value::Integer(ret) => Ok(ret as Self),
-            _ => Err(Error::Type(
-                "<u32 as LuaType>::from_lua".to_string(),
-            )),
+            _ => Err(Error::Type("<u32 as LuaType>::from_lua".to_string())),
         }
     }
 }
@@ -101,9 +92,7 @@ impl LuaType for usize {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
             Value::Integer(ret) => Ok(ret as Self),
-            _ => Err(Error::Type(
-                "<usize as LuaType>::from_lua".to_string(),
-            )),
+            _ => Err(Error::Type("<usize as LuaType>::from_lua".to_string())),
         }
     }
 }
@@ -112,9 +101,7 @@ impl LuaType for isize {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
             Value::Integer(ret) => Ok(ret as Self),
-            _ => Err(Error::Type(
-                "<isize as LuaType>::from_lua".to_string(),
-            )),
+            _ => Err(Error::Type("<isize as LuaType>::from_lua".to_string())),
         }
     }
 }
@@ -133,9 +120,7 @@ where
                 }
                 Ok(ret)
             }
-            _ => Err(Error::Type(
-                "<Vec<T> as LuaType>::from_lua".to_string(),
-            )),
+            _ => Err(Error::Type("<Vec<T> as LuaType>::from_lua".to_string())),
         }
     }
 }
@@ -170,9 +155,7 @@ impl LuaType for String {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
             Value::String(ret) => Ok(ret.to_str()?.to_string()),
-            _ => Err(Error::Type(
-                "<String as LuaType>::from_lua".to_string(),
-            )),
+            _ => Err(Error::Type("<String as LuaType>::from_lua".to_string())),
         }
     }
 }
@@ -196,9 +179,9 @@ impl LuaType for PathBuf {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
             Value::String(ret) => Ok(ret.to_str()?.into()),
-            _ => Err(Error::Type(
-                "<PathBuf as LuaType>::from_lua".to_string(),
-            )),
+            _ => {
+                Err(Error::Type("<PathBuf as LuaType>::from_lua".to_string()))
+            }
         }
     }
 }
@@ -207,9 +190,7 @@ impl LuaType for Uuid {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
             Value::String(ret) => Ok(Uuid::parse_str(ret.to_str()?)?),
-            _ => Err(Error::Type(
-                "<Uuid as LuaType>::from_lua".to_string(),
-            )),
+            _ => Err(Error::Type("<Uuid as LuaType>::from_lua".to_string())),
         }
     }
 }
@@ -219,9 +200,9 @@ impl LuaType for GLfloat {
         match v {
             Value::Integer(ret) => Ok(ret as Self),
             Value::Number(ret) => Ok(ret as Self),
-            _ => Err(Error::Type(
-                "<GLfloat as LuaType>::from_lua".to_string(),
-            )),
+            _ => {
+                Err(Error::Type("<GLfloat as LuaType>::from_lua".to_string()))
+            }
         }
     }
 }
@@ -309,9 +290,7 @@ impl LuaType for Image {
                     )),
                 }
             }
-            _ => Err(Error::Type(
-                "<Image as LuaType>::from_lua".to_string(),
-            )),
+            _ => Err(Error::Type("<Image as LuaType>::from_lua".to_string())),
         }
     }
 }
@@ -324,18 +303,18 @@ impl LuaType for Texture {
                 String::from_lua(tbl.get("name")?)?,
                 texture_wrap_match(String::from_lua(tbl.get("wrap_s")?)?)?,
                 texture_wrap_match(String::from_lua(tbl.get("wrap_t")?)?)?,
-                texture_filter_match(String::from_lua(tbl.get(
-                    "filter_mag",
-                )?)?)?,
-                texture_filter_match(String::from_lua(tbl.get(
-                    "filter_min",
-                )?)?)?,
+                texture_filter_match(String::from_lua(
+                    tbl.get("filter_mag")?,
+                )?)?,
+                texture_filter_match(String::from_lua(
+                    tbl.get("filter_min")?,
+                )?)?,
                 bool::from_lua(tbl.get("mipmap")?)?,
                 Uuid::from_lua(tbl.get("image")?)?,
             )),
-            _ => Err(Error::Type(
-                "<Texture as LuaType>::from_lua".to_string(),
-            )),
+            _ => {
+                Err(Error::Type("<Texture as LuaType>::from_lua".to_string()))
+            }
         }
     }
 }
@@ -373,9 +352,9 @@ impl LuaType for Material {
                 }
                 Ok(ret)
             }
-            _ => Err(Error::Type(
-                "<Material as LuaType>::from_lua".to_string(),
-            )),
+            _ => {
+                Err(Error::Type("<Material as LuaType>::from_lua".to_string()))
+            }
         }
     }
 }
@@ -417,9 +396,9 @@ impl LuaType for LBFMesh {
                 },
                 Vec::<LBFPolygon>::from_lua(tbl.get("polygons")?)?,
             ),
-            _ => Err(Error::Type(
-                "<LBFMesh as LuaType>::from_lua".to_string(),
-            )),
+            _ => {
+                Err(Error::Type("<LBFMesh as LuaType>::from_lua".to_string()))
+            }
         }
     }
 }
@@ -437,11 +416,7 @@ impl LuaType for LBFPolygon {
                             bits
                         ))
                     })?,
-                    if -1 < midx {
-                        Some(midx as usize)
-                    } else {
-                        None
-                    },
+                    if -1 < midx { Some(midx as usize) } else { None },
                     &(Vec::<u32>::from_lua(tbl.get(3)?)?)[..],
                 )
             }
@@ -470,9 +445,9 @@ where
                     },
                 ))
             }
-            _ => Err(Error::Type(
-                "<Bone<T> as LuaType>::from_lua".to_string(),
-            )),
+            _ => {
+                Err(Error::Type("<Bone<T> as LuaType>::from_lua".to_string()))
+            }
         }
     }
 }
@@ -505,17 +480,14 @@ impl LuaType for Model {
                 );
                 ret.meshes =
                     Some(Err(Vec::<Uuid>::from_lua(tbl.get("meshes")?)?));
-                ret.materials = Some(Err(Vec::<Uuid>::from_lua(tbl.get(
-                    "materials",
-                )?)?));
+                ret.materials =
+                    Some(Err(Vec::<Uuid>::from_lua(tbl.get("materials")?)?));
                 if let Ok(armature) = Uuid::from_lua(tbl.get("armature")?) {
                     ret.armature = Some(Err(armature));
                 }
                 Ok(ret)
             }
-            _ => Err(Error::Type(
-                "<Model as LuaType>::from_lua".to_string(),
-            )),
+            _ => Err(Error::Type("<Model as LuaType>::from_lua".to_string())),
         }
     }
 }
@@ -550,9 +522,9 @@ impl LuaType for LBFLight {
                 }
                 Ok(ret)
             }
-            _ => Err(Error::Type(
-                "<LBFLight as LuaType>::from_lua".to_string(),
-            )),
+            _ => {
+                Err(Error::Type("<LBFLight as LuaType>::from_lua".to_string()))
+            }
         }
     }
 }
@@ -560,9 +532,9 @@ impl LuaType for LBFLight {
 impl LuaType for Camera {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
-            Value::Table(tbl) => match String::from_lua(tbl.get(
-                "camera_type",
-            )?)?.as_str()
+            Value::Table(tbl) => match String::from_lua(
+                tbl.get("camera_type")?,
+            )?.as_str()
             {
                 "FRUSTUM" => Ok(Camera::new_frustum(
                     Uuid::from_lua(tbl.get("uuid")?)?,
@@ -584,9 +556,7 @@ impl LuaType for Camera {
                     "<Camera as LuaType>::from_lua".to_string(),
                 )),
             },
-            _ => Err(Error::Type(
-                "<Camera as LuaType>::from_lua".to_string(),
-            )),
+            _ => Err(Error::Type("<Camera as LuaType>::from_lua".to_string())),
         }
     }
 }

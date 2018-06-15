@@ -20,9 +20,9 @@ use sif_math::{Vector3, Vector4};
 use sif_renderer::Program;
 use sif_three::{Armature, AsNodeHolder, NodeHolder, NodeHolderField, Pose};
 // ----------------------------------------------------------------------------
-use super::{Error,
-            Result,
-            {Camera, Light, Model}};
+use super::{
+    Error, Result, {Camera, Light, Model},
+};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum ObjectData
@@ -308,9 +308,7 @@ impl Object {
     pub fn position(&self) -> Result<Vector3<GLfloat>> {
         let n = self.as_node()?.borrow();
         let m = n.as_matrix();
-        Ok(Vector3::<GLfloat>::new(
-            m[3][0], m[3][1], m[3][2],
-        ))
+        Ok(Vector3::<GLfloat>::new(m[3][0], m[3][1], m[3][2]))
     }
     // ------------------------------------------------------------------------
     /// front

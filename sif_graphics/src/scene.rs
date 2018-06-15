@@ -19,8 +19,10 @@ use uuid::Uuid;
 use sif_manager::{ManagedValue, Manager};
 use sif_three::{Armature, Graph, Node, NodeHolder, Pose, TraRotSca};
 // ----------------------------------------------------------------------------
-use super::{lbf, lbf::LBF, Camera, Error, Image, Light, Material, Mesh,
-            Model, Object, ObjectData, Result, Texture};
+use super::{
+    lbf, lbf::LBF, Camera, Error, Image, Light, Material, Mesh, Model, Object,
+    ObjectData, Result, Texture,
+};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Scene
@@ -111,7 +113,8 @@ impl Scene {
                         k,
                         k.as_bytes()
                     );
-                    let _ = self.textures
+                    let _ = self
+                        .textures
                         .insert(Texture::from_lbf(v, &self.images)?);
                 }
             }
@@ -194,8 +197,8 @@ impl Scene {
                         k,
                         k.as_bytes()
                     );
-                    let _ = self.lights
-                        .insert(Light::from_lbf(v, texture_size)?)?;
+                    let _ =
+                        self.lights.insert(Light::from_lbf(v, texture_size)?)?;
                 }
             }
         }
@@ -275,7 +278,8 @@ impl Scene {
                     } else {
                         Ok(None)
                     };
-                    let _ = self.graph
+                    let _ = self
+                        .graph
                         .insert(AsRef::<Uuid>::as_ref(&v).clone(), parent?)?;
                     let node = self.graph.get(v.as_ref()).ok_or_else(|| {
                         Error::OptNone(
