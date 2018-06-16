@@ -6,12 +6,12 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/22
-//  @date 2018/04/16
+//  @date 2018/06/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Cleanup
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Cleanup<V>
 where
     V: ::num::Float,

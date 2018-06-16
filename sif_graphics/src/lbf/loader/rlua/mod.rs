@@ -6,15 +6,14 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/06/13
-//  @date 2018/06/14
+//  @date 2018/06/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::{collections::BTreeMap, path::Path};
+use std::path::Path;
 // ----------------------------------------------------------------------------
 use gl::types::*;
 use rlua::{Integer, Lua, Table};
-use uuid::Uuid;
 // ----------------------------------------------------------------------------
 use sif_three::Armature;
 // ----------------------------------------------------------------------------
@@ -31,7 +30,7 @@ use self::lua_type::LuaType;
 mod lua_type;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-static CURRENT: Integer = 3;
+static CURRENT: Integer = 4;
 static AGE: Integer = 0;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -50,7 +49,10 @@ pub(crate) fn from_str(
     path: impl AsRef<Path>,
     src: impl AsRef<str>,
 ) -> Result<LBF> {
-    info!("sif_graphics::lbf::LBF::from_str({:?}, ...)", path.as_ref());
+    info!(
+        "sif_graphics::lbf::loader::rlua::from_str({:?}, ...)",
+        path.as_ref()
+    );
 
     let path_base = path.as_ref().parent().ok_or_else(|| {
         Error::OptNone(format!(
@@ -65,36 +67,37 @@ pub(crate) fn from_str(
 
     let _ = get_current(&tbl)?;
 
-    let mut images = BTreeMap::<Uuid, Image>::from_lua(tbl.get("images")?)
-        .unwrap_or_default();
-    for v in &mut images.values_mut() {
-        if let Image::File(ref mut im) = *v {
-            let _ = im.set_path_base(path_base);
-        }
-    }
+    let images = Vec::<Image>::from_lua(tbl.get("images")?)
+        .unwrap_or_default()
+        .into_iter()
+        .map(|mut x| {
+            if let Image::File(ref mut im) = x {
+                let _ = im.set_path_base(path_base);
+            }
+            x
+        })
+        .collect();
 
-    let textures = BTreeMap::<Uuid, Texture>::from_lua(tbl.get("textures")?)
-        .unwrap_or_default();
+    let textures =
+        Vec::<Texture>::from_lua(tbl.get("textures")?).unwrap_or_default();
 
-    let materials = BTreeMap::<Uuid, Material>::from_lua(
-        tbl.get("materials")?,
-    ).unwrap_or_default();
+    let materials =
+        Vec::<Material>::from_lua(tbl.get("materials")?).unwrap_or_default();
 
-    let meshes = BTreeMap::<Uuid, LBFMesh>::from_lua(tbl.get("meshes")?)
-        .unwrap_or_default();
+    let meshes =
+        Vec::<LBFMesh>::from_lua(tbl.get("meshes")?).unwrap_or_default();
 
-    let armatures = BTreeMap::<Uuid, Armature<GLfloat>>::from_lua(
-        tbl.get("armatures")?,
-    ).unwrap_or_default();
-
-    let models = BTreeMap::<Uuid, Model>::from_lua(tbl.get("models")?)
+    let armatures = Vec::<Armature<GLfloat>>::from_lua(tbl.get("armatures")?)
         .unwrap_or_default();
 
-    let lights = BTreeMap::<Uuid, LBFLight>::from_lua(tbl.get("lights")?)
-        .unwrap_or_default();
+    let models =
+        Vec::<Model>::from_lua(tbl.get("models")?).unwrap_or_default();
 
-    let cameras = BTreeMap::<Uuid, Camera>::from_lua(tbl.get("cameras")?)
-        .unwrap_or_default();
+    let lights =
+        Vec::<LBFLight>::from_lua(tbl.get("lights")?).unwrap_or_default();
+
+    let cameras =
+        Vec::<Camera>::from_lua(tbl.get("cameras")?).unwrap_or_default();
 
     let objects =
         Vec::<LBFObject>::from_lua(tbl.get("objects")?).unwrap_or_default();

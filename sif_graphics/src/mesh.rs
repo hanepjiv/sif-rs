@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2018/06/14
+//  @date 2018/06/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -234,7 +234,7 @@ impl Mesh {
     }
     // ========================================================================
     /// from_lbf
-    pub fn from_lbf(lbf_mesh: &lbf::LBFMesh) -> Result<Mesh> {
+    pub fn from_lbf(lbf_mesh: lbf::LBFMesh) -> Result<Mesh> {
         // --------------------------------------------------------------------
         /// struct TmpKey
         #[derive(Debug, Default, Clone, PartialEq, Eq, PartialOrd, Ord)]

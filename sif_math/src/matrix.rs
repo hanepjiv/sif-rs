@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2018/05/12
+//  @date 2018/06/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -18,7 +18,7 @@ macro_rules! matrix_define {
     ($name:ident($vector:ident; $n:expr)) => {
         // ====================================================================
         /// struct $name
-        #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd)]
+        #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
         pub struct $name<V: Number>([$vector<V>; $n]);
         // ====================================================================
         impl<V> From<[$vector<V>; $n]> for $name<V>

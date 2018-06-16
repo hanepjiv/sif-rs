@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2018/04/11
+//  @date 2018/06/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -14,7 +14,7 @@ use super::{Number, Vector4};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Quaternion
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Quaternion<V: Number>(Vector4<V>);
 // ============================================================================
 impl<V> Default for Quaternion<V>

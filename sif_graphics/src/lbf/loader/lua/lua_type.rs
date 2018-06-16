@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/06/13
-//  @date 2018/06/14
+//  @date 2018/06/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -311,7 +311,7 @@ impl LuaType for Uuid {
     fn from_lua(state: &mut LuaState, idx: ::lua::Index) -> Result<Self> {
         if let Some(key) = state.to_str_in_place(idx) {
             match Uuid::parse_str(key) {
-                Err(e) => Err(Error::UuidParse(e)),
+                Err(e) => Err(Error::UuidParse(format!("{}", e))),
                 Ok(uuid) => Ok(uuid),
             }
         } else {
@@ -327,7 +327,7 @@ impl LuaType for Image {
     fn from_lua(state: &mut LuaState, idx: ::lua::Index) -> Result<Self> {
         match state.idxtbl::<String>(idx, &"source")?.as_str() {
             "FILE" => Ok(Image::new_file(
-                Uuid::from_lua(state, idx - 1)?,
+                state.idxtbl::<Uuid>(idx, &"uuid")?,
                 state.idxtbl::<String>(idx, &"name")?,
                 state.idxtbl::<u8>(idx, &"dimension")?,
                 state.idxtbl::<PathBuf>(idx, &"path")?,
@@ -343,12 +343,16 @@ impl LuaType for Texture {
     }
     fn from_lua(state: &mut LuaState, idx: ::lua::Index) -> Result<Self> {
         Ok(Texture::new(
-            Uuid::from_lua(state, idx - 1)?,
+            state.idxtbl::<Uuid>(idx, &"uuid")?,
             state.idxtbl::<String>(idx, &"name")?,
-            texture_wrap_match(state.idxtbl(idx, &"wrap_s")?)?,
-            texture_wrap_match(state.idxtbl(idx, &"wrap_t")?)?,
-            texture_filter_match(state.idxtbl(idx, &"filter_mag")?)?,
-            texture_filter_match(state.idxtbl(idx, &"filter_min")?)?,
+            texture_wrap_match(&state.idxtbl::<String>(idx, &"wrap_s")?)?,
+            texture_wrap_match(&state.idxtbl::<String>(idx, &"wrap_t")?)?,
+            texture_filter_match(
+                &state.idxtbl::<String>(idx, &"filter_mag")?,
+            )?,
+            texture_filter_match(
+                &state.idxtbl::<String>(idx, &"filter_min")?,
+            )?,
             state.idxtbl(idx, &"mipmap")?,
             state.idxtbl(idx, &"image")?,
         ))
@@ -361,7 +365,7 @@ impl LuaType for Material {
     }
     fn from_lua(state: &mut LuaState, idx: ::lua::Index) -> Result<Self> {
         let mut m = Material::new(
-            Uuid::from_lua(state, idx - 1)?,
+            state.idxtbl::<Uuid>(idx, &"uuid")?,
             state.idxtbl::<String>(idx, &"name")?,
         );
         m.diffuse.color = state.idxtbl(idx, &"diffuse.color")?;
@@ -387,7 +391,7 @@ impl LuaType for LBFMesh {
     }
     fn from_lua(state: &mut LuaState, idx: ::lua::Index) -> Result<Self> {
         LBFMesh::new(
-            Uuid::from_lua(state, idx - 1)?,
+            state.idxtbl::<Uuid>(idx, &"uuid")?,
             state.idxtbl::<String>(idx, &"name")?,
             state.idxtbl::<Vec<GLfloat>>(idx, &"position")?,
             state.idxtbl::<Vec<GLfloat>>(idx, &"normal")?,
@@ -474,10 +478,12 @@ where
 
         state.pop(1); // push_nil
 
-        let o = offset?;
         let p = parent?;
 
-        Ok(Bone::new(o, if p < 0 { None } else { Some(p as usize) }))
+        Ok(Bone::new(
+            offset?,
+            if p < 0 { None } else { Some(p as usize) },
+        ))
     }
 }
 // ----------------------------------------------------------------------------
@@ -490,7 +496,7 @@ where
     }
     fn from_lua(state: &mut LuaState, idx: ::lua::Index) -> Result<Self> {
         Ok(Armature::new(
-            Uuid::from_lua(state, idx - 1)?,
+            state.idxtbl::<Uuid>(idx, &"uuid")?,
             state.idxtbl::<String>(idx, &"name")?,
             state.idxtbl(idx, &"bones")?,
         ))
@@ -503,7 +509,7 @@ impl LuaType for Model {
     }
     fn from_lua(state: &mut LuaState, idx: ::lua::Index) -> Result<Self> {
         let mut model = Model::new(
-            Uuid::from_lua(state, idx - 1)?,
+            state.idxtbl::<Uuid>(idx, &"uuid")?,
             state.idxtbl::<String>(idx, &"name")?,
         );
         model.meshes = Some(Err(state.idxtbl(idx, &"meshes")?));
@@ -521,7 +527,7 @@ impl LuaType for LBFLight {
     }
     fn from_lua(state: &mut LuaState, idx: ::lua::Index) -> Result<Self> {
         let mut light = LBFLight::new(
-            Uuid::from_lua(state, idx - 1)?,
+            state.idxtbl::<Uuid>(idx, &"uuid")?,
             state.idxtbl::<String>(idx, &"name")?,
         );
         light.color = state.idxtbl::<Vector3<GLfloat>>(idx, &"color")?;
@@ -550,7 +556,7 @@ impl LuaType for Camera {
     fn from_lua(state: &mut LuaState, idx: ::lua::Index) -> Result<Self> {
         match state.idxtbl::<String>(idx, &"camera_type")?.as_str() {
             "FRUSTUM" => Ok(Camera::new_frustum(
-                Uuid::from_lua(state, idx - 1)?,
+                state.idxtbl::<Uuid>(idx, &"uuid")?,
                 state.idxtbl::<String>(idx, &"name")?,
                 state.idxtbl(idx, &"near")?,
                 state.idxtbl(idx, &"far")?,
@@ -558,7 +564,7 @@ impl LuaType for Camera {
                 state.idxtbl(idx, &"aspect")?,
             )),
             "ORTHO" => Ok(Camera::new_ortho(
-                Uuid::from_lua(state, idx - 1)?,
+                state.idxtbl::<Uuid>(idx, &"uuid")?,
                 state.idxtbl::<String>(idx, &"name")?,
                 state.idxtbl(idx, &"near")?,
                 state.idxtbl(idx, &"far")?,

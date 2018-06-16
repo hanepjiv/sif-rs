@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2018/05/30
+//  @date 2018/06/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -19,7 +19,8 @@ macro_rules! vector_define {
         // ////////////////////////////////////////////////////////////////////
         // ====================================================================
         /// struct $name
-        #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd)]
+        #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd,
+                 Ord, Hash)]
         pub struct $name<V: Number>([V; $n]);
         // ====================================================================
         impl<V> From<[V; $n]> for $name<V>

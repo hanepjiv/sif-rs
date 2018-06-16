@@ -38,11 +38,7 @@ where
 {
     // ========================================================================
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
-            ref e @ GLError::Function(_) | ref e @ GLError::GL(_, _) => {
-                write!(f, "{:?}", e)
-            }
-        }
+        <Self as ::std::fmt::Debug>::fmt(self, f)
     }
 }
 // ============================================================================

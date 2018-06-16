@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/03
-//  @date 2018/06/15
+//  @date 2018/06/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -38,7 +38,7 @@ pub enum Error {
 impl From<super::loader::LoaderError> for Error {
     // ========================================================================
     fn from(e: super::loader::LoaderError) -> Self {
-        Error::Loader(format!("{}", e))
+        Error::Loader(format!("{:?}", e)) // use "{:?}" for lua::ThreadStatus
     }
 }
 // ============================================================================
@@ -59,7 +59,7 @@ impl From<::std::io::Error> for Error {
 impl ::std::fmt::Display for Error {
     // ========================================================================
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        write!(f, "{:?}", self)
+        <Self as ::std::fmt::Debug>::fmt(self, f)
     }
 }
 // ============================================================================

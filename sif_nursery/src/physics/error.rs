@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/10
-//  @date 2018/05/12
+//  @date 2018/06/15
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -48,14 +48,7 @@ impl From<::sif_math::Error> for Error {
 impl ::std::fmt::Display for Error {
     // ========================================================================
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
-        match *self {
-            ref e @ Error::OptNone(_)
-            | ref e @ Error::NoNode
-            | ref e @ Error::InvalidPose => write!(f, "{:?}", e),
-            Error::IO(ref e) => e.fmt(f),
-            Error::SifManager(ref e) => e.fmt(f),
-            Error::SifMath(ref e) => e.fmt(f),
-        }
+        <Self as ::std::fmt::Debug>::fmt(self, f)
     }
 }
 // ============================================================================

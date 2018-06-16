@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/01/06
-//  @date 2018/05/12
+//  @date 2018/06/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -21,7 +21,7 @@ use super::{Error, Result};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum Image
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialOrd, PartialEq)]
 pub enum Image {
     /// File
     File(ImageFile),
@@ -72,7 +72,7 @@ impl AsRef<String> for Image {
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct ImageBase
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialOrd, PartialEq)]
 struct ImageBase {
     /// uuid
     uuid: Uuid,
@@ -115,7 +115,7 @@ impl AsRef<String> for ImageBase {
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct ImageFile
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialOrd, PartialEq)]
 pub struct ImageFile {
     /// base
     base: ImageBase,
@@ -177,7 +177,7 @@ impl AsRef<PathBuf> for ImageFile {
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct ImageProcedual
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialOrd, PartialEq)]
 pub struct ImageProcedual {
     /// base
     base: ImageBase,
@@ -220,7 +220,7 @@ impl AsRef<String> for ImageProcedual {
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum ImageProcedualMethod
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialOrd, PartialEq)]
 pub enum ImageProcedualMethod {
     /// Color
     Color(Vector4<GLfloat>),

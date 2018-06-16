@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/01/06
-//  @date 2018/05/17
+//  @date 2018/06/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -176,7 +176,7 @@ impl AsRef<::std::cell::RefCell<RendererTexture>> for Texture {
         if let Ok(ref rc) = self.inner {
             rc.as_ref()
         } else {
-            panic!("AsRef<RendererTexture>>for texture")
+            panic!("AsRef<RendererTexture>>for texture: {:?}", self)
         }
     }
 }

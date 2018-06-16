@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/06/13
-//  @date 2018/06/14
+//  @date 2018/06/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -301,12 +301,12 @@ impl LuaType for Texture {
             Value::Table(tbl) => Ok(Self::new(
                 Uuid::from_lua(tbl.get("uuid")?)?,
                 String::from_lua(tbl.get("name")?)?,
-                texture_wrap_match(String::from_lua(tbl.get("wrap_s")?)?)?,
-                texture_wrap_match(String::from_lua(tbl.get("wrap_t")?)?)?,
-                texture_filter_match(String::from_lua(
+                texture_wrap_match(&String::from_lua(tbl.get("wrap_s")?)?)?,
+                texture_wrap_match(&String::from_lua(tbl.get("wrap_t")?)?)?,
+                texture_filter_match(&String::from_lua(
                     tbl.get("filter_mag")?,
                 )?)?,
-                texture_filter_match(String::from_lua(
+                texture_filter_match(&String::from_lua(
                     tbl.get("filter_min")?,
                 )?)?,
                 bool::from_lua(tbl.get("mipmap")?)?,
@@ -434,10 +434,9 @@ where
     fn from_lua(v: Value) -> Result<Self> {
         match v {
             Value::Table(tbl) => {
-                let offset = Vector3::<V>::from_lua(tbl.get(1)?)?;
                 let parent = isize::from_lua(tbl.get(2)?)?;
                 Ok(Self::new(
-                    offset,
+                    Vector3::<V>::from_lua(tbl.get(1)?)?,
                     if parent < 0 {
                         None
                     } else {

@@ -6,14 +6,13 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/02
-//  @date 2018/06/14
+//  @date 2018/06/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::{collections::BTreeMap, fs::File, io::Read, path::Path};
+use std::{fs::File, io::Read, path::Path};
 // ----------------------------------------------------------------------------
 use gl::types::*;
-use uuid::Uuid;
 // ----------------------------------------------------------------------------
 use sif_three::Armature;
 // ----------------------------------------------------------------------------
@@ -40,118 +39,118 @@ mod polygon;
 #[derive(Debug, Default, Clone)]
 pub struct LBF {
     /// images
-    images: BTreeMap<Uuid, Image>,
+    images: Vec<Image>,
     /// textures
-    textures: BTreeMap<Uuid, Texture>,
+    textures: Vec<Texture>,
     /// materials
-    materials: BTreeMap<Uuid, Material>,
+    materials: Vec<Material>,
     /// meshes
-    meshes: BTreeMap<Uuid, LBFMesh>,
+    meshes: Vec<LBFMesh>,
     /// armatures
-    armatures: BTreeMap<Uuid, Armature<GLfloat>>,
+    armatures: Vec<Armature<GLfloat>>,
     /// models
-    models: BTreeMap<Uuid, Model>,
+    models: Vec<Model>,
     /// lights
-    lights: BTreeMap<Uuid, LBFLight>,
+    lights: Vec<LBFLight>,
     /// cameras
-    cameras: BTreeMap<Uuid, Camera>,
+    cameras: Vec<Camera>,
     /// objects
     objects: Vec<LBFObject>,
 }
 // ============================================================================
-impl AsRef<BTreeMap<Uuid, LBFLight>> for LBF {
-    fn as_ref(&self) -> &BTreeMap<Uuid, LBFLight> {
-        &self.lights
-    }
-}
-// ----------------------------------------------------------------------------
-impl AsMut<BTreeMap<Uuid, LBFLight>> for LBF {
-    fn as_mut(&mut self) -> &mut BTreeMap<Uuid, LBFLight> {
-        &mut self.lights
-    }
-}
-// ============================================================================
-impl AsRef<BTreeMap<Uuid, Camera>> for LBF {
-    fn as_ref(&self) -> &BTreeMap<Uuid, Camera> {
-        &self.cameras
-    }
-}
-// ----------------------------------------------------------------------------
-impl AsMut<BTreeMap<Uuid, Camera>> for LBF {
-    fn as_mut(&mut self) -> &mut BTreeMap<Uuid, Camera> {
-        &mut self.cameras
-    }
-}
-// ============================================================================
-impl AsRef<BTreeMap<Uuid, Image>> for LBF {
-    fn as_ref(&self) -> &BTreeMap<Uuid, Image> {
+impl AsRef<Vec<Image>> for LBF {
+    fn as_ref(&self) -> &Vec<Image> {
         &self.images
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<BTreeMap<Uuid, Image>> for LBF {
-    fn as_mut(&mut self) -> &mut BTreeMap<Uuid, Image> {
+impl AsMut<Vec<Image>> for LBF {
+    fn as_mut(&mut self) -> &mut Vec<Image> {
         &mut self.images
     }
 }
 // ============================================================================
-impl AsRef<BTreeMap<Uuid, Texture>> for LBF {
-    fn as_ref(&self) -> &BTreeMap<Uuid, Texture> {
+impl AsRef<Vec<Texture>> for LBF {
+    fn as_ref(&self) -> &Vec<Texture> {
         &self.textures
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<BTreeMap<Uuid, Texture>> for LBF {
-    fn as_mut(&mut self) -> &mut BTreeMap<Uuid, Texture> {
+impl AsMut<Vec<Texture>> for LBF {
+    fn as_mut(&mut self) -> &mut Vec<Texture> {
         &mut self.textures
     }
 }
 // ============================================================================
-impl AsRef<BTreeMap<Uuid, Material>> for LBF {
-    fn as_ref(&self) -> &BTreeMap<Uuid, Material> {
+impl AsRef<Vec<Material>> for LBF {
+    fn as_ref(&self) -> &Vec<Material> {
         &self.materials
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<BTreeMap<Uuid, Material>> for LBF {
-    fn as_mut(&mut self) -> &mut BTreeMap<Uuid, Material> {
+impl AsMut<Vec<Material>> for LBF {
+    fn as_mut(&mut self) -> &mut Vec<Material> {
         &mut self.materials
     }
 }
 // ============================================================================
-impl AsRef<BTreeMap<Uuid, LBFMesh>> for LBF {
-    fn as_ref(&self) -> &BTreeMap<Uuid, LBFMesh> {
+impl AsRef<Vec<LBFMesh>> for LBF {
+    fn as_ref(&self) -> &Vec<LBFMesh> {
         &self.meshes
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<BTreeMap<Uuid, LBFMesh>> for LBF {
-    fn as_mut(&mut self) -> &mut BTreeMap<Uuid, LBFMesh> {
+impl AsMut<Vec<LBFMesh>> for LBF {
+    fn as_mut(&mut self) -> &mut Vec<LBFMesh> {
         &mut self.meshes
     }
 }
 // ============================================================================
-impl AsRef<BTreeMap<Uuid, Armature<GLfloat>>> for LBF {
-    fn as_ref(&self) -> &BTreeMap<Uuid, Armature<GLfloat>> {
+impl AsRef<Vec<Armature<GLfloat>>> for LBF {
+    fn as_ref(&self) -> &Vec<Armature<GLfloat>> {
         &self.armatures
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<BTreeMap<Uuid, Armature<GLfloat>>> for LBF {
-    fn as_mut(&mut self) -> &mut BTreeMap<Uuid, Armature<GLfloat>> {
+impl AsMut<Vec<Armature<GLfloat>>> for LBF {
+    fn as_mut(&mut self) -> &mut Vec<Armature<GLfloat>> {
         &mut self.armatures
     }
 }
 // ============================================================================
-impl AsRef<BTreeMap<Uuid, Model>> for LBF {
-    fn as_ref(&self) -> &BTreeMap<Uuid, Model> {
+impl AsRef<Vec<Model>> for LBF {
+    fn as_ref(&self) -> &Vec<Model> {
         &self.models
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<BTreeMap<Uuid, Model>> for LBF {
-    fn as_mut(&mut self) -> &mut BTreeMap<Uuid, Model> {
+impl AsMut<Vec<Model>> for LBF {
+    fn as_mut(&mut self) -> &mut Vec<Model> {
         &mut self.models
+    }
+}
+// ============================================================================
+impl AsRef<Vec<LBFLight>> for LBF {
+    fn as_ref(&self) -> &Vec<LBFLight> {
+        &self.lights
+    }
+}
+// ----------------------------------------------------------------------------
+impl AsMut<Vec<LBFLight>> for LBF {
+    fn as_mut(&mut self) -> &mut Vec<LBFLight> {
+        &mut self.lights
+    }
+}
+// ============================================================================
+impl AsRef<Vec<Camera>> for LBF {
+    fn as_ref(&self) -> &Vec<Camera> {
+        &self.cameras
+    }
+}
+// ----------------------------------------------------------------------------
+impl AsMut<Vec<Camera>> for LBF {
+    fn as_mut(&mut self) -> &mut Vec<Camera> {
+        &mut self.cameras
     }
 }
 // ============================================================================
@@ -177,8 +176,8 @@ impl LBF {
     }
 }
 // ============================================================================
-pub(crate) fn texture_wrap_match(s: String) -> Result<GLenum> {
-    match s.as_str() {
+pub(crate) fn texture_wrap_match(s: &str) -> Result<GLenum> {
+    match s {
         "CLAMP_TO_EDGE" => Ok(::gl::CLAMP_TO_EDGE),
         "REPEAT" => Ok(::gl::REPEAT),
         "MIRRORED_REPEAT" => Ok(::gl::MIRRORED_REPEAT),
@@ -189,8 +188,8 @@ pub(crate) fn texture_wrap_match(s: String) -> Result<GLenum> {
     }
 }
 // ----------------------------------------------------------------------------
-pub(crate) fn texture_filter_match(s: String) -> Result<GLenum> {
-    match s.as_str() {
+pub(crate) fn texture_filter_match(s: &str) -> Result<GLenum> {
+    match s {
         "NEAREST" => Ok(::gl::NEAREST),
         "LINEAR" => Ok(::gl::LINEAR),
         "NEAREST_MIPMAP_NEAREST" => Ok(::gl::NEAREST_MIPMAP_NEAREST),
