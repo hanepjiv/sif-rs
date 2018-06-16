@@ -13,12 +13,12 @@
 use gl::types::*;
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
-use sif_manager::{ManagedValue, Manager};
-use sif_three::{Armature, Graph, Node, NodeHolder, Pose, TraRotSca};
+use sif_manager::Manager;
+use sif_three::{Armature, Graph};
 // ----------------------------------------------------------------------------
 use super::{
-    lbf, lbf::LBF, Camera, Error, Image, Light, Material, Mesh, Model, Object,
-    ObjectData, Result, Texture,
+    lbf, lbf::LBF, Camera, Image, Light, Material, Mesh, Model, Object,
+    Result, Texture,
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -158,85 +158,24 @@ impl Scene {
             let _ = self.cameras.insert(v)?;
         }
 
-        // Object: not use pop
-        for v in AsRef::<Vec<lbf::LBFObject>>::as_ref(&lbf) {
+        // Not use pop
+        for v in AsRef::<Vec<lbf::LBFObject>>::as_ref(&lbf).into_iter() {
             info!(
                 "Object: \"{}\", {}, {:?}",
                 AsRef::<String>::as_ref(&v),
                 AsRef::<Uuid>::as_ref(&v),
                 AsRef::<Uuid>::as_ref(&v).as_bytes()
             );
-            if let Some(mut obj) = match v.data_type.as_str() {
-                "LIGHT" => self.lights.get(&v.data_uuid).map(|m| {
-                    Object::new(
-                        *AsRef::<Uuid>::as_ref(&v),
-                        AsRef::<String>::as_ref(&v).as_str(),
-                        ObjectData::Light(m.clone()),
-                    )
-                }),
-                "CAMERA" => self.cameras.get(&v.data_uuid).map(|m| {
-                    Object::new(
-                        *AsRef::<Uuid>::as_ref(&v),
-                        AsRef::<String>::as_ref(&v).as_str(),
-                        ObjectData::Camera(m.clone()),
-                    )
-                }),
-                "ARMATURE" => self.armatures.get(&v.data_uuid).map(|m| {
-                    Object::new(
-                        *AsRef::<Uuid>::as_ref(&v),
-                        AsRef::<String>::as_ref(&v).as_str(),
-                        ObjectData::Armature(m.clone()),
-                    )
-                }),
-                "MODEL" => self.models.get(&v.data_uuid).map(|m| {
-                    let armature_len = (*m.as_ref().borrow()).armature_len();
-                    let pose = if 0 < armature_len {
-                        Some(Pose::<GLfloat>::new(armature_len))
-                    } else {
-                        None
-                    };
-                    Object::new(
-                        *AsRef::<Uuid>::as_ref(&v),
-                        AsRef::<String>::as_ref(&v).as_str(),
-                        ObjectData::Model(m.clone(), pose),
-                    )
-                }),
-                _ => None,
-            } {
-                let parent: Result<
-                    Option<ManagedValue<Node<GLfloat>>>,
-                > = if let Some(p) = v.parent {
-                    Ok(Some(self.graph.get(&p).ok_or_else(|| {
-                        Error::OptNone(
-                            "graphics: scene: from_lbf: self.graph.get"
-                                .to_string(),
-                        )
-                    })?))
-                } else {
-                    Ok(None)
-                };
-                let _ = self
-                    .graph
-                    .insert(AsRef::<Uuid>::as_ref(&v).clone(), parent?)?;
-                let node = self.graph.get(v.as_ref()).ok_or_else(|| {
-                    Error::OptNone(
-                        "graphics: scene: from_lbf: self.graph.insert"
-                            .to_string(),
-                    )
-                })?;
-                {
-                    let mut m = node.as_ref().borrow_mut();
-                    let trs = AsMut::<TraRotSca<GLfloat>>::as_mut(&mut *m);
-                    trs.translation = v.trarotsca.translation;
-                    trs.rotation = v.trarotsca.rotation;
-                    trs.scaling = v.trarotsca.scaling;
-                }
-                obj.set_node(Some(node));
-                let _ = self.objects.insert(obj)?;
-            } else {
-                return Err(Error::ManagedNotFound(v.data_uuid));
-            }
+            let _ = self.objects.insert(Object::from_lbf(
+                v,
+                &mut self.graph,
+                &self.armatures,
+                &self.models,
+                &self.lights,
+                &self.cameras,
+            )?)?;
         }
+
         Ok(self)
     }
     // ========================================================================

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/23
-//  @date 2018/06/13
+//  @date 2018/06/16
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -15,13 +15,16 @@ use std::cell::RefCell;
 use gl::types::*;
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
-use sif_manager::ManagedValue;
+use sif_manager::{ManagedValue, Manager};
 use sif_math::{Vector3, Vector4};
 use sif_renderer::Program;
-use sif_three::{Armature, AsNodeHolder, NodeHolder, NodeHolderField, Pose};
+use sif_three::{
+    Armature, AsNodeHolder, Graph, Node, NodeHolder, NodeHolderField, Pose,
+    TraRotSca,
+};
 // ----------------------------------------------------------------------------
 use super::{
-    Error, Result, {Camera, Light, Model},
+    lbf, Error, Result, {Camera, Light, Model},
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -29,49 +32,23 @@ use super::{
 #[allow(variant_size_differences)]
 #[derive(Debug, Clone)]
 pub enum ObjectData {
-    /// Light
-    Light(ManagedValue<Light>),
-    /// Camera
-    Camera(ManagedValue<Camera>),
     /// Armature
     Armature(ManagedValue<Armature<GLfloat>>),
     /// Model
     Model(ManagedValue<Model>, Option<Pose<GLfloat>>),
-}
-// ============================================================================
-impl AsRef<RefCell<Light>> for ObjectData {
-    fn as_ref(&self) -> &RefCell<Light> {
-        match *self {
-            ObjectData::Light(ref managed) => managed.as_ref(),
-            ObjectData::Camera(_)
-            | ObjectData::Armature(_)
-            | ObjectData::Model(_, _) => {
-                panic!("AsRef<RefCell<Light>> for ObjectData")
-            }
-        }
-    }
-}
-// ============================================================================
-impl AsRef<RefCell<Camera>> for ObjectData {
-    fn as_ref(&self) -> &RefCell<Camera> {
-        match *self {
-            ObjectData::Camera(ref managed) => managed.as_ref(),
-            ObjectData::Light(_)
-            | ObjectData::Armature(_)
-            | ObjectData::Model(_, _) => {
-                panic!("AsRef<RefCell<Camera>> for ObjectData")
-            }
-        }
-    }
+    /// Light
+    Light(ManagedValue<Light>),
+    /// Camera
+    Camera(ManagedValue<Camera>),
 }
 // ============================================================================
 impl AsRef<RefCell<Armature<GLfloat>>> for ObjectData {
     fn as_ref(&self) -> &RefCell<Armature<GLfloat>> {
         match *self {
-            ObjectData::Armature(ref managed) => managed.as_ref(),
-            ObjectData::Light(_)
-            | ObjectData::Camera(_)
-            | ObjectData::Model(_, _) => {
+            | ObjectData::Armature(ref managed) => managed.as_ref(),
+            | ObjectData::Model(_, _)
+            | ObjectData::Light(_)
+            | ObjectData::Camera(_) => {
                 panic!("AsRef<RefCell<Armature<GLfloat>>> for ObjectData")
             }
         }
@@ -81,10 +58,10 @@ impl AsRef<RefCell<Armature<GLfloat>>> for ObjectData {
 impl AsRef<RefCell<Model>> for ObjectData {
     fn as_ref(&self) -> &RefCell<Model> {
         match *self {
-            ObjectData::Model(ref managed, _) => managed.as_ref(),
-            ObjectData::Light(_)
-            | ObjectData::Camera(_)
-            | ObjectData::Armature(_) => {
+            | ObjectData::Model(ref managed, _) => managed.as_ref(),
+            | ObjectData::Armature(_)
+            | ObjectData::Light(_)
+            | ObjectData::Camera(_) => {
                 panic!("AsRef<RefCell<Model>> for ObjectData")
             }
         }
@@ -94,10 +71,10 @@ impl AsRef<RefCell<Model>> for ObjectData {
 impl AsRef<Option<Pose<GLfloat>>> for ObjectData {
     fn as_ref(&self) -> &Option<Pose<GLfloat>> {
         match *self {
-            ObjectData::Model(_, ref opt_pose) => opt_pose,
-            ObjectData::Light(_)
-            | ObjectData::Camera(_)
-            | ObjectData::Armature(_) => {
+            | ObjectData::Model(_, ref opt) => opt,
+            | ObjectData::Armature(_)
+            | ObjectData::Light(_)
+            | ObjectData::Camera(_) => {
                 panic!("AsRef<Pose<GLfloat>> for ObjectData")
             }
         }
@@ -107,11 +84,37 @@ impl AsRef<Option<Pose<GLfloat>>> for ObjectData {
 impl AsMut<Option<Pose<GLfloat>>> for ObjectData {
     fn as_mut(&mut self) -> &mut Option<Pose<GLfloat>> {
         match *self {
-            ObjectData::Model(_, ref mut opt_pose) => opt_pose,
-            ObjectData::Light(_)
-            | ObjectData::Camera(_)
-            | ObjectData::Armature(_) => {
+            | ObjectData::Model(_, ref mut opt) => opt,
+            | ObjectData::Armature(_)
+            | ObjectData::Light(_)
+            | ObjectData::Camera(_) => {
                 panic!("AsMut<Pose<GLfloat>> for ObjectData")
+            }
+        }
+    }
+}
+// ============================================================================
+impl AsRef<RefCell<Light>> for ObjectData {
+    fn as_ref(&self) -> &RefCell<Light> {
+        match *self {
+            | ObjectData::Light(ref managed) => managed.as_ref(),
+            | ObjectData::Armature(_)
+            | ObjectData::Model(_, _)
+            | ObjectData::Camera(_) => {
+                panic!("AsRef<RefCell<Light>> for ObjectData")
+            }
+        }
+    }
+}
+// ============================================================================
+impl AsRef<RefCell<Camera>> for ObjectData {
+    fn as_ref(&self) -> &RefCell<Camera> {
+        match *self {
+            | ObjectData::Camera(ref managed) => managed.as_ref(),
+            | ObjectData::Armature(_)
+            | ObjectData::Model(_, _)
+            | ObjectData::Light(_) => {
+                panic!("AsRef<RefCell<Camera>> for ObjectData")
             }
         }
     }
@@ -119,43 +122,44 @@ impl AsMut<Option<Pose<GLfloat>>> for ObjectData {
 // ============================================================================
 impl ObjectData {
     // ========================================================================
-    /// is_light
-    pub fn is_light(&self) -> bool {
-        match *self {
-            ObjectData::Light(_) => true,
-            ObjectData::Camera(_)
-            | ObjectData::Armature(_)
-            | ObjectData::Model(_, _) => false,
-        }
-    }
-    // ========================================================================
-    /// is_camera
-    pub fn is_camera(&self) -> bool {
-        match *self {
-            ObjectData::Camera(_) => true,
-            ObjectData::Light(_)
-            | ObjectData::Armature(_)
-            | ObjectData::Model(_, _) => false,
-        }
-    }
-    // ========================================================================
-    /// is_armature
+    /// fn is_armature
     pub fn is_armature(&self) -> bool {
         match *self {
-            ObjectData::Armature(_) => true,
-            ObjectData::Light(_)
-            | ObjectData::Camera(_)
-            | ObjectData::Model(_, _) => false,
+            | ObjectData::Armature(_) => true,
+            | ObjectData::Light(_)
+            | ObjectData::Model(_, _)
+            | ObjectData::Camera(_) => false,
         }
     }
     // ========================================================================
-    /// is_model
+    /// fn is_model
     pub fn is_model(&self) -> bool {
         match *self {
-            ObjectData::Model(_, _) => true,
-            ObjectData::Light(_)
-            | ObjectData::Camera(_)
-            | ObjectData::Armature(_) => false,
+            | ObjectData::Model(_, _) => true,
+            | ObjectData::Armature(_)
+            | ObjectData::Light(_)
+            | ObjectData::Camera(_) => false,
+        }
+    }
+    // ========================================================================
+    /// fn is_light
+    pub fn is_light(&self) -> bool {
+        match *self {
+            | ObjectData::Light(_) => true,
+
+            | ObjectData::Armature(_)
+            | ObjectData::Model(_, _)
+            | ObjectData::Camera(_) => false,
+        }
+    }
+    // ========================================================================
+    /// fn is_camera
+    pub fn is_camera(&self) -> bool {
+        match *self {
+            | ObjectData::Camera(_) => true,
+            | ObjectData::Armature(_)
+            | ObjectData::Model(_, _)
+            | ObjectData::Light(_) => false,
         }
     }
 }
@@ -243,7 +247,7 @@ impl AsMut<Option<Pose<GLfloat>>> for Object {
 // ============================================================================
 impl Object {
     // ========================================================================
-    /// new
+    /// fn new
     pub fn new(
         uuid: Uuid,
         name: impl Into<String>,
@@ -257,27 +261,103 @@ impl Object {
         }
     }
     // ========================================================================
-    /// is_light
+    /// fn from_lbf
+    pub fn from_lbf(
+        src: &lbf::LBFObject,
+        graph: &mut Graph<GLfloat>,
+        armatures: &Manager<Armature<GLfloat>>,
+        models: &Manager<Model>,
+        lights: &Manager<Light>,
+        cameras: &Manager<Camera>,
+    ) -> Result<Self> {
+        if let Some(mut obj) = match src.data_type.as_str() {
+            "ARMATURE" => armatures.get(&src.data_uuid).map(|m| {
+                Object::new(
+                    *AsRef::<Uuid>::as_ref(&src),
+                    AsRef::<String>::as_ref(&src).as_str(),
+                    ObjectData::Armature(m.clone()),
+                )
+            }),
+            "MODEL" => models.get(&src.data_uuid).map(|m| {
+                let armature_len = (*m.as_ref().borrow()).armature_len();
+                let pose = if 0 < armature_len {
+                    Some(Pose::<GLfloat>::new(armature_len))
+                } else {
+                    None
+                };
+                Object::new(
+                    *AsRef::<Uuid>::as_ref(&src),
+                    AsRef::<String>::as_ref(&src).as_str(),
+                    ObjectData::Model(m.clone(), pose),
+                )
+            }),
+            "LIGHT" => lights.get(&src.data_uuid).map(|m| {
+                Object::new(
+                    *AsRef::<Uuid>::as_ref(&src),
+                    AsRef::<String>::as_ref(&src).as_str(),
+                    ObjectData::Light(m.clone()),
+                )
+            }),
+            "CAMERA" => cameras.get(&src.data_uuid).map(|m| {
+                Object::new(
+                    *AsRef::<Uuid>::as_ref(&src),
+                    AsRef::<String>::as_ref(&src).as_str(),
+                    ObjectData::Camera(m.clone()),
+                )
+            }),
+            _ => None,
+        } {
+            let parent: Option<ManagedValue<Node<GLfloat>>> =
+                if let Some(p) = src.parent {
+                    Some(graph.get(&p).ok_or_else(|| {
+                        Error::OptNone(
+                            "graphics: scene: from_lbf: graph.get".to_string(),
+                        )
+                    })?)
+                } else {
+                    None
+                };
+            let _ = graph.insert(AsRef::<Uuid>::as_ref(&src).clone(), parent)?;
+            let node = graph.get(src.as_ref()).ok_or_else(|| {
+                Error::OptNone(
+                    "graphics: scene: from_lbf: graph.insert".to_string(),
+                )
+            })?;
+            {
+                let mut m = node.as_ref().borrow_mut();
+                let trs = AsMut::<TraRotSca<GLfloat>>::as_mut(&mut *m);
+                trs.translation = src.trarotsca.translation;
+                trs.rotation = src.trarotsca.rotation;
+                trs.scaling = src.trarotsca.scaling;
+            }
+            obj.set_node(Some(node));
+            Ok(obj)
+        } else {
+            Err(Error::ManagedNotFound(src.data_uuid))
+        }
+    }
+    // ========================================================================
+    /// fn is_light
     pub fn is_light(&self) -> bool {
         self.object_data.is_light()
     }
     // ========================================================================
-    /// is_camera
+    /// fn is_camera
     pub fn is_camera(&self) -> bool {
         self.object_data.is_camera()
     }
     // ========================================================================
-    /// is_armature
+    /// fn is_armature
     pub fn is_armature(&self) -> bool {
         self.object_data.is_armature()
     }
     // ========================================================================
-    /// is_model
+    /// fn is_model
     pub fn is_model(&self) -> bool {
         self.object_data.is_model()
     }
     // ========================================================================
-    /// default_left
+    /// fn default_left
     pub fn default_left(&self) -> Vector3<GLfloat> {
         match self.object_data {
             ObjectData::Light(_) | ObjectData::Camera(_) => {
@@ -287,14 +367,14 @@ impl Object {
         }
     }
     // ------------------------------------------------------------------------
-    /// default_up
+    /// fn default_up
     pub fn default_up(&self) -> Vector3<GLfloat> {
         match self.object_data {
             _ => Vector3::from_no_clean([0.0, 1.0, 0.0]),
         }
     }
     // ------------------------------------------------------------------------
-    /// default_front
+    /// fn default_front
     pub fn default_front(&self) -> Vector3<GLfloat> {
         match self.object_data {
             ObjectData::Light(_) | ObjectData::Camera(_) => {
@@ -304,14 +384,14 @@ impl Object {
         }
     }
     // ========================================================================
-    /// position
+    /// fn position
     pub fn position(&self) -> Result<Vector3<GLfloat>> {
         let n = self.as_node()?.borrow();
         let m = n.as_matrix();
         Ok(Vector3::<GLfloat>::new(m[3][0], m[3][1], m[3][2]))
     }
     // ------------------------------------------------------------------------
-    /// front
+    /// fn front
     pub fn front(&self) -> Result<Vector3<GLfloat>> {
         let n = self.as_node()?.borrow();
         let m = n.as_matrix();
@@ -320,7 +400,7 @@ impl Object {
         Ok(*v3.normalize())
     }
     // ========================================================================
-    /// update
+    /// fn update
     pub fn update(&mut self) -> Result<&mut Object> {
         if let ObjectData::Model(ref managed_model, Some(ref mut pose)) =
             self.object_data
@@ -334,7 +414,7 @@ impl Object {
         Ok(self)
     }
     // ========================================================================
-    /// emit_pose
+    /// fn emit_pose
     fn emit_pose(pose: &Pose<GLfloat>, prog: &Program) -> Result<()> {
         let l = pose.len();
         if 0 < l {
@@ -357,7 +437,7 @@ impl Object {
         Ok(())
     }
     // ========================================================================
-    /// draw_impl
+    /// fn draw_impl
     fn draw_impl(
         &mut self,
         prog: &Program,
@@ -385,12 +465,12 @@ impl Object {
         }
     }
     // ------------------------------------------------------------------------
-    /// draw
+    /// fn draw
     pub fn draw(&mut self, prog: &Program) -> Result<()> {
         self.draw_impl(prog, Model::draw)
     }
     // ------------------------------------------------------------------------
-    /// draw_silhouette
+    /// fn draw_silhouette
     pub fn draw_silhouette(&mut self, prog: &Program) -> Result<()> {
         self.draw_impl(prog, Model::draw_silhouette)
     }
