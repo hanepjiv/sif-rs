@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/10
-//  @date 2018/06/15
+//  @date 2018/06/17
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -113,24 +113,24 @@ impl ::std::error::Error for Error {
     // ========================================================================
     fn description(&self) -> &str {
         match *self {
-            Error::OptNone(_) => "::sif_graphics::Error::OptNone",
-            Error::InvalidArg(_) => "::sif_graphics::Error::InvalidArg",
-            Error::InvalidEnum => "::sif_graphics::Error::InvalidImage",
-            Error::InvalidImage => "::sif_graphics::Error::InvalidImage",
+            Error::OptNone(_) => "sif_graphics::Error::OptNone",
+            Error::InvalidArg(_) => "sif_graphics::Error::InvalidArg",
+            Error::InvalidEnum => "sif_graphics::Error::InvalidImage",
+            Error::InvalidImage => "sif_graphics::Error::InvalidImage",
             Error::ManagedNotFound(_) => {
-                "::sif_graphics::Error::ManagedNotFound"
+                "sif_graphics::Error::ManagedNotFound"
             }
-            Error::Path(_) => "::sif_graphics::Error::Path",
-            Error::Mesh(_) => "::sif_graphics::Error::Mesh",
-            Error::Light(_) => "::sif_graphics::Error::Light",
+            Error::Path(_) => "sif_graphics::Error::Path",
+            Error::Mesh(_) => "sif_graphics::Error::Mesh",
+            Error::Light(_) => "sif_graphics::Error::Light",
             Error::LBF(ref e) => e.description(),
-            Error::IO(_) => "::sif_graphics::Error::IO",
+            Error::IO(_) => "sif_graphics::Error::IO",
             Error::Sif(ref e) => e.description(),
             Error::SifManager(ref e) => e.description(),
             Error::SifRenderer(ref e) => e.description(),
             Error::SifThree(ref e) => e.description(),
-            Error::GL(_) => "::sif_graphics::Error::GL",
-            Error::SDL2TTFFont(_) => "::sif_graphics::Error::SDL2TTFFont",
+            Error::GL(_) => "sif_graphics::Error::GL",
+            Error::SDL2TTFFont(_) => "sif_graphics::Error::SDL2TTFFont",
         }
     }
     // ========================================================================
