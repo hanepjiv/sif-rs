@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/12
-//  @date 2018/06/13
+//  @date 2018/06/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -75,7 +75,7 @@ pub use self::{
     error::{Error, Result},
     image::{Image, ImageFile, ImageProcedual, ImageProcedualMethod},
     light::{Flags as LightFlags, Light},
-    material::Material,
+    material::{Flags as MaterialFlags, Material},
     mesh::Mesh,
     model::Model,
     object::{Object, ObjectData},

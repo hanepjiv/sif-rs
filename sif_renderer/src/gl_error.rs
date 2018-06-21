@@ -6,12 +6,11 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2018/06/15
+//  @date 2018/06/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::fmt::Debug;
-use std::result::Result as StdResult;
+use std::{fmt::Debug, result::Result as StdResult};
 // ----------------------------------------------------------------------------
 use gl::types::*;
 // ----------------------------------------------------------------------------
@@ -19,11 +18,11 @@ use super::{Error, Result};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum GLError
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, PartialOrd, PartialEq)]
 pub enum GLError<R, E>
 where
-    R: Debug,
-    E: Debug,
+    R: Debug + Clone + PartialOrd + PartialEq,
+    E: Debug + Clone + PartialOrd + PartialEq,
 {
     /// Function
     Function(E),
@@ -33,8 +32,8 @@ where
 // ============================================================================
 impl<R, E> ::std::fmt::Display for GLError<R, E>
 where
-    R: Debug,
-    E: Debug,
+    R: Debug + Clone + PartialOrd + PartialEq,
+    E: Debug + Clone + PartialOrd + PartialEq,
 {
     // ========================================================================
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
@@ -44,8 +43,8 @@ where
 // ============================================================================
 impl<R, E> ::std::error::Error for GLError<R, E>
 where
-    R: Debug,
-    E: Debug,
+    R: Debug + Clone + PartialOrd + PartialEq,
+    E: Debug + Clone + PartialOrd + PartialEq,
 {
     // ========================================================================
     fn description(&self) -> &str {
@@ -71,8 +70,8 @@ pub type GLResult<R, E> = StdResult<R, GLError<R, E>>;
 /// gl_result
 pub fn gl_result<R, E>(f: impl FnOnce() -> StdResult<R, E>) -> GLResult<R, E>
 where
-    R: Debug,
-    E: Debug,
+    R: Debug + Clone + PartialOrd + PartialEq,
+    E: Debug + Clone + PartialOrd + PartialEq,
 {
     let result = f();
     match unsafe { ::gl::GetError() } {

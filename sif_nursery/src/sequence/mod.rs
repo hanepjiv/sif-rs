@@ -6,12 +6,12 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/02/25
-//  @date 2018/05/11
+//  @date 2018/06/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Sequence
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy)]
 pub struct Sequence {
     /// field
     field: i32,

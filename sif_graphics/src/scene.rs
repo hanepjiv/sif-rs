@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/27
-//  @date 2018/06/16
+//  @date 2018/06/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -65,8 +65,8 @@ impl Scene {
         })
     }
     // ========================================================================
-    /// fn from_lbf
-    pub fn from_lbf(
+    /// fn import_lbf
+    pub fn import_lbf(
         &mut self,
         mut lbf: LBF,
         texture_size: GLint,
@@ -159,7 +159,7 @@ impl Scene {
         }
 
         // Not use pop
-        for v in AsRef::<Vec<lbf::LBFObject>>::as_ref(&lbf).into_iter() {
+        for v in AsRef::<Vec<lbf::LBFObject>>::as_ref(&lbf).iter() {
             info!(
                 "Object: \"{}\", {}, {:?}",
                 AsRef::<String>::as_ref(&v),

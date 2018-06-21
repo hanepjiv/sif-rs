@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/04/10
-//  @date 2018/06/14
+//  @date 2018/06/21
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -248,20 +248,15 @@ pub fn new_quaternion_rot<V>(
 where
     V: Number,
 {
-    //let pi = ::num::cast::cast::<_, V>(::std::f64::consts::PI).unwrap();
+    // let pi = ::num::cast::cast::<_, V>(::std::f64::consts::PI).unwrap();
     let l = (x * x) + (y * y) + (z * z);
     if l < V::epsilon() {
         Err(Error::InvalidArgument(String::from(
             "::three::trarotsca::::new_quaternion_rot",
         )))
     } else {
-        let theta2 = theta / V::from(2).unwrap();
-        let sin = Float::sin(theta2) / Float::sqrt(l);
-        Ok(Quaternion::from([
-            x * sin,
-            y * sin,
-            z * sin,
-            Float::cos(theta2),
-        ]))
+        let (mut sin, cos) = Float::sin_cos(theta / V::from(2).unwrap());
+        sin /= Float::sqrt(l);
+        Ok(Quaternion::from([x * sin, y * sin, z * sin, cos]))
     }
 }

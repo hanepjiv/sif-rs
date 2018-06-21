@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "sif"
-version                 = "0.4.3-alpha.5"
+version                 = "0.4.3-alpha.6"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
 keywords                = ["subsystem", "game", "math", "graphics"]
@@ -14,9 +14,26 @@ repository              = "https://github.com/hanepjiv/sif-rs.git"
 publish                 = false
 # =============================================================================
 [features]
-default                 = ["graphics-lbf-rlua"]
-graphics-lbf-lua        = ["sif_graphics/lbf-lua"]
-graphics-lbf-rlua       = ["sif_graphics/lbf-rlua"]
+default                 = [ "graphics-lbf-rlua",
+                            "graphics-lbf-rlua-builtin-lua",
+                            ]
+# -----------------------------------------------------------------------------
+graphics-renderer-gif_codec     = ["sif_graphics/renderer-gif_codec"]
+graphics-renderer-jpeg          = ["sif_graphics/renderer-jpeg"]
+graphics-renderer-ico           = ["sif_graphics/renderer-ico"]
+graphics-renderer-png_codec     = ["sif_graphics/renderer-png_codec"]
+graphics-renderer-pnm           = ["sif_graphics/renderer-pnm"]
+graphics-renderer-tga           = ["sif_graphics/renderer-tga"]
+graphics-renderer-tiff          = ["sif_graphics/renderer-tiff"]
+graphics-renderer-webp          = ["sif_graphics/renderer-webp"]
+graphics-renderer-bmp           = ["sif_graphics/renderer-bmp"]
+graphics-renderer-hdr           = ["sif_graphics/renderer-hdr"]
+graphics-renderer-dxt           = ["sif_graphics/renderer-dxt"]
+graphics-renderer-jpeg_rayon    = ["sif_graphics/renderer-jpeg_rayon"]
+# -----------------------------------------------------------------------------
+graphics-lbf-lua                = ["sif_graphics/lbf-lua"]
+graphics-lbf-rlua               = ["sif_graphics/lbf-rlua"]
+graphics-lbf-rlua-builtin-lua   = ["sif_graphics/lbf-rlua-builtin-lua"]
 # =============================================================================
 [workspace]
 members                 = [

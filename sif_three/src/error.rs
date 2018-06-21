@@ -6,12 +6,12 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/10
-//  @date 2018/06/15
+//  @date 2018/06/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum Error
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum Error {
     /// OptNone
     OptNone(String),
@@ -50,11 +50,11 @@ impl ::std::error::Error for Error {
     // ========================================================================
     fn description(&self) -> &str {
         match *self {
-            Error::OptNone(_) => "::sif_three::Error::OptNone",
-            Error::InvalidArgument(_) => "::sif_three::Error::InvalidArgument",
-            Error::NoNode => "::sif_three::Error::NoNode",
-            Error::InvalidPose => "::sif_three::Error::InvalidPose",
-            Error::IO(_) => "::sif_three::Error::Io",
+            Error::OptNone(_) => "sif::three::Error::OptNone",
+            Error::InvalidArgument(_) => "sif::three::Error::InvalidArgument",
+            Error::NoNode => "sif::three::Error::NoNode",
+            Error::InvalidPose => "sif::three::Error::InvalidPose",
+            Error::IO(_) => "sif::three::Error::Io",
             Error::SifManager(ref e) => e.description(),
         }
     }

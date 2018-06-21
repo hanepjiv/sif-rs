@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/27
-//  @date 2018/06/15
+//  @date 2018/06/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // const  =====================================================================
@@ -54,7 +54,7 @@ impl TFontReserve for String {
 // ============================================================================
 impl TFontReserve for char {
     fn reserve(&self, layer: &mut Font) {
-        layer.reserve_char(self)
+        layer.reserve_char(*self)
     }
 }
 // ////////////////////////////////////////////////////////////////////////////
@@ -176,16 +176,16 @@ impl<'a, 'b> Font<'a, 'b> {
         S: ?Sized + AsRef<str>,
     {
         for c in s.as_ref().chars() {
-            self.reserve_char(&c);
+            self.reserve_char(c);
         }
     }
     // ------------------------------------------------------------------------
     /// reserve_char
-    pub fn reserve_char(&mut self, c: &char) {
-        if self.glyphs.contains_key(c) {
+    pub fn reserve_char(&mut self, c: char) {
+        if self.glyphs.contains_key(&c) {
             return;
         }
-        self.added.push(*c)
+        self.added.push(c)
     }
     // ========================================================================
     /// update
@@ -248,7 +248,7 @@ impl<'a, 'b> Font<'a, 'b> {
                                 .to_string(),
                         )
                     })?;
-                let mut glyph = Glyph::new(c);
+                let mut glyph = Glyph::new(*c);
                 glyph.texid = self.textures.len() - 1;
                 glyph.coords = [
                     [

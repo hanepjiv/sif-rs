@@ -6,15 +6,17 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/09
-//  @date 2018/06/15
+//  @date 2018/06/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
+use std::fmt::Debug;
+// ----------------------------------------------------------------------------
 use super::GLError;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum Error
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum Error {
     /// OptNone
     OptNone(String),
@@ -58,8 +60,8 @@ impl From<::image::ImageError> for Error {
 // ----------------------------------------------------------------------------
 impl<R, E> From<GLError<R, E>> for Error
 where
-    R: ::std::fmt::Debug + 'static,
-    E: ::std::fmt::Debug + 'static,
+    R: Debug + Clone + PartialOrd + PartialEq,
+    E: Debug + Clone + PartialOrd + PartialEq,
 {
     fn from(e: GLError<R, E>) -> Self {
         Error::GL(format!("{}", e))
@@ -77,13 +79,13 @@ impl ::std::error::Error for Error {
     // ========================================================================
     fn description(&self) -> &str {
         match *self {
-            Error::OptNone(_) => "::sif::renderer::Error::OptNone",
-            Error::Renderer(_) => "::sif::renderer::Error::Renderer",
-            Error::Utf8(_) => "::sif::renderer::Error::Utf8",
-            Error::FromUtf8(_) => "::sif::renderer::Error::FromUtf8",
-            Error::FFINul(_) => "::sif::renderer::Error::FFINul",
-            Error::Image(_) => "::sif::renderer::Error::Image",
-            Error::GL(_) => "::sif::renderer::Error::GL",
+            Error::OptNone(_) => "sif::renderer::Error::OptNone",
+            Error::Renderer(_) => "sif::renderer::Error::Renderer",
+            Error::Utf8(_) => "sif::renderer::Error::Utf8",
+            Error::FromUtf8(_) => "sif::renderer::Error::FromUtf8",
+            Error::FFINul(_) => "sif::renderer::Error::FFINul",
+            Error::Image(_) => "sif::renderer::Error::Image",
+            Error::GL(_) => "sif::renderer::Error::GL",
         }
     }
     // ========================================================================

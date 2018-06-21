@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/12
-//  @date 2018/06/15
+//  @date 2018/06/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -17,7 +17,7 @@ use uuid::Uuid;
 // ============================================================================
 /// enum Error
 #[allow(missing_copy_implementations)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum Error {
     /// Insert
     Insert(Uuid),
@@ -33,7 +33,7 @@ impl StdError for Error {
     // ========================================================================
     fn description(&self) -> &str {
         match *self {
-            Error::Insert(_) => "manager: insert failed",
+            Error::Insert(_) => "sif::manager: insert failed",
         }
     }
     // ========================================================================

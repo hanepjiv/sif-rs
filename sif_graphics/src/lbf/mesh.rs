@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/02
-//  @date 2018/05/13
+//  @date 2018/06/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -120,7 +120,7 @@ impl Mesh {
             if elem_is_some[i as usize] {
                 let e = unwrap!(Element::from_bits(i));
                 offsets[e] = stride as isize;
-                stride += unwrap!(e.len());
+                stride += unwrap!(e.length());
             }
         }
 
@@ -149,7 +149,7 @@ impl Mesh {
             Element::WEIGHT => &self.weight,
             _ => &None,
         } {
-            let l = unwrap!(e.len());
+            let l = unwrap!(e.length());
             for i in 0..l {
                 vtx.push(collect[l * idx + i]);
             }

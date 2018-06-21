@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2018/05/30
+//  @date 2018/06/17
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -86,19 +86,19 @@ bitflags! {
     #[allow(missing_docs)]
     pub struct Flags: u32 {
     #[allow(missing_docs)]
-    const AMBIENT = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
+    const AMBIENT               = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
     #[allow(missing_docs)]
-    const FOG = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
+    const FOG                   = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
     #[allow(missing_docs)]
-    const INK = 0b0000_0000_0000_0000_0000_0000_0000_0100u32;
+    const INK                   = 0b0000_0000_0000_0000_0000_0000_0000_0100u32;
     #[allow(missing_docs)]
-    const RIM = 0b0000_0000_0000_0000_0000_0000_0000_1000u32;
+    const RIM                   = 0b0000_0000_0000_0000_0000_0000_0000_1000u32;
     #[allow(missing_docs)]
-    const DIRTY_LIGHTS = 0b0000_0000_0000_0000_0000_0000_0001_0000u32;
+    const DIRTY_LIGHTS          = 0b0000_0000_0000_0000_0000_0000_0001_0000u32;
     #[allow(missing_docs)]
-    const DIRTY_AMBIENTS = 0b0000_0000_0000_0000_0000_0000_0010_0000u32;
+    const DIRTY_AMBIENTS        = 0b0000_0000_0000_0000_0000_0000_0010_0000u32;
     #[allow(missing_docs)]
-    const DO_NOT_USE = 0b1000_0000_0000_0000_0000_0000_0000_0000u32;
+    const DO_NOT_USE            = 0b1000_0000_0000_0000_0000_0000_0000_0000u32;
     }
 }
 // ============================================================================

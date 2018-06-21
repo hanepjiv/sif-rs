@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2018/06/16
+//  @date 2018/06/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -424,7 +424,7 @@ impl Mesh {
         if offsets.check(Element::COORD) {
             // tangent
             offsets[Element::TANGENT] = stride as isize;
-            stride += Element::TANGENT.len().ok_or_else(|| {
+            stride += Element::TANGENT.length().ok_or_else(|| {
                 Error::OptNone(
                     "graphics: mesh: from_lbf: TANGENT.len()".to_string(),
                 )
@@ -451,7 +451,7 @@ impl Mesh {
 
         Ok(Mesh::new(
             lbf_mesh.uuid,
-            lbf_mesh.name.clone(),
+            lbf_mesh.name,
             offsets,
             stride,
             &vertices[..],
@@ -475,7 +475,7 @@ impl Mesh {
                     "graphics: mesh: set_attribute: self.buffer".to_string(),
                 )
             })?,
-            e.len().ok_or_else(|| {
+            e.length().ok_or_else(|| {
                 Error::OptNone(
                     "graphics: mesh: set_attribute: e.len()".to_string(),
                 )
@@ -530,7 +530,7 @@ impl Mesh {
         prog: &Program,
         materials: Option<&Vec<ManagedValue<Material>>>,
     ) -> Result<()> {
-        let _ = self.check_draw()?;
+        self.check_draw()?;
         if self.offsets.check(Element::POSITION) {
             let _ = self.set_attribute(prog, Element::POSITION)?;
         }
@@ -561,7 +561,7 @@ impl Mesh {
         prog: &Program,
         materials: Option<&Vec<ManagedValue<Material>>>,
     ) -> Result<()> {
-        let _ = self.check_draw()?;
+        self.check_draw()?;
         if self.offsets.check(Element::POSITION) {
             let _ = self.set_attribute(prog, Element::POSITION)?;
         }

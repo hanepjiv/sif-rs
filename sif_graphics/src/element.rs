@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/12
-//  @date 2018/05/12
+//  @date 2018/06/21
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -15,29 +15,29 @@ bitflags! {
     #[allow(missing_docs)]
     pub struct Element: i32 {
         #[allow(missing_docs)]
-        const REND_ = -1i32;
+        const REND_             = -1i32;
         #[allow(missing_docs)]
-        const BEGIN_ =  0i32;
+        const BEGIN_            =  0i32;
         // --------------------------------------------------------------------
         #[allow(missing_docs)]
-        const POSITION =  Self::BEGIN_.bits;
+        const POSITION          =  Self::BEGIN_.bits;
         #[allow(missing_docs)]
-        const NORMAL =  1i32;
+        const NORMAL            =  1i32;
         #[allow(missing_docs)]
-        const COORD =  2i32;
+        const COORD             =  2i32;
         #[allow(missing_docs)]
-        const BONE =  3i32;
+        const BONE              =  3i32;
         #[allow(missing_docs)]
-        const WEIGHT =  4i32;
+        const WEIGHT            =  4i32;
         #[allow(missing_docs)]
-        const TANGENT =  5i32;
+        const TANGENT           =  5i32;
         // --------------------------------------------------------------------
         #[allow(missing_docs)]
-        const END_ =  6i32;
+        const END_              =  6i32;
         #[allow(missing_docs)]
-        const RBEGIN_ =  Self::END_.bits - 1i32;
+        const RBEGIN_           =  Self::END_.bits - 1i32;
         #[allow(missing_docs)]
-        const SIZE_ =  Self::END_.bits - Self::BEGIN_.bits;
+        const SIZE_             =  Self::END_.bits - Self::BEGIN_.bits;
     }
 }
 // ============================================================================
@@ -52,9 +52,9 @@ impl Default for Element {
 // ============================================================================
 impl Element {
     // ========================================================================
-    /// len
-    pub fn len(&self) -> Option<usize> {
-        match *self {
+    /// fn length
+    pub fn length(self) -> Option<usize> {
+        match self {
             Self::POSITION => Some(3usize),
             Self::NORMAL => Some(3usize),
             Self::COORD => Some(2usize),
@@ -65,9 +65,9 @@ impl Element {
         }
     }
     // ========================================================================
-    /// location_name
-    pub fn location_name(&self) -> Option<&str> {
-        match *self {
+    /// fn location_name
+    pub fn location_name(self) -> Option<&'static str> {
+        match self {
             Self::POSITION => Some("iv_Position"),
             Self::NORMAL => Some("iv_Normal"),
             Self::COORD => Some("iv_Coord"),

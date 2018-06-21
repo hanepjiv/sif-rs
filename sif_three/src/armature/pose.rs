@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/25
-//  @date 2018/05/12
+//  @date 2018/06/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -72,7 +72,7 @@ where
     V: Number,
 {
     // ========================================================================
-    /// new
+    /// fn new
     pub fn new(len: usize) -> Self {
         Pose {
             matrix: vec![Matrix4x4::<V>::default(); len],
@@ -81,12 +81,17 @@ where
         }
     }
     // ========================================================================
-    /// len
+    /// fn len
     pub fn len(&self) -> usize {
         self.matrix.len()
     }
     // ========================================================================
-    /// as_ptr
+    /// fn is_empty
+    pub fn is_empty(&self) -> bool {
+        self.matrix.is_empty()
+    }
+    // ========================================================================
+    /// fn as_ptr
     pub fn as_ptr(&self) -> *const V {
         self.matrix.as_ptr() as *const V
     }

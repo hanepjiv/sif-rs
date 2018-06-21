@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/23
-//  @date 2018/05/12
+//  @date 2018/06/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -44,7 +44,7 @@ where
     V: Number,
 {
     // ========================================================================
-    /// new
+    /// fn new
     pub fn new(
         uuid: Uuid,
         name: impl Into<String>,
@@ -57,12 +57,17 @@ where
         }
     }
     // ========================================================================
-    /// len
+    /// fn len
     pub fn len(&self) -> usize {
         self.bones.len()
     }
     // ========================================================================
-    /// update
+    /// fn is_empty
+    pub fn is_empty(&self) -> bool {
+        self.bones.is_empty()
+    }
+    // ========================================================================
+    /// fn update
     pub fn update(&self, pose: &mut Pose<V>) -> Result<&Armature<V>> {
         if self.len() != pose.len() {
             return Err(Error::InvalidPose);

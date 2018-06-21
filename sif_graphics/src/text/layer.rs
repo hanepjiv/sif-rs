@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/27
-//  @date 2018/05/23
+//  @date 2018/06/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -46,7 +46,7 @@ impl TLayerAppend for String {
 // ============================================================================
 impl TLayerAppend for char {
     fn append(&self, layer: &mut Layer) {
-        layer.append_char(self)
+        layer.append_char(*self)
     }
 }
 // ////////////////////////////////////////////////////////////////////////////
@@ -136,9 +136,9 @@ impl<'a, 'b> Layer<'a, 'b> {
     }
     // ------------------------------------------------------------------------
     /// append_char
-    fn append_char(&mut self, c: &char) {
-        self.font.as_ref().borrow_mut().reserve(c);
-        self.string.push(*c)
+    fn append_char(&mut self, c: char) {
+        self.font.as_ref().borrow_mut().reserve(&c);
+        self.string.push(c)
     }
     // ========================================================================
     /// pop

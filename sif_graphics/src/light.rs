@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/24
-//  @date 2018/06/14
+//  @date 2018/06/18
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -20,15 +20,24 @@ use sif_renderer::{Bind, Program, Texture};
 use super::{lbf, post::DepthMapParam, Error, Object, Result, Shadow};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
+#[allow(missing_docs)]
 /// struct Flags
-bitflags! { pub struct Flags: u32 {
-    const ENABLE                = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
-    const POINT                 = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
-    const SPOT                  = 0b0000_0000_0000_0000_0000_0000_0000_0100u32;
-    const SHADOW                = 0b0000_0000_0000_0000_0000_0000_0000_1000u32;
+bitflags! {
+    #[allow(missing_docs)]
+    pub struct Flags: u32 {
+        #[allow(missing_docs)]
+        const ENABLE            = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
+        #[allow(missing_docs)]
+        const POINT             = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
+        #[allow(missing_docs)]
+        const SPOT              = 0b0000_0000_0000_0000_0000_0000_0000_0100u32;
+        #[allow(missing_docs)]
+        const SHADOW            = 0b0000_0000_0000_0000_0000_0000_0000_1000u32;
 
-    const DO_NOT_USE            = 0b1000_0000_0000_0000_0000_0000_0000_0000u32;
-}}
+        #[allow(missing_docs)]
+        const DO_NOT_USE        = 0b1000_0000_0000_0000_0000_0000_0000_0000u32;
+    }
+}
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Light

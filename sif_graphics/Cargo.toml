@@ -14,15 +14,31 @@ repository              = "https://github.com/hanepjiv/sif-rs.git"
 publish                 = false
 # =============================================================================
 [features]
-default                 = ["lbf-rlua"]
+default                 = ["lbf-rlua", "lbf-rlua-builtin-lua"]
+# -----------------------------------------------------------------------------
+renderer-gif_codec      = ["sif_renderer/gif_codec"]
+renderer-jpeg           = ["sif_renderer/jpeg"]
+renderer-ico            = ["sif_renderer/ico"]
+renderer-png_codec      = ["sif_renderer/png_codec"]
+renderer-pnm            = ["sif_renderer/pnm"]
+renderer-tga            = ["sif_renderer/tga"]
+renderer-tiff           = ["sif_renderer/tiff"]
+renderer-webp           = ["sif_renderer/webp"]
+renderer-bmp            = ["sif_renderer/bmp"]
+renderer-hdr            = ["sif_renderer/hdr"]
+renderer-dxt            = ["sif_renderer/dxt"]
+renderer-jpeg_rayon     = ["sif_renderer/jpeg_rayon"]
+# -----------------------------------------------------------------------------
 lbf-lua                 = ["lua"]
 lbf-rlua                = ["rlua"]
+lbf-rlua-builtin-lua    = ["rlua/builtin-lua"]
 # =============================================================================
 [dependencies]
 bitflags                = { default-features = false, version = "^1.0" }
 gl                      = { default-features = false, version = "^0.10" }
 log                     = { default-features = false, version = "^0.4" }
 num                     = { default-features = false, version = "^0.1" }
+uuid                    = { default-features = false, version = "^0.6" }
 # -----------------------------------------------------------------------------
 sif_error               = { default-features = false, path="../sif_error" }
 sif_manager             = { default-features = false, path="../sif_manager" }
@@ -39,7 +55,6 @@ optional                = true
 default-features        = false
 version                 = "^0.13"
 optional                = true
-features                = ["builtin-lua"]
 # -----------------------------------------------------------------------------
 [dependencies.rand]
 default-features        = false
@@ -49,9 +64,4 @@ features                = ["std"]
 [dependencies.sdl2]
 default-features        = false
 version                 = "^0.31"
-features                = ["ttf", "mixer"]
-# -----------------------------------------------------------------------------
-[dependencies.uuid]
-default-features        = false
-version                 = "^0.6"
-features                = ["v4"]
+features                = ["ttf"]
