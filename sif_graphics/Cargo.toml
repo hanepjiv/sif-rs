@@ -47,21 +47,21 @@ sif_renderer            = { default-features = false, path="../sif_renderer" }
 sif_three               = { default-features = false, path="../sif_three" }
 # -----------------------------------------------------------------------------
 [dependencies.lua]
-default-features        = false
 version                 = "^0.0"
+default-features        = false
 optional                = true
 # -----------------------------------------------------------------------------
 [dependencies.rlua]
-default-features        = false
 version                 = "^0.13"
+default-features        = false
 optional                = true
 # -----------------------------------------------------------------------------
 [dependencies.rand]
-default-features        = false
 version                 = "^0.5"
+default-features        = false
 features                = ["std"]
 # -----------------------------------------------------------------------------
 [dependencies.sdl2]
-default-features        = false
 version                 = "^0.31"
+default-features        = false
 features                = ["ttf"]
