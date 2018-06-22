@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/06/13
-//  @date 2018/06/16
+//  @date 2018/06/22
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -30,7 +30,7 @@ use super::{
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// trait NotNil
-pub trait NotNil: ::std::fmt::Debug + ::std::marker::Sized {
+trait NotNil: ::std::fmt::Debug + ::std::marker::Sized {
     /// notnil_or_else
     fn notnil_or_else(self, f: impl FnOnce() -> Self) -> Self;
 }

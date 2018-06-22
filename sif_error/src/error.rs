@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/11/27
-//  @date 2018/06/15
+//  @date 2018/06/22
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -37,7 +37,7 @@ impl StdError for Error {
         }
     }
     // ========================================================================
-    fn cause(&self) -> Option<&StdError> {
+    fn cause(&self) -> Option<&dyn StdError> {
         match *self {
             Error::Sif(_) => None,
             Error::InvalidArgument(_) => None,

@@ -6,10 +6,10 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/12
-//  @date 2018/06/18
+//  @date 2018/06/22
 
 // ////////////////////////////////////////////////////////////////////////////
-// ============================================================================
+// use  =======================================================================
 use std::error::Error as StdError;
 // ----------------------------------------------------------------------------
 use uuid::Uuid;
@@ -37,7 +37,7 @@ impl StdError for Error {
         }
     }
     // ========================================================================
-    fn cause(&self) -> Option<&StdError> {
+    fn cause(&self) -> Option<&dyn StdError> {
         match *self {
             Error::Insert(_) => None,
         }

@@ -6,8 +6,11 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/10
-//  @date 2018/06/18
+//  @date 2018/06/22
 
+// ////////////////////////////////////////////////////////////////////////////
+// use  =======================================================================
+use std::error::Error as StdError;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum Error
@@ -46,7 +49,7 @@ impl ::std::fmt::Display for Error {
     }
 }
 // ============================================================================
-impl ::std::error::Error for Error {
+impl StdError for Error {
     // ========================================================================
     fn description(&self) -> &str {
         match *self {
@@ -59,7 +62,7 @@ impl ::std::error::Error for Error {
         }
     }
     // ========================================================================
-    fn cause(&self) -> Option<&::std::error::Error> {
+    fn cause(&self) -> Option<&dyn StdError> {
         match *self {
             Error::OptNone(_) => None,
             Error::InvalidArgument(_) => None,

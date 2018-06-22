@@ -6,11 +6,11 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2018/06/18
+//  @date 2018/06/22
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::{fmt::Debug, result::Result as StdResult};
+use std::{error::Error as StdError, fmt::Debug, result::Result as StdResult};
 // ----------------------------------------------------------------------------
 use gl::types::*;
 // ----------------------------------------------------------------------------
@@ -41,7 +41,7 @@ where
     }
 }
 // ============================================================================
-impl<R, E> ::std::error::Error for GLError<R, E>
+impl<R, E> StdError for GLError<R, E>
 where
     R: Debug + Clone + PartialOrd + PartialEq,
     E: Debug + Clone + PartialOrd + PartialEq,
@@ -54,7 +54,7 @@ where
         }
     }
     // ========================================================================
-    fn cause(&self) -> Option<&::std::error::Error> {
+    fn cause(&self) -> Option<&dyn StdError> {
         match *self {
             GLError::Function(_) => None,
             GLError::GL(_, _) => None,
