@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "sif"
-version                 = "0.4.3-alpha.8"
+version                 = "0.4.3"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
 keywords                = ["subsystem", "game", "math", "graphics"]
@@ -11,7 +11,7 @@ readme                  = "README.md"
 documentation           = "https://github.com/hanepjiv/sif-rs/wiki"
 homepage                = "https://github.com/hanepjiv/sif-rs"
 repository              = "https://github.com/hanepjiv/sif-rs.git"
-publish                 = false
+publish                 = true
 # =============================================================================
 [features]
 default                 = [ "graphics-lbf-rlua",
