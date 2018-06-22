@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/27
-//  @date 2018/06/18
+//  @date 2018/06/22
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -20,8 +20,7 @@ use sif_math::Matrix4x4;
 use sif_three::{new_mat4_tra, new_mat4_trarotsca};
 // ----------------------------------------------------------------------------
 use super::{
-    super::{Error, Result},
-    Font, Metal, TFontReserve,
+    super::{Error, Result}, Font, Metal, TFontReserve,
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -198,6 +197,7 @@ impl<'a, 'b> Layer<'a, 'b> {
                     for i in 0..self.step {
                         let rad =
                             2.0 * PI / self.step as GLfloat * i as GLfloat;
+                        let (sin, cos) = Float::sin_cos(rad);
                         let _ = font.draw(
                             &c,
                             metal,
@@ -209,8 +209,8 @@ impl<'a, 'b> Layer<'a, 'b> {
                             ]),
                             &(*matrix
                                 * new_mat4_tra(
-                                    self.shift * Float::cos(rad),
-                                    self.shift * Float::sin(rad),
+                                    self.shift * cos,
+                                    self.shift * sin,
                                     -::std::f32::EPSILON.sqrt(),
                                 ) * *m0),
                         );
