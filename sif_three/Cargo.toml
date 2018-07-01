@@ -15,7 +15,7 @@ publish                 = false
 # =============================================================================
 [dependencies]
 bitflags                = { default-features = false, version = "^1.0" }
-num                     = { default-features = false, version = "^0.1" }
+num                     = { default-features = false, version = "^0.2" }
 uuid                    = { default-features = false, version = "^0.6" }
 # -----------------------------------------------------------------------------
 sif_manager             = { default-features = false, path="../sif_manager" }

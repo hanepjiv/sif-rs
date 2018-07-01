@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "sif"
-version                 = "0.4.4-alpha.0"
+version                 = "0.5.0-alpha.0"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
 keywords                = ["subsystem", "game", "math", "graphics"]
@@ -14,37 +14,37 @@ repository              = "https://github.com/hanepjiv/sif-rs.git"
 publish                 = false
 # =============================================================================
 [features]
-default                 = [ "graphics-lbf-rlua",
-                            "graphics-lbf-rlua-builtin-lua",
+default                 = [ "png_codec",
+                            "lbf-rlua",
+                            "lbf-rlua-builtin-lua",
                             ]
 # -----------------------------------------------------------------------------
-graphics-renderer-gif_codec     = ["sif_graphics/renderer-gif_codec"]
-graphics-renderer-jpeg          = ["sif_graphics/renderer-jpeg"]
-graphics-renderer-ico           = ["sif_graphics/renderer-ico"]
-graphics-renderer-png_codec     = ["sif_graphics/renderer-png_codec"]
-graphics-renderer-pnm           = ["sif_graphics/renderer-pnm"]
-graphics-renderer-tga           = ["sif_graphics/renderer-tga"]
-graphics-renderer-tiff          = ["sif_graphics/renderer-tiff"]
-graphics-renderer-webp          = ["sif_graphics/renderer-webp"]
-graphics-renderer-bmp           = ["sif_graphics/renderer-bmp"]
-graphics-renderer-hdr           = ["sif_graphics/renderer-hdr"]
-graphics-renderer-dxt           = ["sif_graphics/renderer-dxt"]
-graphics-renderer-jpeg_rayon    = ["sif_graphics/renderer-jpeg_rayon"]
+gif_codec               = ["sif_graphics/gif_codec"]
+jpeg                    = ["sif_graphics/jpeg"]
+ico                     = ["sif_graphics/ico"]
+png_codec               = ["sif_graphics/png_codec"]
+pnm                     = ["sif_graphics/pnm"]
+tga                     = ["sif_graphics/tga"]
+tiff                    = ["sif_graphics/tiff"]
+webp                    = ["sif_graphics/webp"]
+bmp                     = ["sif_graphics/bmp"]
+hdr                     = ["sif_graphics/hdr"]
+dxt                     = ["sif_graphics/dxt"]
+jpeg_rayon              = ["sif_graphics/jpeg_rayon"]
 # -----------------------------------------------------------------------------
-graphics-lbf-lua                = ["sif_graphics/lbf-lua"]
-graphics-lbf-rlua               = ["sif_graphics/lbf-rlua"]
-graphics-lbf-rlua-builtin-lua   = ["sif_graphics/lbf-rlua-builtin-lua"]
+lbf-lua                 = ["sif_graphics/lbf-lua"]
+lbf-rlua                = ["sif_graphics/lbf-rlua"]
+lbf-rlua-builtin-lua    = ["sif_graphics/lbf-rlua-builtin-lua"]
 # =============================================================================
 [workspace]
-members                 = [
-                        "sif_error",
-                        "sif_graphics",
-                        "sif_manager",
-                        "sif_math",
-                        "sif_nursery",
-                        "sif_renderer",
-                        "sif_three",
-                        ]
+members                 = [ "sif_error",
+                            "sif_graphics",
+                            "sif_manager",
+                            "sif_math",
+                            "sif_nursery",
+                            "sif_renderer",
+                            "sif_three",
+                            ]
 # =============================================================================
 [dependencies]
 sif_error               = { default-features = false, path="sif_error" }

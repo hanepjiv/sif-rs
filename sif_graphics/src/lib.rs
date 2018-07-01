@@ -67,17 +67,12 @@ extern crate sif_math;
 extern crate sif_three;
 // use  =======================================================================
 pub use self::{
-    camera::{Camera, CameraType},
-    color::{ColorExponent, ColorIntensity},
-    element::{Element, ELEMENT_SIZE},
-    error::{Error, Result},
+    camera::{Camera, CameraType}, color::{ColorExponent, ColorIntensity},
+    element::{Element, ELEMENT_SIZE}, error::{Error, Result},
     image::{Image, ImageFile, ImageProcedual, ImageProcedualMethod},
     light::{Flags as LightFlags, Light},
-    material::{Flags as MaterialFlags, Material},
-    mesh::Mesh,
-    model::Model,
-    object::{Object, ObjectData},
-    offsets::Offsets,
+    material::{Flags as MaterialFlags, Material}, mesh::Mesh, model::Model,
+    object::{Object, ObjectData}, offsets::Offsets,
     pipeline::{
         Flags as PipelineFlags, Pipeline, PipelineParam, PIPELINE_MAX_BONE,
         PIPELINE_MAX_LIGHT,
@@ -86,10 +81,8 @@ pub use self::{
         Blur, DepthMap, DepthMapParam, Effect, EffectArgs, Pass, Screen,
         SquareBuffer,
     },
-    scene::Scene,
-    shadow::Shadow,
-    submesh::SubMesh,
-    text::{Font, Layer as TextLayer, Metal as TextMetal, TFontReserve},
+    scene::Scene, shadow::Shadow, submesh::SubMesh,
+    text::{Font, FontReserve, Layer as TextLayer, Metal as TextMetal},
     texture::Texture,
 };
 // mod  =======================================================================

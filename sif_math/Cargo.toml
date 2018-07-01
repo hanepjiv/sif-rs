@@ -14,6 +14,9 @@ repository              = "https://github.com/hanepjiv/sif-rs.git"
 publish                 = false
 # =============================================================================
 [dependencies]
-num                     = { default-features = false, version = "^0.1" }
-# -----------------------------------------------------------------------------
 sif_error               = { default-features = false, path = "../sif_error" }
+# -----------------------------------------------------------------------------
+[dependencies.num]
+default-features        = false
+version                 = "^0.2"
+features                = ["std"]

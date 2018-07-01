@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/25
-//  @date 2018/06/18
+//  @date 2018/06/22
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -19,10 +19,10 @@ use super::super::trarotsca::TraRotSca;
 bitflags! {
     #[allow(missing_docs)]
     pub struct Flags: u32 {
-    #[allow(missing_docs)]
-    const DIRTY     = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
-    #[allow(missing_docs)]
-    const UPDATED           = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
+        #[allow(missing_docs)]
+        const DIRTY             = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
+        #[allow(missing_docs)]
+        const UPDATED           = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
     }
 }
 // ============================================================================

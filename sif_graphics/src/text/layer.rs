@@ -20,30 +20,30 @@ use sif_math::Matrix4x4;
 use sif_three::{new_mat4_tra, new_mat4_trarotsca};
 // ----------------------------------------------------------------------------
 use super::{
-    super::{Error, Result}, Font, Metal, TFontReserve,
+    super::{Error, Result}, Font, FontReserve, Metal,
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// trait TLayerAppend
-pub trait TLayerAppend: ::std::fmt::Debug {
+/// trait LayerAppend
+pub trait LayerAppend: ::std::fmt::Debug {
     // ========================================================================
     /// append
     fn append(&self, layer: &mut Layer);
 }
 // ============================================================================
-impl TLayerAppend for str {
+impl LayerAppend for str {
     fn append(&self, layer: &mut Layer) {
         layer.append_str(self)
     }
 }
 // ============================================================================
-impl TLayerAppend for String {
+impl LayerAppend for String {
     fn append(&self, layer: &mut Layer) {
         layer.append_str(self)
     }
 }
 // ============================================================================
-impl TLayerAppend for char {
+impl LayerAppend for char {
     fn append(&self, layer: &mut Layer) {
         layer.append_char(*self)
     }
@@ -120,7 +120,7 @@ impl<'a, 'b> Layer<'a, 'b> {
     /// append
     pub fn append<S>(&mut self, s: &S)
     where
-        S: ?Sized + TLayerAppend,
+        S: ?Sized + LayerAppend,
     {
         s.append(self)
     }
@@ -128,7 +128,7 @@ impl<'a, 'b> Layer<'a, 'b> {
     /// append_str
     fn append_str<S>(&mut self, s: &S)
     where
-        S: ?Sized + AsRef<str> + TFontReserve,
+        S: ?Sized + AsRef<str> + FontReserve,
     {
         self.font.as_ref().borrow_mut().reserve(s);
         self.string.push_str(s.as_ref())

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/13
-//  @date 2018/05/16
+//  @date 2018/06/25
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -17,8 +17,8 @@ use gl::types::*;
 use sif_renderer::{gl_result, Bind, Frame, Program, ShaderSrc, Texture};
 // ----------------------------------------------------------------------------
 use super::{
-    super::square_buffer::{SquareBuffer, UNIFORM, VERSION, VERTEX},
-    Effect, EffectArgs, Error, Result,
+    super::square_buffer::{SquareBuffer, UNIFORM, VERSION, VERTEX}, Effect,
+    EffectArgs, Error, Result,
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -57,11 +57,11 @@ void main(void) {
 //  float f             = rgba2float(texture2D(u_Texture, vf_Coord));
 //  gl_FragData[0]      = vec4(vec3(f), 1.0);
 
-    gl_FragData[0]      = texture2D(u_Texture, vf_Coord);
+  gl_FragData[0]      = texture2D(u_Texture, vf_Coord);
 
 //  gl_FragData[0]      = texture2D(u_Texture, floor(vf_Coord*256.0) / 256.0);
 
-//  gl_FragData[0]      = color_shift(u_Texture,vf_Coord,vec2(0.0039));
+//  gl_FragData[0]      = color_shift(u_Texture, vf_Coord, vec2(0.0039));
 
 //  gl_FragData[0]      = mono4(texture2D(u_Texture, vf_Coord), COLOR_SEPIA);
 }

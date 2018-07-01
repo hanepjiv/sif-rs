@@ -6,17 +6,14 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/27
-//  @date 2018/06/18
+//  @date 2018/06/22
 
 // ////////////////////////////////////////////////////////////////////////////
 // const  =====================================================================
 const PADDING: GLsizei = 3;
 // use  =======================================================================
 use std::{
-    borrow::Borrow,
-    collections::BTreeMap,
-    fmt::{Debug, Formatter},
-    hash::Hash,
+    borrow::Borrow, collections::BTreeMap, fmt::{Debug, Formatter}, hash::Hash,
 };
 // ----------------------------------------------------------------------------
 use gl::types::*;
@@ -27,32 +24,30 @@ use sif_renderer::Texture;
 use sif_three::new_mat4_tra;
 // ----------------------------------------------------------------------------
 use super::{
-    super::{Error, Result},
-    glyph::Glyph,
-    Metal,
+    super::{Error, Result}, glyph::Glyph, Metal,
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// trait TFontReserve
-pub trait TFontReserve: ::std::fmt::Debug {
+/// trait FontReserve
+pub trait FontReserve: ::std::fmt::Debug {
     // ========================================================================
     /// reserve
     fn reserve(&self, layer: &mut Font);
 }
 // ============================================================================
-impl TFontReserve for str {
+impl FontReserve for str {
     fn reserve(&self, layer: &mut Font) {
         layer.reserve_str(self)
     }
 }
 // ============================================================================
-impl TFontReserve for String {
+impl FontReserve for String {
     fn reserve(&self, layer: &mut Font) {
         layer.reserve_str(self)
     }
 }
 // ============================================================================
-impl TFontReserve for char {
+impl FontReserve for char {
     fn reserve(&self, layer: &mut Font) {
         layer.reserve_char(*self)
     }
@@ -165,7 +160,7 @@ impl<'a, 'b> Font<'a, 'b> {
     /// reserve
     pub fn reserve<S>(&mut self, s: &S)
     where
-        S: ?Sized + TFontReserve,
+        S: ?Sized + FontReserve,
     {
         s.reserve(self)
     }
@@ -200,8 +195,7 @@ impl<'a, 'b> Font<'a, 'b> {
         while let Some(ref c) = self.added.pop() {
             let mut s = String::new();
             s.push(*c);
-            let surface = self
-                .ttf_font
+            let surface = self.ttf_font
                 .render(&s)
                 .blended(::sdl2::pixels::Color::RGBA(0xFF, 0xFF, 0xFF, 0xFF))?;
             let rect = surface.rect();
@@ -220,8 +214,7 @@ impl<'a, 'b> Font<'a, 'b> {
             }
 
             let _ = surface.with_lock(|pxs| -> Result<&Texture> {
-                Ok(self
-                    .textures
+                Ok(self.textures
                     .last()
                     .ok_or_else(|| {
                         Error::OptNone(

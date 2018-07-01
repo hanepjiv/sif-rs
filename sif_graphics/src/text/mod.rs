@@ -12,8 +12,8 @@
 // use  =======================================================================
 pub use super::{Error, Result};
 // ----------------------------------------------------------------------------
-pub use self::font::{Font, TFontReserve};
-pub use self::layer::{Layer, TLayerAppend};
+pub use self::font::{Font, FontReserve};
+pub use self::layer::{Layer, LayerAppend};
 pub use self::metal::Metal;
 // mod  =======================================================================
 mod font;
