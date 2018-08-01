@@ -2,7 +2,7 @@
 # =============================================================================
 [package]
 name                    = "sif"
-version                 = "0.6.0-alpha.0"
+version                 = "0.6.0-alpha.1"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
 keywords                = ["subsystem", "game", "math", "graphics"]
@@ -32,7 +32,6 @@ hdr                     = ["sif_graphics/hdr"]
 dxt                     = ["sif_graphics/dxt"]
 jpeg_rayon              = ["sif_graphics/jpeg_rayon"]
 # -----------------------------------------------------------------------------
-lbf-lua                 = ["sif_graphics/lbf-lua"]
 lbf-rlua                = ["sif_graphics/lbf-rlua"]
 lbf-rlua-builtin-lua    = ["sif_graphics/lbf-rlua-builtin-lua"]
 # =============================================================================

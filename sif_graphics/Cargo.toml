@@ -29,7 +29,6 @@ hdr                     = ["sif_renderer/hdr"]
 dxt                     = ["sif_renderer/dxt"]
 jpeg_rayon              = ["sif_renderer/jpeg_rayon"]
 # -----------------------------------------------------------------------------
-lbf-lua                 = ["lua"]
 lbf-rlua                = ["rlua"]
 lbf-rlua-builtin-lua    = ["rlua/builtin-lua"]
 # =============================================================================
@@ -44,11 +43,6 @@ sif_manager             = { default-features = false, path="../sif_manager" }
 sif_math                = { default-features = false, path="../sif_math" }
 sif_renderer            = { default-features = false, path="../sif_renderer" }
 sif_three               = { default-features = false, path="../sif_three" }
-# -----------------------------------------------------------------------------
-[dependencies.lua]
-version                 = "^0.0"
-default-features        = false
-optional                = true
 # -----------------------------------------------------------------------------
 [dependencies.rlua]
 version                 = "^0.14"
