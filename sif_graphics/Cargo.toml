@@ -38,7 +38,6 @@ bitflags                = { default-features = false, version = "^1.0" }
 gl                      = { default-features = false, version = "^0.10" }
 log                     = { default-features = false, version = "^0.4" }
 num                     = { default-features = false, version = "^0.2" }
-uuid                    = { default-features = false, version = "^0.6" }
 # -----------------------------------------------------------------------------
 sif_error               = { default-features = false, path="../sif_error" }
 sif_manager             = { default-features = false, path="../sif_manager" }
@@ -52,7 +51,7 @@ default-features        = false
 optional                = true
 # -----------------------------------------------------------------------------
 [dependencies.rlua]
-version                 = "^0.13"
+version                 = "^0.14"
 default-features        = false
 optional                = true
 # -----------------------------------------------------------------------------
@@ -65,3 +64,8 @@ features                = ["std"]
 version                 = "^0.31"
 default-features        = false
 features                = ["ttf"]
+# -----------------------------------------------------------------------------
+[dependencies.uuid]
+version                 = "^0.6"
+default-features        = false
+features                = ["v4"]

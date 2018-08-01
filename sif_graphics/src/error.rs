@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/10
-//  @date 2018/06/22
+//  @date 2018/07/30
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -34,6 +34,8 @@ pub enum Error {
     Mesh(String),
     /// Light
     Light(String),
+    /// Object
+    Object(String),
     /// LBF
     LBF(super::lbf::Error),
     /// IO
@@ -125,6 +127,7 @@ impl StdError for Error {
             Error::Path(_) => "sif::graphics::Error::Path",
             Error::Mesh(_) => "sif::graphics::Error::Mesh",
             Error::Light(_) => "sif::graphics::Error::Light",
+            Error::Object(_) => "sif::graphics::Error::Object",
             Error::LBF(ref e) => e.description(),
             Error::IO(_) => "sif::graphics::Error::IO",
             Error::Sif(ref e) => e.description(),
@@ -146,6 +149,7 @@ impl StdError for Error {
             Error::Path(_) => None,
             Error::Mesh(_) => None,
             Error::Light(_) => None,
+            Error::Object(_) => None,
             Error::LBF(ref e) => Some(e),
             Error::IO(_) => None,
             Error::Sif(ref e) => Some(e),

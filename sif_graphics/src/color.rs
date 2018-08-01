@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/12
-//  @date 2018/05/12
+//  @date 2018/08/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -46,6 +46,11 @@ impl ColorIntensity {
             color: Vector3::<GLfloat>::new(r, g, b),
             intensity,
         }
+    }
+    // ------------------------------------------------------------------------
+    /// from_vec
+    pub fn from_vec(color: Vector3<GLfloat>, intensity: GLfloat) -> Self {
+        ColorIntensity { color, intensity }
     }
 }
 // ////////////////////////////////////////////////////////////////////////////

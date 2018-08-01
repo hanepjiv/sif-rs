@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/28
-//  @date 2018/05/16
+//  @date 2018/08/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -215,14 +215,12 @@ impl SubMesh {
     pub fn draw(
         &mut self,
         prog: &Program,
-        materials: Option<&Vec<ManagedValue<Material>>>,
+        materials: &Vec<ManagedValue<Material>>,
     ) -> Result<()> {
         let _ = self.check_draw()?;
         if let Some(material_index) = self.material_index {
-            if let Some(mats) = materials {
-                let material = mats[material_index].as_ref().borrow();
-                let _ = material.set_material(prog)?;
-            }
+            let material = materials[material_index].as_ref().borrow();
+            let _ = material.emit(prog)?;
         }
         self.draw_impl()
     }
@@ -231,14 +229,12 @@ impl SubMesh {
     pub fn draw_silhouette(
         &mut self,
         prog: &Program,
-        materials: Option<&Vec<ManagedValue<Material>>>,
+        materials: &Vec<ManagedValue<Material>>,
     ) -> Result<()> {
         let _ = self.check_draw()?;
         if let Some(material_index) = self.material_index {
-            if let Some(mats) = materials {
-                let material = mats[material_index].as_ref().borrow();
-                let _ = material.set_material_silhouette(prog)?;
-            }
+            let material = materials[material_index].as_ref().borrow();
+            let _ = material.emit_silhouette(prog)?;
         }
         self.draw_impl()
     }

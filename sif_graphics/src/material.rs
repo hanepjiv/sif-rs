@@ -6,19 +6,19 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2018/06/18
+//  @date 2018/08/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::{cell::RefCell, result::Result as StdResult};
+use std::cell::RefCell;
 // ----------------------------------------------------------------------------
 use gl::types::*;
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
-use sif_manager::{ManagedValue, Manager};
+use sif_manager::ManagedValue;
 use sif_renderer::{Program, Texture as RendererTexture};
 // ----------------------------------------------------------------------------
-use super::{ColorIntensity, Error, Result, Texture};
+use super::{ColorIntensity, Result, Texture};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 pub(crate) const MATERIAL_MAX_TEXTURE: usize = 4;
@@ -36,21 +36,35 @@ pub(crate) const MATERIAL_TEXTURE_NAMES: [&str; MATERIAL_MAX_TEXTURE] = [
 ];
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-#[allow(missing_docs)]
 /// Flags
+#[allow(missing_docs)]
 bitflags! {
     #[allow(missing_docs)]
     pub struct Flags: u32 {
         #[allow(missing_docs)]
-        const ANISOTROPIC       = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
+        const ANISOTROPIC   = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
         #[allow(missing_docs)]
-        const BUMP              = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
+        const BUMP          = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
         #[allow(missing_docs)]
-        const PARALLAX          = 0b0000_0000_0000_0000_0000_0000_0000_0100u32;
+        const PARALLAX              = 0b0000_0000_0000_0000_0000_0000_0000_0100u32;
 
         #[allow(missing_docs)]
-        const DO_NOT_USE        = 0b1000_0000_0000_0000_0000_0000_0000_0000u32;
-} }
+        const DO_NOT_USE    = 0b1000_0000_0000_0000_0000_0000_0000_0000u32;
+    }
+}
+// ============================================================================
+impl Default for Flags {
+    fn default() -> Self {
+        Flags::BUMP | Flags::PARALLAX
+    }
+}
+// ============================================================================
+impl Flags {
+    /// fn new
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Parallax
@@ -60,7 +74,7 @@ pub struct Parallax {
     pub height: GLfloat,
     /// shadow_exponent
     pub shadow_exponent: GLfloat,
-    /// loop
+    /// loop_
     pub loop_: GLint,
     /// shadow_loop
     pub shadow_loop: GLint,
@@ -76,11 +90,25 @@ impl Default for Parallax {
         }
     }
 }
-// ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// type Textures
-type Textures =
-    Option<StdResult<Vec<Option<ManagedValue<Texture>>>, Vec<Option<Uuid>>>>;
+impl Parallax {
+    // ========================================================================
+    /// fn new
+    pub(crate) fn new(
+        height: GLfloat,
+        shadow_exponent: GLfloat,
+        loop_: GLint,
+        shadow_loop: GLint,
+    ) -> Self {
+        Parallax {
+            height,
+            shadow_exponent,
+            loop_,
+            shadow_loop,
+        }
+    }
+}
+// ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Material
 #[derive(Debug, Clone)]
@@ -89,9 +117,8 @@ pub struct Material {
     uuid: Uuid,
     /// name
     name: String,
-    // ------------------------------------------------------------------------
     /// textures
-    pub textures: Textures,
+    pub textures: Vec<Option<ManagedValue<Texture>>>,
     /// parallax
     pub parallax: Parallax,
     /// diffuse
@@ -127,39 +154,42 @@ impl Material {
         Material {
             uuid,
             name: name.into(),
-            // ----------------------------------------------------------------
-            textures: None,
+            textures: vec![None; 4],
             parallax: Parallax::default(),
             diffuse: ColorIntensity::default(),
             specular: ColorIntensity::default(),
             emissive: ColorIntensity::default(),
             shininess: 4.0,
             alpha: 1.0,
-            // ----------------------------------------------------------------
-            flags: Flags::BUMP | Flags::PARALLAX,
+            flags: Flags::default(),
         }
     }
-    // ========================================================================
-    /// prepare
-    pub fn prepare(&mut self, textures: &Manager<Texture>) -> Result<()> {
-        let mut v = Vec::new();
-        if let Some(Err(ref uuids)) = self.textures {
-            for i in uuids {
-                if let Some(ref uuid) = *i {
-                    if let Some(texture) = textures.get(uuid) {
-                        v.push(Some(texture.clone()));
-                    } else {
-                        return Err(Error::ManagedNotFound(*uuid));
-                    }
-                } else {
-                    v.push(None);
-                }
-            }
+    // ------------------------------------------------------------------------
+    /// build
+    pub fn build(
+        uuid: Uuid,
+        name: impl Into<String>,
+        textures: Vec<Option<ManagedValue<Texture>>>,
+        parallax: Parallax,
+        diffuse: ColorIntensity,
+        specular: ColorIntensity,
+        emissive: ColorIntensity,
+        shininess: GLfloat,
+        alpha: GLfloat,
+        flags: Flags,
+    ) -> Self {
+        Material {
+            uuid,
+            name: name.into(),
+            textures,
+            parallax,
+            diffuse,
+            specular,
+            emissive,
+            shininess,
+            alpha,
+            flags,
         }
-        if !v.is_empty() {
-            self.textures = Some(Ok(v));
-        }
-        Ok(())
     }
     // ========================================================================
     /// duplicate
@@ -171,20 +201,20 @@ impl Material {
         }
     }
     // ========================================================================
-    /// set_material
-    pub fn set_material(&self, prog: &Program) -> Result<&Self> {
-        if let Some(Ok(ref textures)) = self.textures {
-            for i in 0..MATERIAL_TEXTURE_NAMES.len() {
-                if let Some(ref managed) = textures[i] {
+    /// emit
+    pub fn emit(&self, prog: &Program) -> Result<&Self> {
+        {
+            let loc_is_map = (0..MATERIAL_MAX_TEXTURE)
+                .map(|i| {
+                    sif_renderer_program_location!(
+                        prog,
+                        MATERIAL_TEXTURE_FLAGS[i]
+                    )
+                }).collect::<Vec<_>>();
+            for (i, texture) in self.textures.iter().enumerate() {
+                if let Some(ref managed) = texture {
                     let tex = managed.as_ref().borrow();
                     let siftex: &RefCell<RendererTexture> = tex.as_ref();
-                    Program::set_uniform1i(
-                        sif_renderer_program_location!(
-                            prog,
-                            MATERIAL_TEXTURE_FLAGS[i]
-                        ),
-                        1,
-                    )?;
                     Program::set_texture(
                         sif_renderer_program_location!(
                             prog,
@@ -193,27 +223,16 @@ impl Material {
                         i as GLint,
                         &*siftex.borrow(),
                     )?;
+                    Program::set_uniform1i(loc_is_map[i], 1)?;
                 } else {
-                    Program::set_uniform1i(
-                        sif_renderer_program_location!(
-                            prog,
-                            MATERIAL_TEXTURE_FLAGS[i]
-                        ),
-                        0,
-                    )?;
+                    Program::set_uniform1i(loc_is_map[i], 0)?;
                 }
             }
-        } else {
-            for flag in MATERIAL_TEXTURE_FLAGS
-                .iter()
-                .take(MATERIAL_TEXTURE_NAMES.len())
-            {
-                Program::set_uniform1i(
-                    sif_renderer_program_location!(prog, *flag),
-                    0,
-                )?;
+            for i in self.textures.len()..MATERIAL_MAX_TEXTURE {
+                Program::set_uniform1i(loc_is_map[i], 0)?;
             }
         }
+
         Program::set_uniform1f(
             sif_renderer_program_location!(prog, "u_Material.parallax.height"),
             self.parallax.height,
@@ -286,19 +305,14 @@ impl Material {
         Ok(self)
     }
     // ------------------------------------------------------------------------
-    /// set_material_silhouette
-    pub fn set_material_silhouette(&self, prog: &Program) -> Result<&Self> {
-        if let Some(Ok(ref textures)) = self.textures {
-            if let Some(ref managed) = textures[0] {
+    /// emit_silhouette
+    pub fn emit_silhouette(&self, prog: &Program) -> Result<&Self> {
+        let loc_is_map_diffuse =
+            sif_renderer_program_location!(prog, MATERIAL_TEXTURE_FLAGS[0]);
+        if !self.textures.is_empty() {
+            if let Some(ref managed) = self.textures[0] {
                 let tex = managed.as_ref().borrow();
                 let siftex: &RefCell<RendererTexture> = tex.as_ref();
-                Program::set_uniform1i(
-                    sif_renderer_program_location!(
-                        prog,
-                        MATERIAL_TEXTURE_FLAGS[0]
-                    ),
-                    1,
-                )?;
                 Program::set_texture(
                     sif_renderer_program_location!(
                         prog,
@@ -307,23 +321,12 @@ impl Material {
                     0,
                     &*siftex.borrow(),
                 )?;
+                Program::set_uniform1i(loc_is_map_diffuse, 1)?;
             } else {
-                Program::set_uniform1i(
-                    sif_renderer_program_location!(
-                        prog,
-                        MATERIAL_TEXTURE_FLAGS[0]
-                    ),
-                    0,
-                )?;
+                Program::set_uniform1i(loc_is_map_diffuse, 0)?;
             }
         } else {
-            Program::set_uniform1i(
-                sif_renderer_program_location!(
-                    prog,
-                    MATERIAL_TEXTURE_FLAGS[0]
-                ),
-                0,
-            )?;
+            Program::set_uniform1i(loc_is_map_diffuse, 0)?;
         }
         Program::set_uniform1f(
             sif_renderer_program_location!(prog, "u_Material.alpha"),

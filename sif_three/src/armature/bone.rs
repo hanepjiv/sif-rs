@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/19
-//  @date 2018/05/12
+//  @date 2018/07/30
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -21,6 +21,8 @@ pub struct Bone<V>
 where
     V: Number,
 {
+    /// name
+    name: String,
     /// offset
     offset: Vector3<V>,
     /// parent
@@ -33,8 +35,16 @@ where
 {
     // ========================================================================
     /// new
-    pub fn new(offset: Vector3<V>, parent: Option<usize>) -> Self {
-        Bone { offset, parent }
+    pub fn new(
+        name: impl Into<String>,
+        offset: Vector3<V>,
+        parent: Option<usize>,
+    ) -> Self {
+        Bone {
+            name: name.into(),
+            offset,
+            parent,
+        }
     }
     // ========================================================================
     /// offset_matrix
@@ -45,5 +55,14 @@ where
     /// inverse_offset_matrix
     pub fn inverse_offset_matrix(&self) -> Matrix4x4<V> {
         new_mat4_tra::<V>(-self.offset[0], -self.offset[1], -self.offset[2])
+    }
+}
+// ===========================================================================
+impl<V> AsRef<str> for Bone<V>
+where
+    V: Number,
+{
+    fn as_ref(&self) -> &str {
+        self.name.as_str()
     }
 }

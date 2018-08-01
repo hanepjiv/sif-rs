@@ -6,15 +6,15 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/23
-//  @date 2018/05/23
+//  @date 2018/07/31
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::{borrow::Borrow, fmt::Debug, hash::Hash};
+use std::{borrow::Borrow, fmt::Debug, hash::Hash, iter::IntoIterator};
 // ----------------------------------------------------------------------------
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
-use sif_manager::{ManagedValue, Manager};
+use sif_manager::{ManagedValue, Manager, ManagerIter, ManagerIterMut};
 use sif_math::Number;
 // ----------------------------------------------------------------------------
 use super::{Error, Result};
@@ -25,6 +25,13 @@ pub use self::node::{
 // mod  =======================================================================
 #[macro_use]
 mod node;
+// ////////////////////////////////////////////////////////////////////////////
+// ============================================================================
+/// type GraphIter
+type GraphIter<'a, V> = ManagerIter<'a, Node<V>>;
+// ============================================================================
+/// type GraphIterMut
+type GraphIterMut<'a, V> = ManagerIterMut<'a, Node<V>>;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Graph
@@ -84,9 +91,18 @@ where
                     "three::graph::Graph::new: nodes.get(\"{}\")",
                     uuid
                 ))
-            })?
-            .clone();
+            })?.clone();
         Ok(Graph { uuid, nodes, root })
+    }
+    // ========================================================================
+    /// iter
+    pub fn iter(&self) -> GraphIter<V> {
+        self.nodes.iter()
+    }
+    // ------------------------------------------------------------------------
+    /// iter_mut
+    pub fn iter_mut(&mut self) -> GraphIterMut<V> {
+        self.nodes.iter_mut()
     }
     // ========================================================================
     /// root
@@ -100,7 +116,12 @@ where
     }
     // ========================================================================
     /// insert
-    pub fn insert(
+    pub fn insert(&mut self, v: ManagedValue<Node<V>>) -> Result<Uuid> {
+        Ok(self.nodes.insert_managed(v)?)
+    }
+    // ------------------------------------------------------------------------
+    /// emplace
+    pub fn emplace(
         &mut self,
         uuid: Uuid,
         parent: Option<ManagedValue<Node<V>>>,
@@ -145,5 +166,29 @@ where
             let mut flags = v.as_ref().borrow_mut().flags;
             flags.remove(NodeFlags::DIRTY | NodeFlags::UPDATED);
         }
+    }
+}
+// ============================================================================
+impl<'a, V> IntoIterator for &'a Graph<V>
+where
+    V: Debug + Number,
+{
+    type Item = <GraphIter<'a, V> as IntoIterator>::Item;
+    type IntoIter = GraphIter<'a, V>;
+    // ========================================================================
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+// ----------------------------------------------------------------------------
+impl<'a, V> IntoIterator for &'a mut Graph<V>
+where
+    V: Debug + Number,
+{
+    type Item = <GraphIterMut<'a, V> as IntoIterator>::Item;
+    type IntoIter = GraphIterMut<'a, V>;
+    // ========================================================================
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter_mut()
     }
 }

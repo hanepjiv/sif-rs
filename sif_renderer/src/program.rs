@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2018/06/18
+//  @date 2018/08/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -26,7 +26,7 @@ pub struct Program {
     /// shaders
     shaders: Vec<Shader>,
     /// location map
-    location_map: BTreeMap<String, GLint>,
+    locations: BTreeMap<String, GLint>,
     /// id
     id: GLuint,
 }
@@ -56,7 +56,7 @@ impl Program {
 
         info_log(::gl::PROGRAM, id, ::gl::LINK_STATUS)?;
 
-        let mut location_map = BTreeMap::new();
+        let mut locations = BTreeMap::new();
         {
             // uniform
             let active = gl_result(|| -> Result<GLint> {
@@ -108,7 +108,7 @@ impl Program {
                     })
                 })?;
                 info!("Program::new: location: {:?} = {:?}", name, location);
-                let _ = location_map.insert(name, location);
+                let _ = locations.insert(name, location);
             }
         }
         {
@@ -165,13 +165,13 @@ impl Program {
                         )
                     })
                 })?;
-                let _ = location_map.insert(name, location);
+                let _ = locations.insert(name, location);
             }
         }
 
         Ok(Program {
             shaders,
-            location_map,
+            locations,
             id,
         })
     }
@@ -182,7 +182,7 @@ impl Program {
         String: ::std::borrow::Borrow<Q>,
         Q: ?Sized + ::std::hash::Hash + Ord,
     {
-        self.location_map.get(name).cloned()
+        self.locations.get(name).cloned()
     }
     // ========================================================================
     /// set_attribute

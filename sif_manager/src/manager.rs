@@ -6,14 +6,14 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/02/27
-//  @date 2018/05/23
+//  @date 2018/07/31
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 use std::{
     borrow::Borrow,
     cell::RefCell,
-    collections::{btree_map::Iter, BTreeMap},
+    collections::{btree_map, BTreeMap},
     fmt::Debug,
     hash::{Hash, Hasher},
     rc::{Rc, Weak},
@@ -102,6 +102,13 @@ where
 }
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
+/// type ManagerIter
+pub type ManagerIter<'a, T> = btree_map::Iter<'a, Uuid, ManagedValue<T>>;
+// ============================================================================
+/// type ManagerIterMut
+pub type ManagerIterMut<'a, T> = btree_map::IterMut<'a, Uuid, ManagedValue<T>>;
+// ////////////////////////////////////////////////////////////////////////////
+// ============================================================================
 /// struct Manager
 #[derive(Debug, Clone)]
 pub struct Manager<T>
@@ -127,6 +134,16 @@ impl<T> Manager<T>
 where
     T: Debug + AsRef<Uuid>,
 {
+    // ========================================================================
+    /// iter
+    pub fn iter(&self) -> ManagerIter<T> {
+        self.map.iter()
+    }
+    // ------------------------------------------------------------------------
+    /// iter_mut
+    pub fn iter_mut(&mut self) -> ManagerIterMut<T> {
+        self.map.iter_mut()
+    }
     // ========================================================================
     /// insert
     pub fn insert(&mut self, x: T) -> Result<Uuid> {
@@ -174,9 +191,29 @@ where
     {
         self.map.contains_key(uuid)
     }
+}
+// ============================================================================
+impl<'a, T> IntoIterator for &'a Manager<T>
+where
+    T: Debug + AsRef<Uuid> + Hash,
+{
+    type Item = <btree_map::Iter<'a, Uuid, ManagedValue<T>> as Iterator>::Item;
+    type IntoIter = btree_map::Iter<'a, Uuid, ManagedValue<T>>;
     // ========================================================================
-    /// iter
-    pub fn iter(&self) -> Iter<Uuid, ManagedValue<T>> {
-        self.map.iter()
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+// ----------------------------------------------------------------------------
+impl<'a, T> IntoIterator for &'a mut Manager<T>
+where
+    T: Debug + AsRef<Uuid> + Hash,
+{
+    type Item =
+        <btree_map::IterMut<'a, Uuid, ManagedValue<T>> as Iterator>::Item;
+    type IntoIter = btree_map::IterMut<'a, Uuid, ManagedValue<T>>;
+    // ========================================================================
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter_mut()
     }
 }

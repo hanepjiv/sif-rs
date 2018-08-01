@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/06/13
-//  @date 2018/06/16
+//  @date 2018/08/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -19,8 +19,9 @@ use sif_three::Armature;
 // ----------------------------------------------------------------------------
 use super::{
     super::{
-        super::{Camera, Image, Material, Model, Texture},
-        LBFLight, LBFMesh, LBFObject, LBF,
+        super::{Camera, Image},
+        LBFLight, LBFMaterial, LBFMesh, LBFModel, LBFObject, LBFScene,
+        LBFTexture,
     },
     Error, Result,
 };
@@ -45,10 +46,10 @@ fn get_current(tbl: &Table) -> Result<Integer> {
 }
 // ============================================================================
 /// from_str
-pub(crate) fn from_str(
+pub(crate) fn from_str<'a>(
     path: impl AsRef<Path>,
     src: impl AsRef<str>,
-) -> Result<LBF> {
+) -> Result<LBFScene<'a>> {
     info!(
         "sif_graphics::lbf::loader::rlua::from_str({:?}, ...)",
         path.as_ref()
@@ -67,42 +68,24 @@ pub(crate) fn from_str(
 
     let _ = get_current(&tbl)?;
 
-    let images = Vec::<Image>::from_lua(tbl.get("images")?)
-        .unwrap_or_default()
+    let images = Vec::<Image>::from_lua(tbl.get("images")?)?
         .into_iter()
         .map(|mut x| {
             if let Image::File(ref mut im) = x {
                 let _ = im.set_path_base(path_base);
             }
             x
-        })
-        .collect();
+        }).collect();
+    let textures = Vec::<LBFTexture>::from_lua(tbl.get("textures")?)?;
+    let materials = Vec::<LBFMaterial>::from_lua(tbl.get("materials")?)?;
+    let meshes = Vec::<LBFMesh>::from_lua(tbl.get("meshes")?)?;
+    let armatures = Vec::<Armature<GLfloat>>::from_lua(tbl.get("armatures")?)?;
+    let models = Vec::<LBFModel>::from_lua(tbl.get("models")?)?;
+    let lights = Vec::<LBFLight>::from_lua(tbl.get("lights")?)?;
+    let cameras = Vec::<Camera>::from_lua(tbl.get("cameras")?)?;
+    let objects = Vec::<LBFObject>::from_lua(tbl.get("objects")?)?;
 
-    let textures =
-        Vec::<Texture>::from_lua(tbl.get("textures")?).unwrap_or_default();
-
-    let materials =
-        Vec::<Material>::from_lua(tbl.get("materials")?).unwrap_or_default();
-
-    let meshes =
-        Vec::<LBFMesh>::from_lua(tbl.get("meshes")?).unwrap_or_default();
-
-    let armatures = Vec::<Armature<GLfloat>>::from_lua(tbl.get("armatures")?)
-        .unwrap_or_default();
-
-    let models =
-        Vec::<Model>::from_lua(tbl.get("models")?).unwrap_or_default();
-
-    let lights =
-        Vec::<LBFLight>::from_lua(tbl.get("lights")?).unwrap_or_default();
-
-    let cameras =
-        Vec::<Camera>::from_lua(tbl.get("cameras")?).unwrap_or_default();
-
-    let objects =
-        Vec::<LBFObject>::from_lua(tbl.get("objects")?).unwrap_or_default();
-
-    Ok(LBF {
+    Ok(LBFScene {
         images,
         textures,
         materials,

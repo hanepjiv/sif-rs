@@ -17,8 +17,8 @@ use gl::types::*;
 use sif_renderer::{gl_result, Bind, Frame, Program, ShaderSrc, Texture};
 // ----------------------------------------------------------------------------
 use super::{
-    super::square_buffer::{SquareBuffer, UNIFORM, VERSION, VERTEX}, Effect,
-    EffectArgs, Error, Result,
+    super::square_buffer::{SquareBuffer, UNIFORM, VERSION, VERTEX},
+    Effect, EffectArgs, Error, Result,
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================

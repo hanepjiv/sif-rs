@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/03
-//  @date 2018/06/22
+//  @date 2018/08/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -26,12 +26,22 @@ pub enum Error {
     Insert(String),
     /// Type
     Type(String),
+    /// ImageDimension
+    ImageDimension(String),
+    /// ImageUnknown
+    ImageUnknown(String),
+    /// Material
+    Material(String),
     /// Mesh
     Mesh(String),
     /// Polygon
     Polygon(String),
     /// Elem
     Elem(String),
+    /// Model
+    Model(String),
+    /// Object
+    Object(String),
     /// UuidParse
     UuidParse(String),
     /// IO
@@ -75,9 +85,14 @@ impl StdError for Error {
             Error::Current(_, _, _) => "LBF unsupported version",
             Error::Insert(_) => "LBF insert error",
             Error::Type(_) => "LBF type error",
+            Error::ImageDimension(_) => "LBF image dimension error",
+            Error::ImageUnknown(_) => "LBF image unknwon error",
+            Error::Material(_) => "LBF material error",
             Error::Mesh(_) => "LBF mesh error",
             Error::Polygon(_) => "LBF polygon error",
             Error::Elem(_) => "LBF elem error",
+            Error::Model(_) => "LBF model error",
+            Error::Object(_) => "LBF object error",
             Error::UuidParse(_) => "LBF uuid parse error",
             Error::IO(_) => "LBF io error",
         }
@@ -90,9 +105,14 @@ impl StdError for Error {
             Error::Current(_, _, _) => None,
             Error::Insert(_) => None,
             Error::Type(_) => None,
+            Error::ImageDimension(_) => None,
+            Error::ImageUnknown(_) => None,
+            Error::Material(_) => None,
             Error::Mesh(_) => None,
             Error::Polygon(_) => None,
             Error::Elem(_) => None,
+            Error::Model(_) => None,
+            Error::Object(_) => None,
             Error::UuidParse(_) => None,
             Error::IO(_) => None,
         }

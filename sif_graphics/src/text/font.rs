@@ -13,7 +13,10 @@
 const PADDING: GLsizei = 3;
 // use  =======================================================================
 use std::{
-    borrow::Borrow, collections::BTreeMap, fmt::{Debug, Formatter}, hash::Hash,
+    borrow::Borrow,
+    collections::BTreeMap,
+    fmt::{Debug, Formatter},
+    hash::Hash,
 };
 // ----------------------------------------------------------------------------
 use gl::types::*;
@@ -24,7 +27,9 @@ use sif_renderer::Texture;
 use sif_three::new_mat4_tra;
 // ----------------------------------------------------------------------------
 use super::{
-    super::{Error, Result}, glyph::Glyph, Metal,
+    super::{Error, Result},
+    glyph::Glyph,
+    Metal,
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -195,7 +200,8 @@ impl<'a, 'b> Font<'a, 'b> {
         while let Some(ref c) = self.added.pop() {
             let mut s = String::new();
             s.push(*c);
-            let surface = self.ttf_font
+            let surface = self
+                .ttf_font
                 .render(&s)
                 .blended(::sdl2::pixels::Color::RGBA(0xFF, 0xFF, 0xFF, 0xFF))?;
             let rect = surface.rect();
@@ -214,7 +220,8 @@ impl<'a, 'b> Font<'a, 'b> {
             }
 
             let _ = surface.with_lock(|pxs| -> Result<&Texture> {
-                Ok(self.textures
+                Ok(self
+                    .textures
                     .last()
                     .ok_or_else(|| {
                         Error::OptNone(

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/24
-//  @date 2018/06/18
+//  @date 2018/07/31
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -17,7 +17,7 @@ use sif_manager::ManagedValue;
 use sif_math::Vector3;
 use sif_renderer::{Bind, Program, Texture};
 // ----------------------------------------------------------------------------
-use super::{lbf, post::DepthMapParam, Error, Object, Result, Shadow};
+use super::{post::DepthMapParam, Error, Object, Result, Shadow};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 #[allow(missing_docs)]
@@ -25,17 +25,17 @@ use super::{lbf, post::DepthMapParam, Error, Object, Result, Shadow};
 bitflags! {
     #[allow(missing_docs)]
     pub struct Flags: u32 {
-        #[allow(missing_docs)]
-        const ENABLE            = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
-        #[allow(missing_docs)]
-        const POINT             = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
-        #[allow(missing_docs)]
-        const SPOT              = 0b0000_0000_0000_0000_0000_0000_0000_0100u32;
-        #[allow(missing_docs)]
-        const SHADOW            = 0b0000_0000_0000_0000_0000_0000_0000_1000u32;
+    #[allow(missing_docs)]
+    const ENABLE                = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
+    #[allow(missing_docs)]
+    const POINT                 = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
+    #[allow(missing_docs)]
+    const SPOT                  = 0b0000_0000_0000_0000_0000_0000_0000_0100u32;
+    #[allow(missing_docs)]
+    const SHADOW                = 0b0000_0000_0000_0000_0000_0000_0000_1000u32;
 
-        #[allow(missing_docs)]
-        const DO_NOT_USE        = 0b1000_0000_0000_0000_0000_0000_0000_0000u32;
+    #[allow(missing_docs)]
+    const DO_NOT_USE            = 0b1000_0000_0000_0000_0000_0000_0000_0000u32;
     }
 }
 // ////////////////////////////////////////////////////////////////////////////
@@ -77,22 +77,28 @@ impl AsRef<String> for Light {
 // ============================================================================
 impl Light {
     // ========================================================================
-    /// from_lbf
-    pub fn from_lbf(src: lbf::LBFLight, texture_size: GLint) -> Result<Self> {
+    /// fn new
+    pub(crate) fn new(
+        uuid: Uuid,
+        name: String,
+        color: Vector3<GLfloat>,
+        kcklkq: Vector3<GLfloat>,
+        intensity: GLfloat,
+        exponent: GLfloat,
+        cutoff: GLfloat,
+        shadow: Option<Shadow>,
+        flags: Flags,
+    ) -> Result<Self> {
         Ok(Light {
-            uuid: src.uuid,
-            name: src.name,
-            color: src.color,
-            kcklkq: src.kcklkq,
-            intensity: src.intensity,
-            exponent: src.exponent,
-            cutoff: src.cutoff,
-            shadow: if src.flags.contains(Flags::SHADOW) {
-                Some(Shadow::new(texture_size, texture_size)?)
-            } else {
-                None
-            },
-            flags: src.flags,
+            uuid,
+            name,
+            color,
+            kcklkq,
+            intensity,
+            exponent,
+            cutoff,
+            shadow,
+            flags,
         })
     }
     // ========================================================================
@@ -132,7 +138,7 @@ impl Light {
         if let Some(ref shadow) = self.shadow {
             shadow.as_ref()
         } else {
-            panic!("::Light: no shadow");
+            panic!("Light: no shadow");
         }
     }
     // ------------------------------------------------------------------------
@@ -141,7 +147,7 @@ impl Light {
         if let Some(ref mut shadow) = self.shadow {
             shadow.as_mut()
         } else {
-            panic!("::Light: no shadow");
+            panic!("Light: no shadow");
         }
     }
     // ========================================================================
@@ -150,7 +156,7 @@ impl Light {
         if let Some(ref shadow) = self.shadow {
             shadow.as_color()
         } else {
-            panic!("::Light: no shadow");
+            panic!("Light: no shadow");
         }
     }
     // ========================================================================
@@ -159,7 +165,7 @@ impl Light {
         if let Some(ref shadow) = self.shadow {
             shadow.size()
         } else {
-            panic!("::Light: no shadow");
+            panic!("Light: no shadow");
         }
     }
     // ========================================================================
@@ -172,7 +178,7 @@ impl Light {
         if let Some(ref shadow) = self.shadow {
             let _ = shadow.emit(depth_map_program, managed_obj)?;
         } else {
-            panic!("::Light: no shadow");
+            panic!("Light: no shadow");
         }
         Ok(self)
     }
@@ -183,7 +189,7 @@ impl Bind for Light {
     type BindError = Error;
     // ========================================================================
     fn id(&self) -> GLuint {
-        panic!("::Light: No id");
+        panic!("Light: No id");
     }
     // ========================================================================
     fn bind(&self) -> Result<()> {

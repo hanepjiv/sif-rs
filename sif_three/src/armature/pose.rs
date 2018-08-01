@@ -6,10 +6,15 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/25
-//  @date 2018/06/22
+//  @date 2018/08/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
+use std::{
+    iter::{Enumerate, Iterator},
+    slice::{Iter, IterMut},
+};
+// ----------------------------------------------------------------------------
 use sif_math::{Matrix4x4, Number};
 // ----------------------------------------------------------------------------
 use super::super::trarotsca::TraRotSca;
@@ -19,10 +24,10 @@ use super::super::trarotsca::TraRotSca;
 bitflags! {
     #[allow(missing_docs)]
     pub struct Flags: u32 {
-        #[allow(missing_docs)]
-        const DIRTY             = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
-        #[allow(missing_docs)]
-        const UPDATED           = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
+    #[allow(missing_docs)]
+    const DIRTY                 = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
+    #[allow(missing_docs)]
+    const UPDATED               = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
     }
 }
 // ============================================================================
@@ -94,5 +99,60 @@ where
     /// fn as_ptr
     pub fn as_ptr(&self) -> *const V {
         self.matrix.as_ptr() as *const V
+    }
+    // ========================================================================
+    /// iter_local
+    pub fn iter_local(&self) -> Iter<TraRotSca<V>> {
+        self.local.iter()
+    }
+    // ------------------------------------------------------------------------
+    /// iter_local_mut
+    pub fn iter_local_mut(&mut self) -> PoseLocalIterMut<V> {
+        PoseLocalIterMut::new(
+            &mut self.flags,
+            self.local.iter_mut().enumerate(),
+        )
+    }
+}
+// ////////////////////////////////////////////////////////////////////////////
+// ============================================================================
+/// struct PoseLocalIterMut
+#[derive(Debug)]
+pub struct PoseLocalIterMut<'a, V>
+where
+    V: 'a + Number,
+{
+    /// flags
+    flags: &'a mut Vec<Flags>,
+    /// iter
+    iter: Enumerate<IterMut<'a, TraRotSca<V>>>,
+}
+// ============================================================================
+impl<'a, V> PoseLocalIterMut<'a, V>
+where
+    V: Number,
+{
+    // ========================================================================
+    /// fn new
+    pub(crate) fn new(
+        flags: &'a mut Vec<Flags>,
+        iter: Enumerate<IterMut<'a, TraRotSca<V>>>,
+    ) -> Self {
+        Self { flags, iter }
+    }
+}
+// ============================================================================
+impl<'a, V> Iterator for PoseLocalIterMut<'a, V>
+where
+    V: Number,
+{
+    type Item = &'a mut TraRotSca<V>;
+    fn next(&mut self) -> Option<Self::Item> {
+        if let Some((i, x)) = self.iter.next() {
+            self.flags[i].insert(Flags::DIRTY);
+            Some(x)
+        } else {
+            None
+        }
     }
 }

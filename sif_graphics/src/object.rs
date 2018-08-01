@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/23
-//  @date 2018/06/17
+//  @date 2018/08/01
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -15,16 +15,13 @@ use std::cell::RefCell;
 use gl::types::*;
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
-use sif_manager::{ManagedValue, Manager};
+use sif_manager::ManagedValue;
 use sif_math::{Vector3, Vector4};
 use sif_renderer::Program;
-use sif_three::{
-    Armature, AsNodeHolder, Graph, Node, NodeHolder, NodeHolderField, Pose,
-    TraRotSca,
-};
+use sif_three::{Armature, AsNodeHolder, NodeHolder, NodeHolderField, Pose};
 // ----------------------------------------------------------------------------
 use super::{
-    lbf, Error, Result, {Camera, Light, Model},
+    Error, Result, {Camera, Light, Model},
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -32,8 +29,10 @@ use super::{
 #[allow(variant_size_differences)]
 #[derive(Debug, Clone)]
 pub enum ObjectData {
+    /// Empty
+    Empty,
     /// Armature
-    Armature(ManagedValue<Armature<GLfloat>>),
+    Armature(ManagedValue<Armature<GLfloat>>), // UNUSED
     /// Model
     Model(ManagedValue<Model>, Option<Pose<GLfloat>>),
     /// Light
@@ -225,82 +224,6 @@ impl Object {
             name: name.into(),
             object_data,
             node_holder_field: NodeHolderField::<GLfloat>::default(),
-        }
-    }
-    // ========================================================================
-    /// fn from_lbf
-    pub fn from_lbf(
-        src: &lbf::LBFObject,
-        graph: &mut Graph<GLfloat>,
-        armatures: &Manager<Armature<GLfloat>>,
-        models: &Manager<Model>,
-        lights: &Manager<Light>,
-        cameras: &Manager<Camera>,
-    ) -> Result<Self> {
-        if let Some(mut obj) = match src.data_type.as_str() {
-            "ARMATURE" => armatures.get(&src.data_uuid).map(|m| {
-                Object::new(
-                    *AsRef::<Uuid>::as_ref(&src),
-                    AsRef::<String>::as_ref(&src).as_str(),
-                    ObjectData::Armature(m.clone()),
-                )
-            }),
-            "MODEL" => models.get(&src.data_uuid).map(|m| {
-                let armature_len = (*m.as_ref().borrow()).armature_len();
-                let pose = if 0 < armature_len {
-                    Some(Pose::<GLfloat>::new(armature_len))
-                } else {
-                    None
-                };
-                Object::new(
-                    *AsRef::<Uuid>::as_ref(&src),
-                    AsRef::<String>::as_ref(&src).as_str(),
-                    ObjectData::Model(m.clone(), pose),
-                )
-            }),
-            "LIGHT" => lights.get(&src.data_uuid).map(|m| {
-                Object::new(
-                    *AsRef::<Uuid>::as_ref(&src),
-                    AsRef::<String>::as_ref(&src).as_str(),
-                    ObjectData::Light(m.clone()),
-                )
-            }),
-            "CAMERA" => cameras.get(&src.data_uuid).map(|m| {
-                Object::new(
-                    *AsRef::<Uuid>::as_ref(&src),
-                    AsRef::<String>::as_ref(&src).as_str(),
-                    ObjectData::Camera(m.clone()),
-                )
-            }),
-            _ => None,
-        } {
-            let parent: Option<ManagedValue<Node<GLfloat>>> =
-                if let Some(p) = src.parent {
-                    Some(graph.get(&p).ok_or_else(|| {
-                        Error::OptNone(
-                            "graphics: scene: from_lbf: graph.get".to_string(),
-                        )
-                    })?)
-                } else {
-                    None
-                };
-            let _ = graph.insert(AsRef::<Uuid>::as_ref(&src).clone(), parent)?;
-            let node = graph.get(src.as_ref()).ok_or_else(|| {
-                Error::OptNone(
-                    "graphics: scene: from_lbf: graph.insert".to_string(),
-                )
-            })?;
-            {
-                let mut m = node.as_ref().borrow_mut();
-                let trs = AsMut::<TraRotSca<GLfloat>>::as_mut(&mut *m);
-                trs.translation = src.trarotsca.translation;
-                trs.rotation = src.trarotsca.rotation;
-                trs.scaling = src.trarotsca.scaling;
-            }
-            obj.set_node(Some(node));
-            Ok(obj)
-        } else {
-            Err(Error::ManagedNotFound(src.data_uuid))
         }
     }
     // ========================================================================

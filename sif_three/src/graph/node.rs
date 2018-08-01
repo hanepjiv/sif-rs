@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/02/25
-//  @date 2018/05/12
+//  @date 2018/07/31
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -101,6 +101,16 @@ where
             trarotsca: TraRotSca::<V>::default(),
             flags: Flags::default(),
         }
+    }
+    // ========================================================================
+    /// fn get_parent
+    pub fn get_parent(&self) -> &Option<ManagedWeak<Node<V>>> {
+        &self.parent
+    }
+    // ------------------------------------------------------------------------
+    /// fn set_parent
+    pub fn set_parent(&mut self, parent: Option<ManagedWeak<Node<V>>>) {
+        self.parent = parent
     }
     // ========================================================================
     /// update
