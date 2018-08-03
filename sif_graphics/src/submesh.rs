@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/28
-//  @date 2018/08/01
+//  @date 2018/08/02
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -215,7 +215,7 @@ impl SubMesh {
     pub fn draw(
         &mut self,
         prog: &Program,
-        materials: &Vec<ManagedValue<Material>>,
+        materials: &[ManagedValue<Material>],
     ) -> Result<()> {
         let _ = self.check_draw()?;
         if let Some(material_index) = self.material_index {
@@ -229,7 +229,7 @@ impl SubMesh {
     pub fn draw_silhouette(
         &mut self,
         prog: &Program,
-        materials: &Vec<ManagedValue<Material>>,
+        materials: &[ManagedValue<Material>],
     ) -> Result<()> {
         let _ = self.check_draw()?;
         if let Some(material_index) = self.material_index {

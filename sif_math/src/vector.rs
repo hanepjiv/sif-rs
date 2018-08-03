@@ -19,8 +19,9 @@ macro_rules! vector_define {
         // ////////////////////////////////////////////////////////////////////
         // ====================================================================
         /// struct $name
-        #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd,
-                 Ord, Hash)]
+        #[derive(
+            Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash,
+        )]
         pub struct $name<V: Number>([V; $n]);
         // ====================================================================
         impl<V> From<[V; $n]> for $name<V>

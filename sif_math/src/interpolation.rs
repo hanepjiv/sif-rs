@@ -5,20 +5,16 @@
 //  Copyright 2017 hanepjiv
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
-//  @since 2018/07/31
-//  @date 2018/08/01
+//  @since 2018/08/05
+//  @date 2018/08/05
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-// ////////////////////////////////////////////////////////////////////////////
+use super::Number;
 // ============================================================================
-/// enum Interpolation
-#[derive(Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum Interpolation {
-    /// Constant
-    Constant,
-    /// Linear
-    Linear,
-    /// Bezier
-    Bezier,
+/// bezier
+pub fn bezier<V: Number>(v0: V, v1: V, v2: V, v3: V, t: V) -> V {
+    let it = V::from(1).unwrap() - t;
+    ((it * it * ((it * v0) + (V::from(3).unwrap() * t * v1)))
+        + (t * t * ((V::from(3).unwrap() * it * v2) + (t * v3))))
 }

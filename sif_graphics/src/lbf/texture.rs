@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/07/31
-//  @date 2018/08/01
+//  @date 2018/08/05
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -23,7 +23,7 @@ use super::{
 // ============================================================================
 /// struct Texture
 #[derive(Debug, Clone)]
-pub struct Texture<'a> {
+pub struct Texture<'a, 'b> {
     /// uuid
     uuid: Uuid,
     /// name
@@ -36,11 +36,13 @@ pub struct Texture<'a> {
     filter: [GLenum; 2],
     /// mipmap
     mipmap: bool,
-    /// phantom
-    phantom: PhantomData<&'a ()>,
+    /// phantom0
+    phantom0: PhantomData<&'a ()>,
+    /// phantom1
+    phantom1: PhantomData<&'b ()>,
 }
 // ============================================================================
-impl<'a> Texture<'a> {
+impl<'a, 'b> Texture<'a, 'b> {
     // ========================================================================
     /// new
     pub fn new(
@@ -56,36 +58,36 @@ impl<'a> Texture<'a> {
         Texture {
             uuid,
             name: name.into(),
-            image: image,
+            image,
             wrap: [wrap_s, wrap_t, 0],
             filter: [filter_mag, filter_min],
             mipmap,
-            phantom: PhantomData::default(),
+            phantom0: PhantomData::default(),
+            phantom1: PhantomData::default(),
         }
     }
 }
 // ============================================================================
-impl<'a> AsRef<Uuid> for Texture<'a> {
+impl<'a, 'b> AsRef<Uuid> for Texture<'a, 'b> {
     fn as_ref(&self) -> &Uuid {
         &self.uuid
     }
 }
 // ============================================================================
-impl<'a> AsRef<String> for Texture<'a> {
+impl<'a, 'b> AsRef<String> for Texture<'a, 'b> {
     fn as_ref(&self) -> &String {
         &self.name
     }
 }
 // ============================================================================
-impl<'a> IntoGraphics for Texture<'a> {
+impl<'a, 'b> IntoGraphics for Texture<'a, 'b> {
     type Target = GraphicsTexture;
-    type Param = &'a Manager<Image>;
+    type Param = (&'a GraphicsScene, &'b Manager<Image>);
     // ========================================================================
     fn into_graphics(
         self,
-        scene: &GraphicsScene,
-        images: Self::Param,
-    ) -> GraphicsResult<Self::Target> {
+        (scene, images): Self::Param,
+    ) -> GraphicsResult<(Self::Target, Self::Param)> {
         let image = {
             if let Some(x) = images.get(&self.image) {
                 Some(x)
@@ -98,7 +100,7 @@ impl<'a> IntoGraphics for Texture<'a> {
         .borrow();
         if let Image::File(ref img) = *image {
             match *img.as_dimension() {
-                2 => GraphicsTexture::open_2d(
+                2 => Ok((GraphicsTexture::open_2d(
                     *AsRef::<Uuid>::as_ref(&self),
                     AsRef::<String>::as_ref(&self).clone(),
                     self.wrap[0],
@@ -107,7 +109,7 @@ impl<'a> IntoGraphics for Texture<'a> {
                     self.filter[1],
                     self.mipmap,
                     AsRef::<PathBuf>::as_ref(img),
-                ),
+                )?, (scene, images))),
                 x => Err(Error::ImageDimension(
                     format!("lbf::Texture: into_graphics: image has invalid dimension {}", x)
                         .to_string()

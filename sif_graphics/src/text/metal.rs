@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/06/20
-//  @date 2018/05/16
+//  @date 2018/08/03
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -24,8 +24,8 @@ use super::Result;
 bitflags! {
     #[allow(missing_docs, unreachable_pub)]
     pub struct Flags: u32 {
-    #[allow(missing_docs, unreachable_pub)]
-    const DIRTY = 0b0000_0000_0000_0000_0000_0000_0001_0000u32;
+        #[allow(missing_docs, unreachable_pub)]
+        const DIRTY             = 0b0000_0000_0000_0000_0000_0000_0001_0000u32;
     }
 }
 // ////////////////////////////////////////////////////////////////////////////

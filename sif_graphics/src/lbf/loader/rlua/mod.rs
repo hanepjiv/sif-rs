@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/06/13
-//  @date 2018/08/01
+//  @date 2018/08/05
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -19,9 +19,8 @@ use sif_three::Armature;
 // ----------------------------------------------------------------------------
 use super::{
     super::{
-        super::{Camera, Image},
-        LBFLight, LBFMaterial, LBFMesh, LBFModel, LBFObject, LBFScene,
-        LBFTexture,
+        Animation, Camera, Image, LBFAnimationDriver, LBFLight, LBFMaterial,
+        LBFMesh, LBFModel, LBFObject, LBFScene, LBFTexture,
     },
     Error, Result,
 };
@@ -46,10 +45,10 @@ fn get_current(tbl: &Table) -> Result<Integer> {
 }
 // ============================================================================
 /// from_str
-pub(crate) fn from_str<'a>(
+pub(crate) fn from_str<'a, 'b>(
     path: impl AsRef<Path>,
     src: impl AsRef<str>,
-) -> Result<LBFScene<'a>> {
+) -> Result<LBFScene<'a, 'b>> {
     info!(
         "sif_graphics::lbf::loader::rlua::from_str({:?}, ...)",
         path.as_ref()
@@ -83,7 +82,11 @@ pub(crate) fn from_str<'a>(
     let models = Vec::<LBFModel>::from_lua(tbl.get("models")?)?;
     let lights = Vec::<LBFLight>::from_lua(tbl.get("lights")?)?;
     let cameras = Vec::<Camera>::from_lua(tbl.get("cameras")?)?;
+    let animations =
+        Vec::<Animation<GLfloat>>::from_lua(tbl.get("animations")?)?;
     let objects = Vec::<LBFObject>::from_lua(tbl.get("objects")?)?;
+    let animation_drivers =
+        Vec::<LBFAnimationDriver>::from_lua(tbl.get("animation_drivers")?)?;
 
     Ok(LBFScene {
         images,
@@ -94,6 +97,8 @@ pub(crate) fn from_str<'a>(
         models,
         lights,
         cameras,
+        animations,
         objects,
+        animation_drivers,
     })
 }

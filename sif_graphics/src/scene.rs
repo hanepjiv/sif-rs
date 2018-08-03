@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/27
-//  @date 2018/07/31
+//  @date 2018/08/05
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -17,8 +17,8 @@ use sif_manager::Manager;
 use sif_three::{Armature, Graph};
 // ----------------------------------------------------------------------------
 use super::{
-    Camera, Image, IntoGraphics, Light, Material, Mesh, Model, Object, Result,
-    Texture,
+    Animation, AnimationDriver, Camera, Image, IntoGraphics, Light, Material,
+    Mesh, Model, Object, Result, Texture,
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -43,8 +43,12 @@ pub struct Scene {
     lights: Manager<Light>,
     /// cameras
     cameras: Manager<Camera>,
+    /// animations
+    animations: Manager<Animation<GLfloat>>,
     /// objects
     objects: Manager<Object>,
+    /// animation_drivers
+    animation_drivers: Manager<AnimationDriver>,
 }
 // ============================================================================
 impl Scene {
@@ -61,7 +65,9 @@ impl Scene {
             models: Manager::default(),
             lights: Manager::default(),
             cameras: Manager::default(),
+            animations: Manager::default(),
             objects: Manager::default(),
+            animation_drivers: Manager::default(),
         })
     }
     // ------------------------------------------------------------------------
@@ -76,7 +82,9 @@ impl Scene {
         models: Manager<Model>,
         lights: Manager<Light>,
         cameras: Manager<Camera>,
+        animations: Manager<Animation<GLfloat>>,
         objects: Manager<Object>,
+        animation_drivers: Manager<AnimationDriver>,
     ) -> Result<Self> {
         Ok(Scene {
             graph,
@@ -88,7 +96,9 @@ impl Scene {
             models,
             lights,
             cameras,
+            animations,
             objects,
+            animation_drivers,
         })
     }
     // ========================================================================
@@ -138,7 +148,7 @@ impl Scene {
     }
     // ========================================================================
     /// fn append
-    pub fn append(&mut self, src: Self) -> Result<&mut Self> {
+    pub fn append(&mut self, src: &Self) -> Result<&mut Self> {
         src.graph
             .root()
             .as_ref()
@@ -171,28 +181,45 @@ impl Scene {
         for (_k, v) in src.cameras.iter() {
             let _ = self.cameras.insert_managed(v.clone())?;
         }
+        for (_k, v) in src.animations.iter() {
+            let _ = self.animations.insert_managed(v.clone())?;
+        }
         for (_k, v) in src.objects.iter() {
             let _ = self.objects.insert_managed(v.clone())?;
+        }
+        for (_k, v) in src.animation_drivers.iter() {
+            let _ = self.animation_drivers.insert_managed(v.clone())?;
         }
         Ok(self)
     }
     // ------------------------------------------------------------------------
     /// fn append_into_graphics
-    pub fn append_into_graphics(
-        &mut self,
-        src: impl IntoGraphics<Target = Scene, Param = GLint>,
+    pub fn append_into_graphics<'a>(
+        &'a mut self,
+        src: impl IntoGraphics<Target = Scene, Param = (&'a mut Scene, GLint)>,
         texture_size: GLint,
     ) -> Result<&mut Self> {
-        let src = src.into_graphics(self, texture_size)?;
-        self.append(src)
+        let (src, (slf, _)) = src.into_graphics((self, texture_size))?;
+        slf.append(&src)
     }
     // ========================================================================
+    /// fn elapsed
+    pub fn elapsed(&mut self, millisec: isize) -> Result<&mut Self> {
+        for (_, ref v) in self.animation_drivers.iter() {
+            let _ = v.as_ref().borrow_mut().elapsed(millisec)?;
+        }
+        Ok(self)
+    }
+    // ------------------------------------------------------------------------
     /// fn update
     pub fn update(&mut self) -> Result<&mut Self> {
-        self.graph.update();
-        for (ref mut _k, ref mut v) in self.objects.iter() {
+        for (_, ref v) in self.animation_drivers.iter() {
             let _ = v.as_ref().borrow_mut().update()?;
         }
+        for (_, ref v) in self.objects.iter() {
+            let _ = v.as_ref().borrow_mut().update()?;
+        }
+        self.graph.update();
         Ok(self)
     }
 }
@@ -305,6 +332,18 @@ impl AsMut<Manager<Camera>> for Scene {
     }
 }
 // ============================================================================
+impl AsRef<Manager<Animation<GLfloat>>> for Scene {
+    fn as_ref(&self) -> &Manager<Animation<GLfloat>> {
+        &self.animations
+    }
+}
+// ----------------------------------------------------------------------------
+impl AsMut<Manager<Animation<GLfloat>>> for Scene {
+    fn as_mut(&mut self) -> &mut Manager<Animation<GLfloat>> {
+        &mut self.animations
+    }
+}
+// ============================================================================
 impl AsRef<Manager<Object>> for Scene {
     fn as_ref(&self) -> &Manager<Object> {
         &self.objects
@@ -314,5 +353,17 @@ impl AsRef<Manager<Object>> for Scene {
 impl AsMut<Manager<Object>> for Scene {
     fn as_mut(&mut self) -> &mut Manager<Object> {
         &mut self.objects
+    }
+}
+// ============================================================================
+impl AsRef<Manager<AnimationDriver>> for Scene {
+    fn as_ref(&self) -> &Manager<AnimationDriver> {
+        &self.animation_drivers
+    }
+}
+// ----------------------------------------------------------------------------
+impl AsMut<Manager<AnimationDriver>> for Scene {
+    fn as_mut(&mut self) -> &mut Manager<AnimationDriver> {
+        &mut self.animation_drivers
     }
 }

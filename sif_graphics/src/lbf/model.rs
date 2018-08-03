@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/08/01
-//  @date 2018/08/01
+//  @date 2018/08/05
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -25,7 +25,7 @@ use super::{
 // ============================================================================
 /// struct Model
 #[derive(Debug, Clone)]
-pub struct Model<'a> {
+pub struct Model<'a, 'b> {
     /// uuid
     uuid: Uuid,
     /// name
@@ -38,20 +38,22 @@ pub struct Model<'a> {
     armature: Option<Uuid>,
     /// phantom
     phantom: PhantomData<&'a ()>,
+    /// phantom
+    phantom1: PhantomData<&'b ()>,
 }
 // ============================================================================
-impl<'a> AsRef<Uuid> for Model<'a> {
+impl<'a, 'b> AsRef<Uuid> for Model<'a, 'b> {
     fn as_ref(&self) -> &Uuid {
         &self.uuid
     }
 }
 // ============================================================================
-impl<'a> AsRef<String> for Model<'a> {
+impl<'a, 'b> AsRef<String> for Model<'a, 'b> {
     fn as_ref(&self) -> &String {
         &self.name
     }
 }
-impl<'a> Model<'a> {
+impl<'a, 'b> Model<'a, 'b> {
     // ========================================================================
     /// fn new
     pub(crate) fn new(
@@ -68,23 +70,24 @@ impl<'a> Model<'a> {
             materials,
             armature,
             phantom: PhantomData::default(),
+            phantom1: PhantomData::default(),
         })
     }
 }
 // ============================================================================
-impl<'a> IntoGraphics for Model<'a> {
+impl<'a, 'b> IntoGraphics for Model<'a, 'b> {
     type Target = GraphicsModel;
     type Param = (
-        &'a Manager<GraphicsMesh>,
-        &'a Manager<GraphicsMaterial>,
-        &'a Manager<Armature<GLfloat>>,
+        &'a GraphicsScene,
+        &'b Manager<GraphicsMesh>,
+        &'b Manager<GraphicsMaterial>,
+        &'b Manager<Armature<GLfloat>>,
     );
     // ========================================================================
     fn into_graphics(
         self,
-        scene: &GraphicsScene,
-        (meshes, materials, armatures): Self::Param,
-    ) -> GraphicsResult<Self::Target> {
+        (scene, meshes, materials, armatures): Self::Param,
+    ) -> GraphicsResult<(Self::Target, Self::Param)> {
         let mut new_meshes = Vec::new();
         for uuid in self.meshes {
             if let Some(mesh) = {
@@ -148,12 +151,15 @@ impl<'a> IntoGraphics for Model<'a> {
             None
         };
 
-        Ok(GraphicsModel::build(
-            self.uuid,
-            self.name,
-            new_meshes,
-            new_materials,
-            new_armature,
+        Ok((
+            GraphicsModel::build(
+                self.uuid,
+                self.name,
+                new_meshes,
+                new_materials,
+                new_armature,
+            ),
+            (scene, meshes, materials, armatures),
         ))
     }
 }

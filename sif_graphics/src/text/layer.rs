@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/27
-//  @date 2018/06/22
+//  @date 2018/08/03
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -25,11 +25,27 @@ use super::{
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
+/// mod private
+mod private {
+    /// trait SealedLayerAppend
+    pub trait SealedLayerAppend {}
+    impl SealedLayerAppend for char {}
+    impl SealedLayerAppend for str {}
+    impl SealedLayerAppend for String {}
+}
+// ////////////////////////////////////////////////////////////////////////////
+// ============================================================================
 /// trait LayerAppend
-pub trait LayerAppend: ::std::fmt::Debug {
+pub trait LayerAppend: private::SealedLayerAppend + ::std::fmt::Debug {
     // ========================================================================
     /// append
     fn append(&self, layer: &mut Layer);
+}
+// ============================================================================
+impl LayerAppend for char {
+    fn append(&self, layer: &mut Layer) {
+        layer.append_char(*self)
+    }
 }
 // ============================================================================
 impl LayerAppend for str {
@@ -41,12 +57,6 @@ impl LayerAppend for str {
 impl LayerAppend for String {
     fn append(&self, layer: &mut Layer) {
         layer.append_str(self)
-    }
-}
-// ============================================================================
-impl LayerAppend for char {
-    fn append(&self, layer: &mut Layer) {
-        layer.append_char(*self)
     }
 }
 // ////////////////////////////////////////////////////////////////////////////
@@ -213,7 +223,8 @@ impl<'a, 'b> Layer<'a, 'b> {
                                     self.shift * cos,
                                     self.shift * sin,
                                     -::std::f32::EPSILON.sqrt(),
-                                ) * *m0),
+                                )
+                                * *m0),
                         );
                     }
                     let _ = font.draw(

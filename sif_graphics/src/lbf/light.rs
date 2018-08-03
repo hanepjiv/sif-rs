@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/06/13
-//  @date 2018/08/01
+//  @date 2018/08/05
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -17,7 +17,7 @@ use sif_math::Vector3;
 // ----------------------------------------------------------------------------
 use super::{
     super::{LightFlags, Shadow},
-    GraphicsLight, GraphicsResult, GraphicsScene, IntoGraphics,
+    GraphicsLight, GraphicsResult, IntoGraphics,
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -77,23 +77,25 @@ impl IntoGraphics for Light {
     // ========================================================================
     fn into_graphics(
         self,
-        _scene: &GraphicsScene,
         texture_size: Self::Param,
-    ) -> GraphicsResult<Self::Target> {
-        GraphicsLight::new(
-            self.uuid,
-            self.name,
-            self.color,
-            self.kcklkq,
-            self.intensity,
-            self.exponent,
-            self.cutoff,
-            if self.flags.contains(LightFlags::SHADOW) {
-                Some(Shadow::new(texture_size, texture_size)?)
-            } else {
-                None
-            },
-            self.flags,
-        )
+    ) -> GraphicsResult<(Self::Target, Self::Param)> {
+        Ok((
+            GraphicsLight::new(
+                self.uuid,
+                self.name,
+                self.color,
+                self.kcklkq,
+                self.intensity,
+                self.exponent,
+                self.cutoff,
+                if self.flags.contains(LightFlags::SHADOW) {
+                    Some(Shadow::new(texture_size, texture_size)?)
+                } else {
+                    None
+                },
+                self.flags,
+            )?,
+            texture_size,
+        ))
     }
 }

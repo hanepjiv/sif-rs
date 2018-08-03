@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/08
-//  @date 2018/05/12
+//  @date 2018/08/03
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -24,6 +24,7 @@ pub trait Number:
     + ::std::ops::Div
     + ::std::ops::DivAssign
     + ::num::Float
+    + ::num::cast::ToPrimitive
 {
 }
 // ============================================================================
@@ -40,4 +41,5 @@ impl<T> Number for T where
         + ::std::ops::Div
         + ::std::ops::DivAssign
         + ::num::Float
+        + ::num::cast::ToPrimitive
 {}

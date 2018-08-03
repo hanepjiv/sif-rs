@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/27
-//  @date 2018/06/22
+//  @date 2018/08/03
 
 // ////////////////////////////////////////////////////////////////////////////
 // const  =====================================================================
@@ -33,11 +33,27 @@ use super::{
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
+/// mod private
+mod private {
+    /// trait SealedFontReserve
+    pub trait SealedFontReserve {}
+    impl SealedFontReserve for char {}
+    impl SealedFontReserve for str {}
+    impl SealedFontReserve for String {}
+}
+// ////////////////////////////////////////////////////////////////////////////
+// ============================================================================
 /// trait FontReserve
-pub trait FontReserve: ::std::fmt::Debug {
+pub trait FontReserve: private::SealedFontReserve + ::std::fmt::Debug {
     // ========================================================================
     /// reserve
     fn reserve(&self, layer: &mut Font);
+}
+// ============================================================================
+impl FontReserve for char {
+    fn reserve(&self, layer: &mut Font) {
+        layer.reserve_char(*self)
+    }
 }
 // ============================================================================
 impl FontReserve for str {
@@ -49,12 +65,6 @@ impl FontReserve for str {
 impl FontReserve for String {
     fn reserve(&self, layer: &mut Font) {
         layer.reserve_str(self)
-    }
-}
-// ============================================================================
-impl FontReserve for char {
-    fn reserve(&self, layer: &mut Font) {
-        layer.reserve_char(*self)
     }
 }
 // ////////////////////////////////////////////////////////////////////////////
@@ -200,10 +210,9 @@ impl<'a, 'b> Font<'a, 'b> {
         while let Some(ref c) = self.added.pop() {
             let mut s = String::new();
             s.push(*c);
-            let surface = self
-                .ttf_font
-                .render(&s)
-                .blended(::sdl2::pixels::Color::RGBA(0xFF, 0xFF, 0xFF, 0xFF))?;
+            let surface = self.ttf_font.render(&s).blended(
+                ::sdl2::pixels::Color::RGBA(0xFF, 0xFF, 0xFF, 0xFF),
+            )?;
             let rect = surface.rect();
 
             if self.width < (self.cursor.0 + rect.width() as GLsizei + PADDING)
@@ -228,8 +237,7 @@ impl<'a, 'b> Font<'a, 'b> {
                             "graphics::text::font::update: self.textures.last"
                                 .to_string(),
                         )
-                    })?
-                    .sub_image_2d(
+                    })?.sub_image_2d(
                         0,
                         self.cursor.0,
                         self.cursor.1,
@@ -253,7 +261,8 @@ impl<'a, 'b> Font<'a, 'b> {
                 glyph.coords = [
                     [
                         (self.cursor.0 as GLfloat) / self.width as GLfloat,
-                        ((self.cursor.1 as GLfloat + rect.height() as GLfloat)
+                        ((self.cursor.1 as GLfloat
+                            + rect.height() as GLfloat)
                             / self.height as GLfloat),
                     ],
                     [

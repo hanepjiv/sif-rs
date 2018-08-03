@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/06/13
-//  @date 2018/08/01
+//  @date 2018/08/05
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -19,14 +19,14 @@ use sif_manager::{ManagedValue, Manager};
 use sif_three::{Graph, Node, NodeHolder, Pose, TraRotSca};
 // ----------------------------------------------------------------------------
 use super::{
-    Error, GraphicsCamera, GraphicsLight, GraphicsModel, GraphicsObject,
+    Camera, Error, GraphicsLight, GraphicsModel, GraphicsObject,
     GraphicsResult, GraphicsScene, IntoGraphics, ObjectData,
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Object
 #[derive(Debug, Clone)]
-pub struct Object<'a> {
+pub struct Object<'a, 'b> {
     /// uuid
     pub uuid: Uuid,
     /// name
@@ -39,11 +39,13 @@ pub struct Object<'a> {
     pub data_uuid: Option<Uuid>,
     /// trarotsca
     pub trarotsca: TraRotSca<GLfloat>,
-    /// phantom
-    phantom: PhantomData<&'a ()>,
+    /// phantom0
+    phantom0: PhantomData<&'a ()>,
+    /// phantom1
+    phantom1: PhantomData<&'b ()>,
 }
 // ============================================================================
-impl<'a> Object<'a> {
+impl<'a, 'b> Object<'a, 'b> {
     // ========================================================================
     /// new
     pub fn new(
@@ -61,37 +63,38 @@ impl<'a> Object<'a> {
             data_type: data_type.into(),
             data_uuid,
             trarotsca,
-            phantom: PhantomData::default(),
+            phantom0: PhantomData::default(),
+            phantom1: PhantomData::default(),
         }
     }
 }
 // ============================================================================
-impl<'a> AsRef<Uuid> for Object<'a> {
+impl<'a, 'b> AsRef<Uuid> for Object<'a, 'b> {
     fn as_ref(&self) -> &Uuid {
         &self.uuid
     }
 }
 // ============================================================================
-impl<'a> AsRef<String> for Object<'a> {
+impl<'a, 'b> AsRef<String> for Object<'a, 'b> {
     fn as_ref(&self) -> &String {
         &self.name
     }
 }
 // ============================================================================
-impl<'a> IntoGraphics for Object<'a> {
+impl<'a, 'b> IntoGraphics for Object<'a, 'b> {
     type Target = GraphicsObject;
     type Param = (
-        &'a mut Graph<GLfloat>,
-        &'a Manager<GraphicsModel>,
-        &'a Manager<GraphicsLight>,
-        &'a Manager<GraphicsCamera>,
+        &'a GraphicsScene,
+        &'b mut Graph<GLfloat>,
+        &'b Manager<GraphicsModel>,
+        &'b Manager<GraphicsLight>,
+        &'b Manager<Camera>,
     );
     // ========================================================================
     fn into_graphics(
         self,
-        scene: &GraphicsScene,
-        (graph, models, lights, cameras): Self::Param,
-    ) -> GraphicsResult<Self::Target> {
+        (scene, graph, models, lights, cameras): Self::Param,
+    ) -> GraphicsResult<(Self::Target, Self::Param)> {
         if let Some(mut obj) = match self.data_type.as_str() {
             "EMPTY" | "ARMATURE" => Some(GraphicsObject::new(
                 *AsRef::<Uuid>::as_ref(&self),
@@ -144,8 +147,7 @@ impl<'a> IntoGraphics for Object<'a> {
                     if let Some(x) = cameras.get(uuid) {
                         Some(x)
                     } else {
-                        AsRef::<Manager<GraphicsCamera>>::as_ref(scene)
-                            .get(uuid)
+                        AsRef::<Manager<Camera>>::as_ref(scene).get(uuid)
                     }
                 }.map(|m| {
                     GraphicsObject::new(
@@ -178,12 +180,12 @@ impl<'a> IntoGraphics for Object<'a> {
             {
                 let mut m = node.as_ref().borrow_mut();
                 let trs = AsMut::<TraRotSca<GLfloat>>::as_mut(&mut *m);
-                trs.translation = self.trarotsca.translation;
-                trs.rotation = self.trarotsca.rotation;
-                trs.scaling = self.trarotsca.scaling;
+                trs.translate = self.trarotsca.translate;
+                trs.rotate = self.trarotsca.rotate;
+                trs.scale = self.trarotsca.scale;
             }
             obj.set_node(Some(node));
-            Ok(obj)
+            Ok((obj, (scene, graph, models, lights, cameras)))
         } else {
             Err(Error::Object(
                 format!(

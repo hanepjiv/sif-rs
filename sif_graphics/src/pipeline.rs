@@ -564,9 +564,9 @@ impl Pipeline {
                     let _ = self
                         .set_matrix4("u_Mat4_Model", n.as_matrix())?
                         .set_matrix4(
-                            "u_Mat4_ViewModel",
-                            &(view * *n.as_matrix()),
-                        )?;
+                        "u_Mat4_ViewModel",
+                        &(view * *n.as_matrix()),
+                    )?;
                 }
                 obj.draw(&self.program)?;
             }

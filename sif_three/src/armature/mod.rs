@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/23
-//  @date 2018/06/18
+//  @date 2018/08/03
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -48,8 +48,9 @@ where
     pub fn new(
         uuid: Uuid,
         name: impl Into<String>,
-        bones: Vec<Bone<V>>,
+        mut bones: Vec<Bone<V>>,
     ) -> Self {
+        bones.shrink_to_fit();
         Armature {
             uuid,
             name: name.into(),

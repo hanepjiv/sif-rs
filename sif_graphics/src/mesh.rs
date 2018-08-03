@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2018/08/01
+//  @date 2018/08/02
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -287,7 +287,7 @@ impl Mesh {
     pub fn draw(
         &mut self,
         prog: &Program,
-        materials: &Vec<ManagedValue<Material>>,
+        materials: &[ManagedValue<Material>],
     ) -> Result<()> {
         self.check_draw()?;
         if self.offsets.check(Element::POSITION) {
@@ -318,7 +318,7 @@ impl Mesh {
     pub fn draw_silhouette(
         &mut self,
         prog: &Program,
-        materials: &Vec<ManagedValue<Material>>,
+        materials: &[ManagedValue<Material>],
     ) -> Result<()> {
         self.check_draw()?;
         if self.offsets.check(Element::POSITION) {

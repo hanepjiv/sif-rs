@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/23
-//  @date 2018/08/01
+//  @date 2018/08/04
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -31,23 +31,12 @@ use super::{
 pub enum ObjectData {
     /// Empty
     Empty,
-    /// Armature
-    Armature(ManagedValue<Armature<GLfloat>>), // UNUSED
     /// Model
     Model(ManagedValue<Model>, Option<Pose<GLfloat>>),
     /// Light
     Light(ManagedValue<Light>),
     /// Camera
     Camera(ManagedValue<Camera>),
-}
-// ============================================================================
-impl AsRef<RefCell<Armature<GLfloat>>> for ObjectData {
-    fn as_ref(&self) -> &RefCell<Armature<GLfloat>> {
-        match *self {
-            ObjectData::Armature(ref managed) => managed.as_ref(),
-            _ => panic!("AsRef<RefCell<Armature<GLfloat>>> for ObjectData"),
-        }
-    }
 }
 // ============================================================================
 impl AsRef<RefCell<Model>> for ObjectData {
@@ -96,14 +85,6 @@ impl AsRef<RefCell<Camera>> for ObjectData {
 }
 // ============================================================================
 impl ObjectData {
-    // ========================================================================
-    /// fn is_armature
-    pub fn is_armature(&self) -> bool {
-        match *self {
-            ObjectData::Armature(_) => true,
-            _ => false,
-        }
-    }
     // ========================================================================
     /// fn is_model
     pub fn is_model(&self) -> bool {
@@ -161,6 +142,12 @@ impl AsRef<ObjectData> for Object {
         &self.object_data
     }
 }
+// ----------------------------------------------------------------------------
+impl AsMut<ObjectData> for Object {
+    fn as_mut(&mut self) -> &mut ObjectData {
+        &mut self.object_data
+    }
+}
 // ============================================================================
 impl AsNodeHolder for Object {
     // ========================================================================
@@ -183,12 +170,6 @@ impl AsRef<RefCell<Light>> for Object {
 // ----------------------------------------------------------------------------
 impl AsRef<RefCell<Camera>> for Object {
     fn as_ref(&self) -> &RefCell<Camera> {
-        self.object_data.as_ref()
-    }
-}
-// ----------------------------------------------------------------------------
-impl AsRef<RefCell<Armature<GLfloat>>> for Object {
-    fn as_ref(&self) -> &RefCell<Armature<GLfloat>> {
         self.object_data.as_ref()
     }
 }
@@ -235,11 +216,6 @@ impl Object {
     /// fn is_camera
     pub fn is_camera(&self) -> bool {
         self.object_data.is_camera()
-    }
-    // ========================================================================
-    /// fn is_armature
-    pub fn is_armature(&self) -> bool {
-        self.object_data.is_armature()
     }
     // ========================================================================
     /// fn is_model
@@ -296,10 +272,13 @@ impl Object {
             self.object_data
         {
             let model = managed_model.as_ref().borrow();
-            let managed_armature =
-                AsRef::<ManagedValue<Armature<GLfloat>>>::as_ref(&*model);
-            let armature = managed_armature.as_ref().borrow();
-            let _ = armature.update(pose)?;
+            if let Some(managed_armature) = AsRef::<
+                Option<ManagedValue<Armature<GLfloat>>>,
+            >::as_ref(&*model)
+            {
+                let armature = managed_armature.as_ref().borrow();
+                let _ = armature.update(pose)?;
+            }
         }
         Ok(self)
     }

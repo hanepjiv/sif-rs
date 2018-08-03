@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/19
-//  @date 2018/08/01
+//  @date 2018/08/03
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -71,23 +71,9 @@ impl AsMut<Vec<ManagedValue<Material>>> for Model {
     }
 }
 // ============================================================================
-impl AsRef<ManagedValue<Armature<GLfloat>>> for Model {
-    fn as_ref(&self) -> &ManagedValue<Armature<GLfloat>> {
-        if let Some(ref result) = self.armature {
-            result
-        } else {
-            panic!("AsRef<Armature<GLfloat>> for Model");
-        }
-    }
-}
-// ----------------------------------------------------------------------------
-impl AsMut<ManagedValue<Armature<GLfloat>>> for Model {
-    fn as_mut(&mut self) -> &mut ManagedValue<Armature<GLfloat>> {
-        if let Some(ref mut result) = self.armature {
-            result
-        } else {
-            panic!("AsRef<Armature<GLfloat>> for Model");
-        }
+impl AsRef<Option<ManagedValue<Armature<GLfloat>>>> for Model {
+    fn as_ref(&self) -> &Option<ManagedValue<Armature<GLfloat>>> {
+        &self.armature
     }
 }
 // ============================================================================
@@ -134,7 +120,7 @@ impl Model {
     fn draw_impl(
         &mut self,
         prog: &Program,
-        mut func: impl FnMut(&mut Mesh, &Program, &Vec<ManagedValue<Material>>)
+        mut func: impl FnMut(&mut Mesh, &Program, &[ManagedValue<Material>])
             -> Result<()>,
     ) -> Result<()> {
         for managed in &self.meshes {

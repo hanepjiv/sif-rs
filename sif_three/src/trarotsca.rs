@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/04/10
-//  @date 2018/06/21
+//  @date 2018/08/04
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -17,6 +17,18 @@ use sif_math::{Matrix4x4, Number, Quaternion, Vector3, Vector4};
 use super::{Error, Result};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
+/// enum TraRotScaType
+#[derive(Debug, Clone, Copy, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub enum TraRotScaType {
+    /// Translate
+    Translate,
+    /// Rotate
+    Rotate,
+    /// Scale
+    Scale,
+}
+// ////////////////////////////////////////////////////////////////////////////
+// ============================================================================
 /// struct TraRotSca
 #[derive(Debug, Clone)]
 pub struct TraRotSca<V>
@@ -24,12 +36,12 @@ where
     V: Number,
 {
     // ------------------------------------------------------------------------
-    /// rotation
-    pub rotation: Quaternion<V>,
-    /// translation
-    pub translation: Vector3<V>,
-    /// scaling
-    pub scaling: Vector3<V>,
+    /// rotate
+    pub rotate: Quaternion<V>,
+    /// translate
+    pub translate: Vector3<V>,
+    /// scale
+    pub scale: Vector3<V>,
 }
 // ============================================================================
 impl<V> Default for TraRotSca<V>
@@ -39,9 +51,9 @@ where
     // ========================================================================
     fn default() -> Self {
         TraRotSca {
-            translation: Vector3::<V>::new(V::zero(), V::zero(), V::zero()),
-            rotation: Quaternion::<V>::default(),
-            scaling: Vector3::<V>::new(V::one(), V::one(), V::one()),
+            translate: Vector3::<V>::new(V::zero(), V::zero(), V::zero()),
+            rotate: Quaternion::<V>::default(),
+            scale: Vector3::<V>::new(V::one(), V::one(), V::one()),
         }
     }
 }
@@ -53,46 +65,46 @@ where
     // ========================================================================
     /// new
     pub fn new(
-        translation: Vector3<V>,
-        rotation: Quaternion<V>,
-        scaling: Vector3<V>,
+        translate: Vector3<V>,
+        rotate: Quaternion<V>,
+        scale: Vector3<V>,
     ) -> Self {
         TraRotSca {
-            rotation,
-            translation,
-            scaling,
+            rotate,
+            translate,
+            scale,
         }
     }
     // ========================================================================
     /// matrix
     pub fn matrix(&self) -> Matrix4x4<V> {
         new_mat4_trarotsca(
-            self.translation[0],
-            self.translation[1],
-            self.translation[2],
-            self.rotation[0],
-            self.rotation[1],
-            self.rotation[2],
-            self.rotation[3],
-            self.scaling[0],
-            self.scaling[1],
-            self.scaling[2],
+            self.translate[0],
+            self.translate[1],
+            self.translate[2],
+            self.rotate[0],
+            self.rotate[1],
+            self.rotate[2],
+            self.rotate[3],
+            self.scale[0],
+            self.scale[1],
+            self.scale[2],
         )
     }
     // ------------------------------------------------------------------------
     /// inverse_matrix
     pub fn inverse_matrix(&self) -> Matrix4x4<V> {
         new_mat4_inverse_trarotsca(
-            self.translation[0],
-            self.translation[1],
-            self.translation[2],
-            self.rotation[0],
-            self.rotation[1],
-            self.rotation[2],
-            self.rotation[3],
-            self.scaling[0],
-            self.scaling[1],
-            self.scaling[2],
+            self.translate[0],
+            self.translate[1],
+            self.translate[2],
+            self.rotate[0],
+            self.rotate[1],
+            self.rotate[2],
+            self.rotate[3],
+            self.scale[0],
+            self.scale[1],
+            self.scale[2],
         )
     }
 }

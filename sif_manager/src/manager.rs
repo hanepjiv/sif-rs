@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/02/27
-//  @date 2018/07/31
+//  @date 2018/08/06
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -111,22 +111,16 @@ pub type ManagerIterMut<'a, T> = btree_map::IterMut<'a, Uuid, ManagedValue<T>>;
 // ============================================================================
 /// struct Manager
 #[derive(Debug, Clone)]
-pub struct Manager<T>
+pub struct Manager<T>(BTreeMap<Uuid, ManagedValue<T>>)
 where
-    T: Debug + AsRef<Uuid>,
-{
-    /// map
-    map: BTreeMap<Uuid, ManagedValue<T>>,
-}
+    T: Debug + AsRef<Uuid>;
 // ============================================================================
 impl<T> Default for Manager<T>
 where
     T: Debug + AsRef<Uuid>,
 {
     fn default() -> Self {
-        Manager {
-            map: BTreeMap::<Uuid, ManagedValue<T>>::default(),
-        }
+        Manager(BTreeMap::<Uuid, ManagedValue<T>>::default())
     }
 }
 // ============================================================================
@@ -137,18 +131,18 @@ where
     // ========================================================================
     /// iter
     pub fn iter(&self) -> ManagerIter<T> {
-        self.map.iter()
+        self.0.iter()
     }
     // ------------------------------------------------------------------------
     /// iter_mut
     pub fn iter_mut(&mut self) -> ManagerIterMut<T> {
-        self.map.iter_mut()
+        self.0.iter_mut()
     }
     // ========================================================================
     /// insert
     pub fn insert(&mut self, x: T) -> Result<Uuid> {
         let uuid: Uuid = *x.as_ref();
-        if let Some(prev) = self.map.insert(uuid, ManagedValue::new(x)) {
+        if let Some(prev) = self.0.insert(uuid, ManagedValue::new(x)) {
             Err(Error::Insert(*prev.as_ref().borrow().as_ref()))
         } else {
             Ok(uuid)
@@ -158,7 +152,7 @@ where
     /// insert_managed
     pub fn insert_managed(&mut self, x: ManagedValue<T>) -> Result<Uuid> {
         let uuid: Uuid = *x.as_ref().borrow().as_ref();
-        if let Some(prev) = self.map.insert(uuid, x) {
+        if let Some(prev) = self.0.insert(uuid, x) {
             Err(Error::Insert(*prev.as_ref().borrow().as_ref()))
         } else {
             Ok(uuid)
@@ -171,7 +165,7 @@ where
         Uuid: Borrow<U>,
         U: ?Sized + Hash + Ord,
     {
-        self.map.get(uuid)
+        self.0.get(uuid)
     }
     // ========================================================================
     /// remove
@@ -180,7 +174,7 @@ where
         Uuid: Borrow<U>,
         U: ?Sized + Hash + Ord,
     {
-        self.map.remove(uuid)
+        self.0.remove(uuid)
     }
     // ========================================================================
     /// contains_key
@@ -189,7 +183,7 @@ where
         Uuid: Borrow<U>,
         U: ?Sized + Hash + Ord,
     {
-        self.map.contains_key(uuid)
+        self.0.contains_key(uuid)
     }
 }
 // ============================================================================

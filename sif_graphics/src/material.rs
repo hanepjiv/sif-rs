@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2018/08/01
+//  @date 2018/08/02
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -228,8 +228,12 @@ impl Material {
                     Program::set_uniform1i(loc_is_map[i], 0)?;
                 }
             }
-            for i in self.textures.len()..MATERIAL_MAX_TEXTURE {
-                Program::set_uniform1i(loc_is_map[i], 0)?;
+            for loc in loc_is_map
+                .iter()
+                .take(MATERIAL_MAX_TEXTURE)
+                .skip(self.textures.len())
+            {
+                Program::set_uniform1i(*loc, 0)?;
             }
         }
 

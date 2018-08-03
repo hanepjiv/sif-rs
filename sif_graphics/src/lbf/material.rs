@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/08/01
-//  @date 2018/08/01
+//  @date 2018/08/05
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -25,7 +25,7 @@ use super::{
 // ////////////////////////////////////////////////////////////////////////////
 /// struct Material
 #[derive(Debug, Clone)]
-pub(crate) struct Material<'a> {
+pub(crate) struct Material<'a, 'b> {
     /// uuid
     uuid: Uuid,
     /// name
@@ -46,23 +46,25 @@ pub(crate) struct Material<'a> {
     alpha: GLfloat,
     /// flags
     flags: Flags,
-    /// phantom
-    phantom: PhantomData<&'a ()>,
+    /// phantom0
+    phantom0: PhantomData<&'a ()>,
+    /// phantom1
+    phantom1: PhantomData<&'b ()>,
 }
 // ============================================================================
-impl<'a> AsRef<Uuid> for Material<'a> {
+impl<'a, 'b> AsRef<Uuid> for Material<'a, 'b> {
     fn as_ref(&self) -> &Uuid {
         &self.uuid
     }
 }
 // ============================================================================
-impl<'a> AsRef<String> for Material<'a> {
+impl<'a, 'b> AsRef<String> for Material<'a, 'b> {
     fn as_ref(&self) -> &String {
         &self.name
     }
 }
 // ============================================================================
-impl<'a> Material<'a> {
+impl<'a, 'b> Material<'a, 'b> {
     /// fn new
     pub(crate) fn new(
         uuid: Uuid,
@@ -87,20 +89,20 @@ impl<'a> Material<'a> {
             shininess,
             alpha,
             flags,
-            phantom: PhantomData::default(),
+            phantom0: PhantomData::default(),
+            phantom1: PhantomData::default(),
         }
     }
 }
 // ============================================================================
-impl<'a> IntoGraphics for Material<'a> {
+impl<'a, 'b> IntoGraphics for Material<'a, 'b> {
     type Target = GraphicsMaterial;
-    type Param = &'a Manager<GraphicsTexture>;
+    type Param = (&'a GraphicsScene, &'b Manager<GraphicsTexture>);
     // ========================================================================
     fn into_graphics(
         self,
-        scene: &GraphicsScene,
-        textures: Self::Param,
-    ) -> GraphicsResult<Self::Target> {
+        (scene, textures): Self::Param,
+    ) -> GraphicsResult<(Self::Target, Self::Param)> {
         let mut new_textures = Vec::new();
         for i in self.textures {
             if let Some(ref uuid) = i {
@@ -125,17 +127,20 @@ impl<'a> IntoGraphics for Material<'a> {
                 new_textures.push(None);
             }
         }
-        Ok(GraphicsMaterial::build(
-            self.uuid,
-            self.name,
-            new_textures,
-            self.parallax,
-            self.diffuse,
-            self.specular,
-            self.emissive,
-            self.shininess,
-            self.alpha,
-            self.flags,
+        Ok((
+            GraphicsMaterial::build(
+                self.uuid,
+                self.name,
+                new_textures,
+                self.parallax,
+                self.diffuse,
+                self.specular,
+                self.emissive,
+                self.shininess,
+                self.alpha,
+                self.flags,
+            ),
+            (scene, textures),
         ))
     }
 }

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/02
-//  @date 2018/08/01
+//  @date 2018/08/05
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -19,22 +19,25 @@ use sif_manager::Manager;
 use sif_three::{Armature, Graph};
 // ----------------------------------------------------------------------------
 use super::{
-    Camera as GraphicsCamera, Image, IntoGraphics, Light as GraphicsLight,
-    Material as GraphicsMaterial, MaterialFlags, Mesh as GraphicsMesh,
-    Model as GraphicsModel, Object as GraphicsObject, ObjectData,
-    Result as GraphicsResult, Scene as GraphicsScene,
+    Animation, AnimationDriver as GraphicsAnimationDriver, Camera, Curve,
+    CurveType, Image, Interpolation, IntoGraphics, Keyframe,
+    Light as GraphicsLight, Material as GraphicsMaterial, MaterialFlags,
+    Mesh as GraphicsMesh, Model as GraphicsModel, Object as GraphicsObject,
+    ObjectData, Result as GraphicsResult, Scene as GraphicsScene,
     Texture as GraphicsTexture,
 };
 // ============================================================================
 pub use self::error::{Error, Result};
 // ----------------------------------------------------------------------------
 use self::{
-    light::Light as LBFLight, material::Material as LBFMaterial,
-    mesh::Mesh as LBFMesh, model::Model as LBFModel,
-    object::Object as LBFObject, polygon::Flags as LBFPolygonFlags,
-    polygon::Polygon as LBFPolygon, texture::Texture as LBFTexture,
+    animation_driver::Driver as LBFAnimationDriver, light::Light as LBFLight,
+    material::Material as LBFMaterial, mesh::Mesh as LBFMesh,
+    model::Model as LBFModel, object::Object as LBFObject,
+    polygon::Flags as LBFPolygonFlags, polygon::Polygon as LBFPolygon,
+    texture::Texture as LBFTexture,
 };
 // mod  =======================================================================
+mod animation_driver;
 pub mod error;
 mod light;
 mod loader;
@@ -48,136 +51,32 @@ mod texture;
 // ============================================================================
 /// struct LBFScene
 #[derive(Debug, Default, Clone)]
-pub struct LBFScene<'a> {
+pub struct LBFScene<'a, 'b> {
     /// images
     images: Vec<Image>,
     /// textures
-    textures: Vec<LBFTexture<'a>>,
+    textures: Vec<LBFTexture<'a, 'b>>,
     /// materials
-    materials: Vec<LBFMaterial<'a>>,
+    materials: Vec<LBFMaterial<'a, 'b>>,
     /// meshes
     meshes: Vec<LBFMesh>,
     /// armatures
     armatures: Vec<Armature<GLfloat>>,
     /// models
-    models: Vec<LBFModel<'a>>,
+    models: Vec<LBFModel<'a, 'b>>,
     /// lights
     lights: Vec<LBFLight>,
     /// cameras
-    cameras: Vec<GraphicsCamera>,
+    cameras: Vec<Camera>,
+    /// animations
+    animations: Vec<Animation<GLfloat>>,
     /// objects
-    objects: Vec<LBFObject<'a>>,
+    objects: Vec<LBFObject<'a, 'b>>,
+    /// animation_drivers
+    animation_drivers: Vec<LBFAnimationDriver<'a, 'b>>,
 }
 // ============================================================================
-impl<'a> AsRef<Vec<Image>> for LBFScene<'a> {
-    fn as_ref(&self) -> &Vec<Image> {
-        &self.images
-    }
-}
-// ----------------------------------------------------------------------------
-impl<'a> AsMut<Vec<Image>> for LBFScene<'a> {
-    fn as_mut(&mut self) -> &mut Vec<Image> {
-        &mut self.images
-    }
-}
-// ============================================================================
-impl<'a> AsRef<Vec<LBFTexture<'a>>> for LBFScene<'a> {
-    fn as_ref(&self) -> &Vec<LBFTexture<'a>> {
-        &self.textures
-    }
-}
-// ----------------------------------------------------------------------------
-impl<'a> AsMut<Vec<LBFTexture<'a>>> for LBFScene<'a> {
-    fn as_mut(&mut self) -> &mut Vec<LBFTexture<'a>> {
-        &mut self.textures
-    }
-}
-// ============================================================================
-impl<'a> AsRef<Vec<LBFMaterial<'a>>> for LBFScene<'a> {
-    fn as_ref(&self) -> &Vec<LBFMaterial<'a>> {
-        &self.materials
-    }
-}
-// ----------------------------------------------------------------------------
-impl<'a> AsMut<Vec<LBFMaterial<'a>>> for LBFScene<'a> {
-    fn as_mut(&mut self) -> &mut Vec<LBFMaterial<'a>> {
-        &mut self.materials
-    }
-}
-// ============================================================================
-impl<'a> AsRef<Vec<LBFMesh>> for LBFScene<'a> {
-    fn as_ref(&self) -> &Vec<LBFMesh> {
-        &self.meshes
-    }
-}
-// ----------------------------------------------------------------------------
-impl<'a> AsMut<Vec<LBFMesh>> for LBFScene<'a> {
-    fn as_mut(&mut self) -> &mut Vec<LBFMesh> {
-        &mut self.meshes
-    }
-}
-// ============================================================================
-impl<'a> AsRef<Vec<Armature<GLfloat>>> for LBFScene<'a> {
-    fn as_ref(&self) -> &Vec<Armature<GLfloat>> {
-        &self.armatures
-    }
-}
-// ----------------------------------------------------------------------------
-impl<'a> AsMut<Vec<Armature<GLfloat>>> for LBFScene<'a> {
-    fn as_mut(&mut self) -> &mut Vec<Armature<GLfloat>> {
-        &mut self.armatures
-    }
-}
-// ============================================================================
-impl<'a> AsRef<Vec<LBFModel<'a>>> for LBFScene<'a> {
-    fn as_ref(&self) -> &Vec<LBFModel<'a>> {
-        &self.models
-    }
-}
-// ----------------------------------------------------------------------------
-impl<'a> AsMut<Vec<LBFModel<'a>>> for LBFScene<'a> {
-    fn as_mut(&mut self) -> &mut Vec<LBFModel<'a>> {
-        &mut self.models
-    }
-}
-// ============================================================================
-impl<'a> AsRef<Vec<LBFLight>> for LBFScene<'a> {
-    fn as_ref(&self) -> &Vec<LBFLight> {
-        &self.lights
-    }
-}
-// ----------------------------------------------------------------------------
-impl<'a> AsMut<Vec<LBFLight>> for LBFScene<'a> {
-    fn as_mut(&mut self) -> &mut Vec<LBFLight> {
-        &mut self.lights
-    }
-}
-// ============================================================================
-impl<'a> AsRef<Vec<GraphicsCamera>> for LBFScene<'a> {
-    fn as_ref(&self) -> &Vec<GraphicsCamera> {
-        &self.cameras
-    }
-}
-// ----------------------------------------------------------------------------
-impl<'a> AsMut<Vec<GraphicsCamera>> for LBFScene<'a> {
-    fn as_mut(&mut self) -> &mut Vec<GraphicsCamera> {
-        &mut self.cameras
-    }
-}
-// ============================================================================
-impl<'a> AsRef<Vec<LBFObject<'a>>> for LBFScene<'a> {
-    fn as_ref(&self) -> &Vec<LBFObject<'a>> {
-        &self.objects
-    }
-}
-// ----------------------------------------------------------------------------
-impl<'a> AsMut<Vec<LBFObject<'a>>> for LBFScene<'a> {
-    fn as_mut(&mut self) -> &mut Vec<LBFObject<'a>> {
-        &mut self.objects
-    }
-}
-// ============================================================================
-impl<'a> LBFScene<'a> {
+impl<'a, 'b> LBFScene<'a, 'b> {
     // ========================================================================
     /// load
     pub fn load(path: impl AsRef<Path>) -> Result<Self> {
@@ -187,27 +86,18 @@ impl<'a> LBFScene<'a> {
     }
 }
 // ============================================================================
-impl<'a> IntoGraphics for LBFScene<'a> {
+impl<'a, 'b> IntoGraphics for LBFScene<'a, 'b> {
     type Target = GraphicsScene;
-    type Param = GLint;
+    type Param = (&'a mut GraphicsScene, GLint);
     // ========================================================================
     fn into_graphics(
         mut self,
-        scene: &GraphicsScene,
-        texture_size: Self::Param,
-    ) -> GraphicsResult<Self::Target> {
+        (scene, texture_size): Self::Param,
+    ) -> GraphicsResult<(Self::Target, Self::Param)> {
         let mut graph = Graph::<GLfloat>::new(Uuid::new_v4())?;
-        let mut images = Manager::default();
-        let mut textures = Manager::default();
-        let mut materials = Manager::default();
-        let mut meshes = Manager::default();
-        let mut armatures = Manager::default();
-        let mut models = Manager::default();
-        let mut lights = Manager::default();
-        let mut cameras = Manager::default();
-        let mut objects = Manager::default();
 
-        while let Some(v) = AsMut::<Vec<Image>>::as_mut(&mut self).pop() {
+        let mut images = Manager::default();
+        while let Some(v) = self.images.pop() {
             info!(
                 "Image: \"{}\", {}, {:?}",
                 AsRef::<String>::as_ref(&v),
@@ -217,40 +107,44 @@ impl<'a> IntoGraphics for LBFScene<'a> {
             let _ = images.insert(v)?;
         }
 
-        while let Some(v) = AsMut::<Vec<LBFTexture>>::as_mut(&mut self).pop() {
+        let mut textures = Manager::default();
+        while let Some(v) = self.textures.pop() {
             info!(
                 "Texture: \"{}\", {}, {:?}",
                 AsRef::<String>::as_ref(&v),
                 AsRef::<Uuid>::as_ref(&v),
                 AsRef::<Uuid>::as_ref(&v).as_bytes()
             );
-            let _ = textures.insert(v.into_graphics(scene, &images)?)?;
+            let (texture, _) = v.into_graphics((scene, &images))?;
+            let _ = textures.insert(texture)?;
         }
 
-        while let Some(v) = AsMut::<Vec<LBFMaterial>>::as_mut(&mut self).pop()
-        {
+        let mut materials = Manager::default();
+        while let Some(v) = self.materials.pop() {
             info!(
                 "Material: \"{}\", {}, {:?}",
                 AsRef::<String>::as_ref(&v),
                 AsRef::<Uuid>::as_ref(&v),
                 AsRef::<Uuid>::as_ref(&v).as_bytes()
             );
-            let _ = materials.insert(v.into_graphics(scene, &textures)?)?;
+            let (material, _) = v.into_graphics((scene, &textures))?;
+            let _ = materials.insert(material)?;
         }
 
-        while let Some(v) = AsMut::<Vec<LBFMesh>>::as_mut(&mut self).pop() {
+        let mut meshes = Manager::default();
+        while let Some(v) = self.meshes.pop() {
             info!(
                 "Mesh: \"{}\", {}, {:?}",
                 AsRef::<String>::as_ref(&v),
                 AsRef::<Uuid>::as_ref(&v),
                 AsRef::<Uuid>::as_ref(&v).as_bytes()
             );
-            let _ = meshes.insert(v.into_graphics(scene, ())?)?;
+            let (mesh, _) = v.into_graphics(())?;
+            let _ = meshes.insert(mesh)?;
         }
 
-        while let Some(v) =
-            AsMut::<Vec<Armature<GLfloat>>>::as_mut(&mut self).pop()
-        {
+        let mut armatures = Manager::default();
+        while let Some(v) = self.armatures.pop() {
             info!(
                 "Armature<GLfloat>: \"{}\", {}, {:?}",
                 AsRef::<String>::as_ref(&v),
@@ -260,31 +154,33 @@ impl<'a> IntoGraphics for LBFScene<'a> {
             let _ = armatures.insert(v)?;
         }
 
-        while let Some(v) = AsMut::<Vec<LBFModel>>::as_mut(&mut self).pop() {
+        let mut models = Manager::default();
+        while let Some(v) = self.models.pop() {
             info!(
                 "Model: \"{}\", {}, {:?}",
                 AsRef::<String>::as_ref(&v),
                 AsRef::<Uuid>::as_ref(&v),
                 AsRef::<Uuid>::as_ref(&v).as_bytes()
             );
-            let _ = models.insert(
-                v.into_graphics(scene, (&meshes, &materials, &armatures))?,
-            )?;
+            let (model, _) =
+                v.into_graphics((scene, &meshes, &materials, &armatures))?;
+            let _ = models.insert(model)?;
         }
 
-        while let Some(v) = AsMut::<Vec<LBFLight>>::as_mut(&mut self).pop() {
+        let mut lights = Manager::default();
+        while let Some(v) = self.lights.pop() {
             info!(
                 "Light: \"{}\", {}, {:?}",
                 AsRef::<String>::as_ref(&v),
                 AsRef::<Uuid>::as_ref(&v),
                 AsRef::<Uuid>::as_ref(&v).as_bytes()
             );
-            let _ = lights.insert(v.into_graphics(scene, texture_size)?)?;
+            let (light, _) = v.into_graphics(texture_size)?;
+            let _ = lights.insert(light)?;
         }
 
-        while let Some(v) =
-            AsMut::<Vec<GraphicsCamera>>::as_mut(&mut self).pop()
-        {
+        let mut cameras = Manager::default();
+        while let Some(v) = self.cameras.pop() {
             info!(
                 "Camera: \"{}\", {}, {:?}",
                 AsRef::<String>::as_ref(&v),
@@ -294,25 +190,62 @@ impl<'a> IntoGraphics for LBFScene<'a> {
             let _ = cameras.insert(v)?;
         }
 
-        let objs = AsMut::<Vec<LBFObject<'a>>>::as_mut(&mut self);
-        objs.reverse(); // reverse for pop (= get last).
-        while let Some(v) = objs.pop() {
+        let mut animations = Manager::default();
+        while let Some(v) = self.animations.pop() {
+            info!(
+                "Animation: \"{}\", {}, {:?}",
+                AsRef::<String>::as_ref(&v),
+                AsRef::<Uuid>::as_ref(&v),
+                AsRef::<Uuid>::as_ref(&v).as_bytes()
+            );
+            let _ = animations.insert(v)?;
+        }
+
+        let mut objects = Manager::default();
+        self.objects.reverse(); // reverse for pop (= get last).
+        while let Some(v) = self.objects.pop() {
             info!(
                 "Object: \"{}\", {}, {:?}",
                 AsRef::<String>::as_ref(&v),
                 AsRef::<Uuid>::as_ref(&v),
                 AsRef::<Uuid>::as_ref(&v).as_bytes()
             );
-            let _ = objects.insert(v.into_graphics(
-                scene,
-                (&mut graph, &models, &lights, &cameras),
-            )?)?;
+            let (object, _) = v.into_graphics((
+                scene, &mut graph, &models, &lights, &cameras,
+            ))?;
+            let _ = objects.insert(object)?;
         }
 
-        GraphicsScene::build(
-            graph, images, textures, materials, meshes, armatures, models,
-            lights, cameras, objects,
-        )
+        let mut animation_drivers = Manager::default();
+        while let Some(v) = self.animation_drivers.pop() {
+            info!(
+                "AnimationDriver: \"{}\", {}, {:?}",
+                AsRef::<String>::as_ref(&v),
+                AsRef::<Uuid>::as_ref(&v),
+                AsRef::<Uuid>::as_ref(&v).as_bytes()
+            );
+            let (animation_driver, _) =
+                v.into_graphics((scene, &animations, &objects))?;
+            let _ = animation_drivers.insert(animation_driver)?;
+        }
+
+        Ok((
+            GraphicsScene::build(
+                graph,
+                images,
+                textures,
+                materials,
+                meshes,
+                armatures,
+                models,
+                lights,
+                cameras,
+                animations,
+                objects,
+                animation_drivers,
+            )?,
+            (scene, texture_size),
+        ))
     }
 }
 // ////////////////////////////////////////////////////////////////////////////

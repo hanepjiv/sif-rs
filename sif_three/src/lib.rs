@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/12
-//  @date 2018/08/03
+//  @date 2018/08/04
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -110,7 +110,7 @@ pub use self::graph::{
 };
 pub use self::trarotsca::{
     new_mat4_inverse_trarotsca, new_mat4_rot, new_mat4_sca, new_mat4_tra,
-    new_mat4_trarotsca, new_quaternion_rot, TraRotSca,
+    new_mat4_trarotsca, new_quaternion_rot, TraRotSca, TraRotScaType,
 };
 // mod  =======================================================================
 mod armature;

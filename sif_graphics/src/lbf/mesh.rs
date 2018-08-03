@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/02
-//  @date 2018/08/01
+//  @date 2018/08/05
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -21,7 +21,7 @@ use sif_math::{Vector2, Vector3};
 use super::{
     super::{submesh, Element, Offsets, SubMesh, ELEMENT_SIZE},
     polygon::Polygon,
-    Error, GraphicsMesh, GraphicsResult, GraphicsScene, IntoGraphics, Result,
+    Error, GraphicsMesh, GraphicsResult, IntoGraphics, Result,
 };
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -211,9 +211,8 @@ impl IntoGraphics for Mesh {
     // ========================================================================
     fn into_graphics(
         self,
-        _: &GraphicsScene,
         _: Self::Param,
-    ) -> GraphicsResult<Self::Target> {
+    ) -> GraphicsResult<(Self::Target, Self::Param)> {
         // --------------------------------------------------------------------
         /// struct TmpKey
         #[derive(Debug, Default, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -421,14 +420,17 @@ impl IntoGraphics for Mesh {
             ));
         }
 
-        Ok(GraphicsMesh::new(
-            self.uuid,
-            self.name,
-            offsets,
-            stride,
-            &vertices[..],
-            ::gl::STATIC_DRAW,
-            submeshes,
+        Ok((
+            GraphicsMesh::new(
+                self.uuid,
+                self.name,
+                offsets,
+                stride,
+                &vertices[..],
+                ::gl::STATIC_DRAW,
+                submeshes,
+            ),
+            (),
         ))
     }
 }

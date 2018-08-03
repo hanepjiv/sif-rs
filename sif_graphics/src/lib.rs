@@ -119,7 +119,10 @@ extern crate sif_math;
 extern crate sif_three;
 // use  =======================================================================
 pub use self::{
-    animation::{Animation, Curve},
+    animation::{
+        Animation, Curve, CurveType, Driver as AnimationDriver, Interpolation,
+        Keyframe,
+    },
     camera::{Camera, CameraType},
     color::{ColorExponent, ColorIntensity},
     element::{Element, ELEMENT_SIZE},
