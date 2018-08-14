@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/27
-//  @date 2018/08/05
+//  @date 2018/08/12
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -193,8 +193,8 @@ impl Scene {
         Ok(self)
     }
     // ------------------------------------------------------------------------
-    /// fn append_into_graphics
-    pub fn append_into_graphics<'a>(
+    /// fn append_graphics
+    pub fn append_graphics<'a>(
         &'a mut self,
         src: impl IntoGraphics<Target = Scene, Param = (&'a mut Scene, GLint)>,
         texture_size: GLint,

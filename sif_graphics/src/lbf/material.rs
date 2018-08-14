@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/08/01
-//  @date 2018/08/05
+//  @date 2018/08/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -35,11 +35,11 @@ pub(crate) struct Material<'a, 'b> {
     /// parallax
     parallax: Parallax,
     /// diffuse
-    diffuse: ColorIntensity,
+    diffuse: ColorIntensity<GLfloat>,
     /// specular
-    specular: ColorIntensity,
+    specular: ColorIntensity<GLfloat>,
     /// emissive
-    emissive: ColorIntensity,
+    emissive: ColorIntensity<GLfloat>,
     /// shininess
     shininess: GLfloat,
     /// alpha [0.0 - 1.0]
@@ -71,9 +71,9 @@ impl<'a, 'b> Material<'a, 'b> {
         name: impl Into<String>,
         textures: Vec<Option<Uuid>>,
         parallax: Parallax,
-        diffuse: ColorIntensity,
-        specular: ColorIntensity,
-        emissive: ColorIntensity,
+        diffuse: ColorIntensity<GLfloat>,
+        specular: ColorIntensity<GLfloat>,
+        emissive: ColorIntensity<GLfloat>,
         shininess: GLfloat,
         alpha: GLfloat,
         flags: Flags,

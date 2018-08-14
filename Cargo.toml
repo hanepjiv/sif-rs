@@ -1,8 +1,8 @@
-# -*- mode:toml; coding:utf-8-unix; -*-
+    # -*- mode:toml; coding:utf-8-unix; -*-
 # =============================================================================
 [package]
 name                    = "sif"
-version                 = "0.6.0-alpha.2"
+version                 = "0.6.0-alpha.3"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
 keywords                = ["subsystem", "game", "math", "graphics"]

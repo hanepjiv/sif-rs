@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/13
-//  @date 2018/05/16
+//  @date 2018/08/13
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -117,7 +117,7 @@ impl Default for DepthMapParam {
     // ========================================================================
     fn default() -> Self {
         DepthMapParam {
-            near: 0.1,
+            near: 1.0,
             far: 100.0,
             mat4_proj_view: Matrix4x4::<GLfloat>::default(),
         }

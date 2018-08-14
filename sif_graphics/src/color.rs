@@ -6,50 +6,44 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/12
-//  @date 2018/08/01
+//  @date 2018/08/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use gl::types::*;
-// ----------------------------------------------------------------------------
-use sif_math::Vector3;
+use num::traits::identities::one;
+use sif_math::{Number, Vector3};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct ColorIntensity
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub struct ColorIntensity {
+pub struct ColorIntensity<V: Number> {
     /// color
-    pub color: Vector3<GLfloat>,
+    pub color: Vector3<V>,
     /// intensity [0.0 - 1.0]
-    pub intensity: GLfloat,
+    pub intensity: V,
 }
 // ============================================================================
-impl Default for ColorIntensity {
+impl<V: Number> Default for ColorIntensity<V> {
     fn default() -> Self {
         ColorIntensity {
-            color: Vector3::<GLfloat>::new(1.0, 1.0, 1.0),
-            intensity: 1.0,
+            color: Vector3::new(one(), one(), one()),
+            intensity: one(),
         }
     }
 }
 // ============================================================================
-impl ColorIntensity {
+impl<V: Number> ColorIntensity<V> {
     // ========================================================================
     /// new
-    pub fn new(
-        r: GLfloat,
-        g: GLfloat,
-        b: GLfloat,
-        intensity: GLfloat,
-    ) -> Self {
+    pub fn new(r: V, g: V, b: V, intensity: V) -> Self {
         ColorIntensity {
-            color: Vector3::<GLfloat>::new(r, g, b),
+            color: Vector3::<V>::new(r, g, b),
             intensity,
         }
     }
     // ------------------------------------------------------------------------
     /// from_vec
-    pub fn from_vec(color: Vector3<GLfloat>, intensity: GLfloat) -> Self {
+    pub fn from_vec(color: Vector3<V>, intensity: V) -> Self {
         ColorIntensity { color, intensity }
     }
 }
@@ -57,19 +51,19 @@ impl ColorIntensity {
 // ============================================================================
 /// struct ColorExponent
 #[derive(Debug, Default, Clone, Copy, PartialEq, PartialOrd)]
-pub struct ColorExponent {
+pub struct ColorExponent<V: Number> {
     /// color
-    pub color: Vector3<GLfloat>,
+    pub color: Vector3<V>,
     /// exponent
-    pub exponent: GLfloat,
+    pub exponent: V,
 }
 // ============================================================================
-impl ColorExponent {
+impl<V: Number> ColorExponent<V> {
     // ========================================================================
     /// new
-    pub fn new(r: GLfloat, g: GLfloat, b: GLfloat, exponent: GLfloat) -> Self {
+    pub fn new(r: V, g: V, b: V, exponent: V) -> Self {
         ColorExponent {
-            color: Vector3::<GLfloat>::new(r, g, b),
+            color: Vector3::<V>::new(r, g, b),
             exponent,
         }
     }

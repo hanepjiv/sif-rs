@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/12
-//  @date 2018/08/03
+//  @date 2018/08/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -100,8 +100,6 @@ extern crate bitflags;
 extern crate log;
 // ----------------------------------------------------------------------------
 extern crate gl;
-#[cfg(feature = "lbf-lua")]
-extern crate lua;
 extern crate num;
 extern crate rand;
 #[cfg(feature = "lbf-rlua")]

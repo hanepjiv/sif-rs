@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2018/08/02
+//  @date 2018/08/12
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -41,20 +41,22 @@ pub(crate) const MATERIAL_TEXTURE_NAMES: [&str; MATERIAL_MAX_TEXTURE] = [
 bitflags! {
     #[allow(missing_docs)]
     pub struct Flags: u32 {
-        #[allow(missing_docs)]
-        const ANISOTROPIC   = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
-        #[allow(missing_docs)]
-        const BUMP          = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
-        #[allow(missing_docs)]
-        const PARALLAX              = 0b0000_0000_0000_0000_0000_0000_0000_0100u32;
+    #[allow(missing_docs)]
+    const ANISOTROPIC           = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
+    #[allow(missing_docs)]
+    const BUMP                  = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
+    #[allow(missing_docs)]
+    const PARALLAX              = 0b0000_0000_0000_0000_0000_0000_0000_0100u32;
 
-        #[allow(missing_docs)]
-        const DO_NOT_USE    = 0b1000_0000_0000_0000_0000_0000_0000_0000u32;
+    #[allow(missing_docs)]
+    const DO_NOT_USE            = 0b1000_0000_0000_0000_0000_0000_0000_0000u32;
     }
 }
 // ============================================================================
 impl Default for Flags {
     fn default() -> Self {
+        // Flags::from_bits(0b0).unwrap()
+        // Flags::ANISOTROPIC | Flags::BUMP | Flags::PARALLAX
         Flags::BUMP | Flags::PARALLAX
     }
 }
@@ -75,9 +77,9 @@ pub struct Parallax {
     /// shadow_exponent
     pub shadow_exponent: GLfloat,
     /// loop_
-    pub loop_: GLint,
+    pub loop_: i32,
     /// shadow_loop
-    pub shadow_loop: GLint,
+    pub shadow_loop: i32,
 }
 // ============================================================================
 impl Default for Parallax {
@@ -97,8 +99,8 @@ impl Parallax {
     pub(crate) fn new(
         height: GLfloat,
         shadow_exponent: GLfloat,
-        loop_: GLint,
-        shadow_loop: GLint,
+        loop_: i32,
+        shadow_loop: i32,
     ) -> Self {
         Parallax {
             height,
@@ -122,11 +124,11 @@ pub struct Material {
     /// parallax
     pub parallax: Parallax,
     /// diffuse
-    pub diffuse: ColorIntensity,
+    pub diffuse: ColorIntensity<GLfloat>,
     /// specular
-    pub specular: ColorIntensity,
+    pub specular: ColorIntensity<GLfloat>,
     /// emissive
-    pub emissive: ColorIntensity,
+    pub emissive: ColorIntensity<GLfloat>,
     /// shininess
     pub shininess: GLfloat,
     /// alpha [0.0 - 1.0]
@@ -171,9 +173,9 @@ impl Material {
         name: impl Into<String>,
         textures: Vec<Option<ManagedValue<Texture>>>,
         parallax: Parallax,
-        diffuse: ColorIntensity,
-        specular: ColorIntensity,
-        emissive: ColorIntensity,
+        diffuse: ColorIntensity<GLfloat>,
+        specular: ColorIntensity<GLfloat>,
+        emissive: ColorIntensity<GLfloat>,
         shininess: GLfloat,
         alpha: GLfloat,
         flags: Flags,

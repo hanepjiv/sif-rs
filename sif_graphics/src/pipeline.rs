@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2018/06/17
+//  @date 2018/08/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -124,11 +124,11 @@ pub struct PipelineParam {
     /// model
     pub model: Option<ManagedValue<Object>>,
     /// ambient
-    pub ambient: ColorIntensity,
+    pub ambient: ColorIntensity<GLfloat>,
     /// ink
-    pub ink: ColorExponent,
+    pub ink: ColorExponent<GLfloat>,
     /// rim
-    pub rim: ColorExponent,
+    pub rim: ColorExponent<GLfloat>,
     /// flags
     pub flags: Flags,
 }

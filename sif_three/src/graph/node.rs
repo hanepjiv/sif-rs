@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/02/25
-//  @date 2018/07/31
+//  @date 2018/08/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -24,13 +24,13 @@ use super::super::{trarotsca::TraRotSca, Error, Result};
 bitflags! {
     #[allow(missing_docs)]
     pub struct Flags: u32 {
-        #[allow(missing_docs)]
-        const DIRTY = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
-        #[allow(missing_docs)]
-        const UPDATED       = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
+    #[allow(missing_docs)]
+    const DIRTY                 = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
+    #[allow(missing_docs)]
+    const UPDATED               = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
     }
 }
-// ===========================================================================
+// ============================================================================
 impl Default for Flags {
     fn default() -> Self {
         Flags::DIRTY

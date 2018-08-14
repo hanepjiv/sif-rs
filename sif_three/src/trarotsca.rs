@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/04/10
-//  @date 2018/08/04
+//  @date 2018/08/14
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -252,10 +252,10 @@ where
 // ============================================================================
 /// new_quaternion_rot
 pub fn new_quaternion_rot<V>(
-    theta: V,
     x: V,
     y: V,
     z: V,
+    theta: V,
 ) -> Result<Quaternion<V>>
 where
     V: Number,

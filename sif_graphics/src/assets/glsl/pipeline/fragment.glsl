@@ -155,12 +155,12 @@ vec4 fetchShadowMap(const in int i, const in vec2 c) {
 //!
 //! shadowDepthFactor
 //! return [0.0 - 1.0]
-//!     0.0:   out of shadow volume / use light
-//!     1.0:  inside shadow volume / not use light
+//!     0.0: inside shadow volume / not use light
+//!     1.0: out of shadow volume / use light
 //!
 float shadowDepthFactor(const in vec3 a_WorldPos, const in int i,
                         const in float a_LightDot) {
-  if (!u_Lights[i].is_shadow && gl_FrontFacing) { return 1.0; }
+  if (!u_Lights[i].is_shadow) { return 1.0; }
 
   vec4 pos        = u_Lights[i].Mat4_ProjLight * vec4(a_WorldPos, 1.0);
   float depth     = ((pos.w - u_Lights[i].shadow_near) /
@@ -181,8 +181,8 @@ float shadowDepthFactor(const in vec3 a_WorldPos, const in int i,
 void main(void) {
   /*
   if (gl_FrontFacing || !gl_FrontFacing) {
-    // gl_FragData[0] = vec4(vf_Normal, 1.0);
-    gl_FragData[0] = texture2D(u_Texture_Diffuse, vf_Coord);
+    gl_FragData[0] = vec4(normalize(vf_Normal), 1.0);
+    // gl_FragData[0] = texture2D(u_Texture_Diffuse, vf_Coord);
     return;
   }
   */
@@ -272,24 +272,24 @@ void main(void) {
         l_LightFactor    *= dot(l_LightDir, -l_LightPos);
         if (u_Lights[i].cutoff > l_LightFactor) { continue; }
         l_LightFactor     = pow(l_LightFactor, u_Lights[i].exponent);
-        if (EPSILON > l_LightFactor) { continue; }
+        if (l_LightFactor < EPSILON) { continue; }
       }
 
       l_LightFactor      *= shadowDepthFactor(l_WorldPos, i, l_LightDot);
-      if (EPSILON > l_LightFactor) { continue; }
+      if (l_LightFactor < EPSILON) { continue; }
 
       l_LightFactor      /=
           (u_Lights[i].kcklkq.x +
            ((u_Lights[i].kcklkq.y +
              (u_Lights[i].kcklkq.z * l_LightLen)) * l_LightLen));
-      if (EPSILON > l_LightFactor) { continue; }
+      if (l_LightFactor < EPSILON) { continue; }
     } else {
       // SUN
       l_LightPos          = -l_LightDir;
       l_LightDot          = dot(l_LightPos, l_Normal);
       if (0.0 > l_LightDot) { continue; }
       l_LightFactor      *= shadowDepthFactor(l_WorldPos, i, l_LightDot);
-      if (EPSILON > l_LightFactor) { continue; }
+      if (l_LightFactor < EPSILON) { continue; }
     }
 
     if (u_Material.is_map_normal &&
@@ -298,7 +298,7 @@ void main(void) {
           makeParallaxSoftShadow(u_Texture_Normal, l_Coo, l_Parallax,
                                  u_Material.parallax.shadow_loop,
                                  l_LightPos);
-      if (EPSILON > l_LightFactor) { continue; }
+      if (l_LightFactor < EPSILON) { continue; }
     }
 
     vec3  l_Int           = u_Lights[i].color;
@@ -361,9 +361,9 @@ void main(void) {
   }
 
   /*
-    float threshold       = bayer_threshold(gl_FragCoord.xy);
-    gl_FragData[0].rgb    =
-    (length(gl_FragData[0].rgb) < threshold) ? vec3(0.0) : vec3(1.0);
+  float threshold       = bayer_threshold(gl_FragCoord.xy);
+  gl_FragData[0].rgb    =
+      (length(gl_FragData[0].rgb) < threshold) ? vec3(0.0) : vec3(1.0);
   */
 
   // gl_PointCoord * gl_FragCoord.w
