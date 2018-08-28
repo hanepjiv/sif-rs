@@ -6,15 +6,15 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/08/01
-//  @date 2018/08/11
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use gl::types::*;
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
 use sif_manager::ManagedValue;
-use sif_three::{Armature, Bone, NodeHolder, TraRotSca, TraRotScaType};
+use sif_math::Float;
+use sif_three::{Armature, Bone, Node, NodeHolder, TraRotSca, TraRotScaType};
 // ----------------------------------------------------------------------------
 use super::{Animation, Curve, CurveType, Error, Object, ObjectData, Result};
 // ////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,10 @@ pub enum Param {
 // ============================================================================
 /// struct Driver
 #[derive(Debug, Clone)]
-pub struct Driver {
+pub struct Driver<V>
+where
+    V: Float,
+{
     /// uuid
     uuid: Uuid,
     /// name
@@ -52,9 +55,9 @@ pub struct Driver {
     /// params
     params: Vec<Param>,
     /// animation
-    animation: ManagedValue<Animation<GLfloat>>,
+    animation: ManagedValue<Animation<V>>,
     /// object
-    object: ManagedValue<Object>,
+    object: ManagedValue<Object<V>>,
     /// flags
     flags: Flags,
     /// lifetime (millisec)
@@ -62,39 +65,58 @@ pub struct Driver {
     /// duration (millisec)
     duration: isize,
     /// scale
-    scale: GLfloat,
+    scale: f32,
 }
 // ============================================================================
-impl AsRef<Uuid> for Driver {
+impl<V> AsRef<Uuid> for Driver<V>
+where
+    V: Float,
+{
     fn as_ref(&self) -> &Uuid {
         &self.uuid
     }
 }
 // ============================================================================
-impl AsRef<String> for Driver {
+impl<V> AsRef<String> for Driver<V>
+where
+    V: Float,
+{
     fn as_ref(&self) -> &String {
         &self.name
     }
 }
 // ============================================================================
-impl AsRef<Flags> for Driver {
+impl<V> AsRef<Flags> for Driver<V>
+where
+    V: Float,
+{
     fn as_ref(&self) -> &Flags {
         &self.flags
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<Flags> for Driver {
+impl<V> AsMut<Flags> for Driver<V>
+where
+    V: Float,
+{
     fn as_mut(&mut self) -> &mut Flags {
         &mut self.flags
     }
 }
 // ============================================================================
-impl Driver {
+impl<V> Driver<V>
+where
+    V: Float,
+{
     // ========================================================================
-    fn make_param(
-        curve: &Curve<GLfloat>,
-        obj_data: &ObjectData,
-    ) -> Option<Param> {
+    fn make_param(curve: &Curve<V>, obj_data: &ObjectData<V>) -> Option<Param>
+    where
+        super::super::Model: ::std::convert::AsRef<
+            ::std::option::Option<
+                ::sif_manager::ManagedValue<::sif_three::Armature<V>>,
+            >,
+        >,
+    {
         match AsRef::<CurveType>::as_ref(curve) {
             CurveType::Translate(data_idx) => {
                 Some(Param::Object(TraRotScaType::Translate, *data_idx))
@@ -106,7 +128,7 @@ impl Driver {
                 Some(Param::Object(TraRotScaType::Scale, *data_idx))
             }
             CurveType::BoneTranslate(bone_name, data_idx) => {
-                Driver::make_param_bone(
+                Driver::<V>::make_param_bone(
                     obj_data,
                     bone_name,
                     TraRotScaType::Translate,
@@ -114,7 +136,7 @@ impl Driver {
                 )
             }
             CurveType::BoneRotateQuaternion(bone_name, data_idx) => {
-                Driver::make_param_bone(
+                Driver::<V>::make_param_bone(
                     obj_data,
                     bone_name,
                     TraRotScaType::Rotate,
@@ -122,7 +144,7 @@ impl Driver {
                 )
             }
             CurveType::BoneScale(bone_name, data_idx) => {
-                Driver::make_param_bone(
+                Driver::<V>::make_param_bone(
                     obj_data,
                     bone_name,
                     TraRotScaType::Scale,
@@ -133,22 +155,28 @@ impl Driver {
     }
     // ------------------------------------------------------------------------
     fn make_param_bone(
-        obj_data: &ObjectData,
+        obj_data: &ObjectData<V>,
         name: &str,
         trs_type: TraRotScaType,
         data_idx: usize,
-    ) -> Option<Param> {
+    ) -> Option<Param>
+    where
+        super::super::Model: ::std::convert::AsRef<
+            ::std::option::Option<
+                ::sif_manager::ManagedValue<::sif_three::Armature<V>>,
+            >,
+        >,
+    {
         match obj_data {
             ObjectData::Model(managed_model, _) => {
                 if let Some(managed_armature) =
-                    AsRef::<Option<ManagedValue<Armature<GLfloat>>>>::as_ref(
+                    AsRef::<Option<ManagedValue<Armature<V>>>>::as_ref(
                         &*managed_model.as_ref().borrow(),
                     ) {
                     let armature = &*managed_armature.as_ref().borrow();
-                    for (i, bone) in
-                        AsRef::<Vec<Bone<GLfloat>>>::as_ref(armature)
-                            .iter()
-                            .enumerate()
+                    for (i, bone) in AsRef::<Vec<Bone<V>>>::as_ref(armature)
+                        .iter()
+                        .enumerate()
                     {
                         if name == AsRef::<str>::as_ref(bone) {
                             return Some(Param::Bone(i, trs_type, data_idx));
@@ -167,16 +195,23 @@ impl Driver {
     pub fn new(
         uuid: Uuid,
         name: impl Into<String>,
-        animation: ManagedValue<Animation<GLfloat>>,
-        object: ManagedValue<Object>,
-    ) -> Result<Self> {
+        animation: ManagedValue<Animation<V>>,
+        object: ManagedValue<Object<V>>,
+    ) -> Result<Self>
+    where
+        super::super::Model: ::std::convert::AsRef<
+            ::std::option::Option<
+                ::sif_manager::ManagedValue<::sif_three::Armature<V>>,
+            >,
+        >,
+    {
         let (params, duration) = {
             let anim = &*animation.as_ref().borrow();
             let mut params = Vec::default();
             let obj = &*object.as_ref().borrow();
-            let obj_data = &*AsRef::<ObjectData>::as_ref(obj);
-            for curve in AsRef::<Vec<Curve<GLfloat>>>::as_ref(anim) {
-                if let Some(x) = Driver::make_param(curve, obj_data) {
+            let obj_data = &*AsRef::<ObjectData<V>>::as_ref(obj);
+            for curve in AsRef::<Vec<Curve<V>>>::as_ref(anim) {
+                if let Some(x) = Driver::<V>::make_param(curve, obj_data) {
                     params.push(x)
                 } else {
                     return Err(Error::AnimationDriver(
@@ -198,7 +233,7 @@ impl Driver {
             flags: Flags::default(),
             lifetime: 0,
             duration,
-            scale: 1.0,
+            scale: 1.0f32,
         })
     }
     // ========================================================================
@@ -213,12 +248,12 @@ impl Driver {
     }
     // ========================================================================
     /// fn as_scale
-    pub fn as_scale(&self) -> &GLfloat {
+    pub fn as_scale(&self) -> &f32 {
         &self.scale
     }
     // ------------------------------------------------------------------------
     /// fn as_scale_mut
-    pub fn as_scale_mut(&mut self) -> &mut GLfloat {
+    pub fn as_scale_mut(&mut self) -> &mut f32 {
         &mut self.scale
     }
     // ========================================================================
@@ -227,7 +262,7 @@ impl Driver {
         if 0 == millisec || !self.flags.contains(Flags::ACTIVE) {
             Ok(self)
         } else {
-            self.lifetime += (millisec as GLfloat * self.scale) as isize;
+            self.lifetime += (millisec as f32 * self.scale) as isize;
 
             let duration = self.duration();
             while duration < self.lifetime {
@@ -245,16 +280,17 @@ impl Driver {
         if self.flags.contains(Flags::DIRTY) {
             let obj = &mut *self.object.as_ref().borrow_mut();
             let anim = &*self.animation.as_ref().borrow();
-            let key = self.lifetime as GLfloat / 1000.0 * anim.fps() + 1.0;
-            for (i, curve) in AsRef::<Vec<Curve<GLfloat>>>::as_ref(anim)
-                .iter()
-                .enumerate()
+            let key = V::from(self.lifetime).unwrap() / V::from(1000).unwrap()
+                * anim.fps()
+                + V::one();
+            for (i, curve) in
+                AsRef::<Vec<Curve<V>>>::as_ref(anim).iter().enumerate()
             {
                 match AsRef::<CurveType>::as_ref(curve) {
                     CurveType::Translate(_)
                     | CurveType::RotateQuaternion(_)
                     | CurveType::Scale(_) => {
-                        Driver::update_obj(
+                        Driver::<V>::update_obj(
                             &self.params[i],
                             obj,
                             curve.value(key),
@@ -263,9 +299,9 @@ impl Driver {
                     CurveType::BoneTranslate(_, _)
                     | CurveType::BoneRotateQuaternion(_, _)
                     | CurveType::BoneScale(_, _) => {
-                        Driver::update_pose(
+                        Driver::<V>::update_pose(
                             &self.params[i],
-                            &mut *AsMut::<ObjectData>::as_mut(obj),
+                            &mut *AsMut::<ObjectData<V>>::as_mut(obj),
                             curve.value(key),
                         )?;
                     }
@@ -276,10 +312,13 @@ impl Driver {
         Ok(self)
     }
     // ------------------------------------------------------------------------
-    fn update_obj(param: &Param, obj: &Object, value: GLfloat) -> Result<()> {
+    fn update_obj(param: &Param, obj: &Object<V>, value: V) -> Result<()>
+    where
+        Node<V>: ::std::convert::AsMut<TraRotSca<V>>,
+    {
         if let Param::Object(trs_type, data_idx) = param {
             let mut node = obj.as_node()?.borrow_mut();
-            let trs = AsMut::<TraRotSca<GLfloat>>::as_mut(&mut *node);
+            let trs = AsMut::<TraRotSca<V>>::as_mut(&mut *node);
             match trs_type {
                 TraRotScaType::Translate => {
                     trs.translate[*data_idx] = value;
@@ -303,8 +342,8 @@ impl Driver {
     // ------------------------------------------------------------------------
     fn update_pose(
         param: &Param,
-        obj_data: &mut ObjectData,
-        value: GLfloat,
+        obj_data: &mut ObjectData<V>,
+        value: V,
     ) -> Result<()> {
         if let Param::Bone(bone_idx, trs_type, data_idx) = param {
             match obj_data {

@@ -6,18 +6,18 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/07/30
-//  @date 2018/08/05
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use sif_math::Number;
+use sif_math::Float;
 // ----------------------------------------------------------------------------
 use super::Interpolation;
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct Keyframe
 #[derive(Debug, Clone, Copy)]
-pub struct Keyframe<V: Number> {
+pub struct Keyframe<V: Float> {
     /// key
     key: isize,
     /// value
@@ -28,7 +28,7 @@ pub struct Keyframe<V: Number> {
     ctrl: ((V, V), (V, V)),
 }
 // ============================================================================
-impl<V: Number> Keyframe<V> {
+impl<V: Float> Keyframe<V> {
     // ========================================================================
     /// fn new
     pub(crate) fn new(

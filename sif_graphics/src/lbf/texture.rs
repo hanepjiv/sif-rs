@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/07/31
-//  @date 2018/08/05
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -82,7 +82,7 @@ impl<'a, 'b> AsRef<String> for Texture<'a, 'b> {
 // ============================================================================
 impl<'a, 'b> IntoGraphics for Texture<'a, 'b> {
     type Target = GraphicsTexture;
-    type Param = (&'a GraphicsScene, &'b Manager<Image>);
+    type Param = (&'a GraphicsScene<GLfloat, GLint>, &'b Manager<Image>);
     // ========================================================================
     fn into_graphics(
         self,

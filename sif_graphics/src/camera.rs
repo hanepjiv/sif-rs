@@ -6,32 +6,36 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/19
-//  @date 2018/05/12
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use gl::types::*;
-use num::{Float, One, Zero};
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
-use sif_math::{Matrix4x4, Vector4};
+use sif_math::{Float, Matrix4x4, Vector4};
 // ----------------------------------------------------------------------------
 use super::{Error, Result};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// enum CameraType
 #[derive(Debug, Clone, Copy)]
-pub enum CameraType {
+pub enum CameraType<V>
+where
+    V: Float,
+{
     /// Frustum
-    Frustum(GLfloat, GLfloat),
+    Frustum(V, V),
     /// Ortho
-    Ortho(GLfloat, GLfloat),
+    Ortho(V, V),
 }
 // ============================================================================
-impl CameraType {
+impl<V> CameraType<V>
+where
+    V: Float,
+{
     // ========================================================================
     /// set_focus
-    pub fn set_focus(&mut self, f: GLfloat) -> Result<()> {
+    pub fn set_focus(&mut self, f: V) -> Result<()> {
         match *self {
             CameraType::Frustum(ref mut focus, _) => {
                 *focus = f;
@@ -42,7 +46,7 @@ impl CameraType {
     }
     // ------------------------------------------------------------------------
     /// set_aspect
-    pub fn set_aspect(&mut self, a: GLfloat) -> Result<()> {
+    pub fn set_aspect(&mut self, a: V) -> Result<()> {
         match *self {
             CameraType::Frustum(_, ref mut aspect) => {
                 *aspect = a;
@@ -53,7 +57,7 @@ impl CameraType {
     }
     // ========================================================================
     /// set_width
-    pub fn set_width(&mut self, w: GLfloat) -> Result<()> {
+    pub fn set_width(&mut self, w: V) -> Result<()> {
         match *self {
             CameraType::Frustum(_, _) => Err(Error::InvalidEnum),
             CameraType::Ortho(ref mut width, _) => {
@@ -64,7 +68,7 @@ impl CameraType {
     }
     // ------------------------------------------------------------------------
     /// set_height
-    pub fn set_height(&mut self, h: GLfloat) -> Result<()> {
+    pub fn set_height(&mut self, h: V) -> Result<()> {
         match *self {
             CameraType::Frustum(_, _) => Err(Error::InvalidEnum),
             CameraType::Ortho(_, ref mut height) => {
@@ -75,10 +79,7 @@ impl CameraType {
     }
     // ------------------------------------------------------------------------
     /// set_width_height
-    pub fn set_width_height(
-        &mut self,
-        (w, h): (GLfloat, GLfloat),
-    ) -> Result<()> {
+    pub fn set_width_height(&mut self, (w, h): (V, V)) -> Result<()> {
         match *self {
             CameraType::Frustum(_, _) => Err(Error::InvalidEnum),
             CameraType::Ortho(ref mut width, ref mut height) => {
@@ -93,99 +94,101 @@ impl CameraType {
 // ============================================================================
 /// struct Camera
 #[derive(Debug, Clone)]
-pub struct Camera {
+pub struct Camera<V>
+where
+    V: Float,
+{
     /// uuid
     uuid: Uuid,
     /// name
     name: String,
     /// near
-    near: GLfloat,
+    near: V,
     /// far
-    far: GLfloat,
+    far: V,
     /// camera_type
-    camera_type: CameraType,
+    camera_type: CameraType<V>,
 }
 // ============================================================================
-impl AsRef<Uuid> for Camera {
+impl<V> AsRef<Uuid> for Camera<V>
+where
+    V: Float,
+{
     fn as_ref(&self) -> &Uuid {
         &self.uuid
     }
 }
 // ============================================================================
-impl AsRef<String> for Camera {
+impl<V> AsRef<String> for Camera<V>
+where
+    V: Float,
+{
     fn as_ref(&self) -> &String {
         &self.name
     }
 }
 // ============================================================================
-impl Camera {
+impl<V> Camera<V>
+where
+    V: Float,
+{
     // ========================================================================
     /// frustum
-    pub fn frustum(
-        near: GLfloat,
-        far: GLfloat,
-        focus: GLfloat,
-        aspect: GLfloat,
-    ) -> Matrix4x4<GLfloat> {
-        let c = GLfloat::one() / (near - far);
+    pub fn frustum(near: V, far: V, focus: V, aspect: V) -> Matrix4x4<V> {
+        let c = V::one() / (near - far);
         Matrix4x4::from([
+            Vector4::from_no_clean([focus, V::zero(), V::zero(), V::zero()]),
             Vector4::from_no_clean([
-                focus,
-                GLfloat::zero(),
-                GLfloat::zero(),
-                GLfloat::zero(),
-            ]),
-            Vector4::from_no_clean([
-                GLfloat::zero(),
+                V::zero(),
                 focus / aspect,
-                GLfloat::zero(),
-                GLfloat::zero(),
+                V::zero(),
+                V::zero(),
             ]),
             Vector4::from_no_clean([
-                GLfloat::zero(),
-                GLfloat::zero(),
+                V::zero(),
+                V::zero(),
                 (near + far) * c,
-                -GLfloat::one(),
+                -V::one(),
             ]),
             Vector4::from_no_clean([
-                GLfloat::zero(),
-                GLfloat::zero(),
-                2.0 * near * far * c,
-                GLfloat::zero(),
+                V::zero(),
+                V::zero(),
+                V::from(2).unwrap() * near * far * c,
+                V::zero(),
             ]),
         ])
     }
     // ------------------------------------------------------------------------
     /// inverse_frustum
     pub fn inverse_frustum(
-        near: GLfloat,
-        far: GLfloat,
-        focus: GLfloat,
-        aspect: GLfloat,
-    ) -> Matrix4x4<GLfloat> {
-        let c = GLfloat::one() / (2.0 * far * near);
+        near: V,
+        far: V,
+        focus: V,
+        aspect: V,
+    ) -> Matrix4x4<V> {
+        let c = V::one() / (V::from(2).unwrap() * far * near);
         Matrix4x4::from([
             Vector4::from_no_clean([
-                GLfloat::one() / focus,
-                GLfloat::zero(),
-                GLfloat::zero(),
-                GLfloat::zero(),
+                V::one() / focus,
+                V::zero(),
+                V::zero(),
+                V::zero(),
             ]),
             Vector4::from_no_clean([
-                GLfloat::zero(),
+                V::zero(),
                 aspect / focus,
-                GLfloat::zero(),
-                GLfloat::zero(),
+                V::zero(),
+                V::zero(),
             ]),
             Vector4::from_no_clean([
-                GLfloat::zero(),
-                GLfloat::zero(),
-                GLfloat::zero(),
-                -GLfloat::one(),
+                V::zero(),
+                V::zero(),
+                V::zero(),
+                -V::one(),
             ]),
             Vector4::from_no_clean([
-                GLfloat::zero(),
-                GLfloat::zero(),
+                V::zero(),
+                V::zero(),
                 (near - far) * c,
                 (near + far) * c,
             ]),
@@ -193,37 +196,32 @@ impl Camera {
     }
     // ========================================================================
     /// ortho
-    pub fn ortho(
-        near: GLfloat,
-        far: GLfloat,
-        width: GLfloat,
-        height: GLfloat,
-    ) -> Matrix4x4<GLfloat> {
-        let c = GLfloat::one() / (near - far);
+    pub fn ortho(near: V, far: V, width: V, height: V) -> Matrix4x4<V> {
+        let c = V::one() / (near - far);
         Matrix4x4::from([
             Vector4::from_no_clean([
-                2.0 / width,
-                GLfloat::zero(),
-                GLfloat::zero(),
-                GLfloat::zero(),
+                V::from(2).unwrap() / width,
+                V::zero(),
+                V::zero(),
+                V::zero(),
             ]),
             Vector4::from_no_clean([
-                GLfloat::zero(),
-                2.0 / height,
-                GLfloat::zero(),
-                GLfloat::zero(),
+                V::zero(),
+                V::from(2).unwrap() / height,
+                V::zero(),
+                V::zero(),
             ]),
             Vector4::from_no_clean([
-                GLfloat::zero(),
-                GLfloat::zero(),
-                2.0 * c,
-                GLfloat::zero(),
+                V::zero(),
+                V::zero(),
+                V::from(2).unwrap() * c,
+                V::zero(),
             ]),
             Vector4::from_no_clean([
-                GLfloat::zero(),
-                GLfloat::zero(),
+                V::zero(),
+                V::zero(),
                 (near + far) * c,
-                GLfloat::one(),
+                V::one(),
             ]),
         ])
     }
@@ -232,10 +230,10 @@ impl Camera {
     pub fn new_frustum(
         uuid: Uuid,
         name: impl Into<String>,
-        near: GLfloat,
-        far: GLfloat,
-        focus: GLfloat,
-        aspect: GLfloat,
+        near: V,
+        far: V,
+        focus: V,
+        aspect: V,
     ) -> Self {
         Camera {
             uuid,
@@ -250,10 +248,10 @@ impl Camera {
     pub fn new_ortho(
         uuid: Uuid,
         name: impl Into<String>,
-        near: GLfloat,
-        far: GLfloat,
-        width: GLfloat,
-        height: GLfloat,
+        near: V,
+        far: V,
+        width: V,
+        height: V,
     ) -> Self {
         Camera {
             uuid,
@@ -281,32 +279,32 @@ impl Camera {
     }
     // ========================================================================
     /// set_focus
-    pub fn set_focus(&mut self, f: GLfloat) -> Result<()> {
+    pub fn set_focus(&mut self, f: V) -> Result<()> {
         self.camera_type.set_focus(f)
     }
     // ------------------------------------------------------------------------
     /// set_aspect
-    pub fn set_aspect(&mut self, a: GLfloat) -> Result<()> {
+    pub fn set_aspect(&mut self, a: V) -> Result<()> {
         self.camera_type.set_aspect(a)
     }
     // ========================================================================
     /// set_width
-    pub fn set_width(&mut self, w: GLfloat) -> Result<()> {
+    pub fn set_width(&mut self, w: V) -> Result<()> {
         self.camera_type.set_width(w)
     }
     // ------------------------------------------------------------------------
     /// set_height
-    pub fn set_height(&mut self, h: GLfloat) -> Result<()> {
+    pub fn set_height(&mut self, h: V) -> Result<()> {
         self.camera_type.set_height(h)
     }
     // ------------------------------------------------------------------------
     /// set_width_height
-    pub fn set_width_height(&mut self, wh: (GLfloat, GLfloat)) -> Result<()> {
+    pub fn set_width_height(&mut self, wh: (V, V)) -> Result<()> {
         self.camera_type.set_width_height(wh)
     }
     // ========================================================================
     /// projection_matrix
-    pub fn projection_matrix(&self) -> Matrix4x4<GLfloat> {
+    pub fn projection_matrix(&self) -> Matrix4x4<V> {
         match self.camera_type {
             CameraType::Frustum(focus, aspect) => {
                 Camera::frustum(self.near, self.far, focus, aspect)
@@ -318,12 +316,12 @@ impl Camera {
     }
     // ========================================================================
     /// focus2alpha
-    pub fn focus2alpha(focus: GLfloat) -> GLfloat {
-        2.0 as GLfloat * Float::atan(1.0 as GLfloat / focus)
+    pub fn focus2alpha(focus: V) -> V {
+        V::from(2).unwrap() * ::num::Float::atan(V::one() / focus)
     }
     // ------------------------------------------------------------------------
     /// alpha2focus
-    pub fn alpha2focus(alpha: GLfloat) -> GLfloat {
-        1.0 as GLfloat / Float::tan(alpha / 2.0 as GLfloat)
+    pub fn alpha2focus(alpha: V) -> V {
+        V::one() / ::num::Float::tan(alpha / V::from(2).unwrap())
     }
 }

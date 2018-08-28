@@ -6,11 +6,11 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/04/09
-//  @date 2018/05/12
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use sif_math::{Matrix3x3, Number, Quaternion, Vector3};
+use sif_math::{Float, Matrix3x3, Quaternion, Vector3};
 // ----------------------------------------------------------------------------
 use super::Result;
 // ////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@ use super::Result;
 #[derive(Debug, Clone)]
 pub struct Rigit<V>
 where
-    V: Number,
+    V: Float,
 {
     /// inertia
     inertia: Matrix3x3<V>,
@@ -39,7 +39,7 @@ where
 // ============================================================================
 impl<V> Default for Rigit<V>
 where
-    V: Number,
+    V: Float,
 {
     // ========================================================================
     fn default() -> Self {
@@ -57,7 +57,7 @@ where
 // ============================================================================
 impl<V> Rigit<V>
 where
-    V: Number,
+    V: Float,
 {
     // ========================================================================
     /// new

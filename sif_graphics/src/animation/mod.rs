@@ -6,13 +6,13 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/07/30
-//  @date 2018/08/09
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
-use sif_math::Number;
+use sif_math::Float;
 // ----------------------------------------------------------------------------
 use super::{Error, Object, ObjectData, Result};
 // ----------------------------------------------------------------------------
@@ -31,7 +31,7 @@ mod keyframe;
 // ============================================================================
 /// struct Animation
 #[derive(Debug, Clone)]
-pub struct Animation<V: Number> {
+pub struct Animation<V: Float> {
     /// uuid
     uuid: Uuid,
     /// name
@@ -44,25 +44,25 @@ pub struct Animation<V: Number> {
     curves: Vec<Curve<V>>,
 }
 // ============================================================================
-impl<V: Number> AsRef<Uuid> for Animation<V> {
+impl<V: Float> AsRef<Uuid> for Animation<V> {
     fn as_ref(&self) -> &Uuid {
         &self.uuid
     }
 }
 // ============================================================================
-impl<V: Number> AsRef<String> for Animation<V> {
+impl<V: Float> AsRef<String> for Animation<V> {
     fn as_ref(&self) -> &String {
         &self.name
     }
 }
 // ============================================================================
-impl<V: Number> AsRef<Vec<Curve<V>>> for Animation<V> {
+impl<V: Float> AsRef<Vec<Curve<V>>> for Animation<V> {
     fn as_ref(&self) -> &Vec<Curve<V>> {
         &self.curves
     }
 }
 // ============================================================================
-impl<V: Number> Animation<V> {
+impl<V: Float> Animation<V> {
     // ========================================================================
     /// fn new
     pub fn new(

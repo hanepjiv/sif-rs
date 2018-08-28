@@ -6,15 +6,15 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/24
-//  @date 2018/07/31
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-use gl::types::*;
+use gl::types::{GLfloat, GLuint};
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
 use sif_manager::ManagedValue;
-use sif_math::Vector3;
+use sif_math::{Float, Vector3};
 use sif_renderer::{Bind, Program, Texture};
 // ----------------------------------------------------------------------------
 use super::{post::DepthMapParam, Error, Object, Result, Shadow};
@@ -42,51 +42,63 @@ bitflags! {
 // ============================================================================
 /// struct Light
 #[derive(Debug)]
-pub struct Light {
+pub struct Light<VF>
+where
+    VF: Float,
+{
     /// uuid
     uuid: Uuid,
     /// name
     name: String,
     /// color
-    pub color: Vector3<GLfloat>,
+    pub color: Vector3<VF>,
     /// kcklkq
-    pub kcklkq: Vector3<GLfloat>,
+    pub kcklkq: Vector3<VF>,
     /// intensity
-    pub intensity: GLfloat,
+    pub intensity: VF,
     /// exponent
-    pub exponent: GLfloat,
+    pub exponent: VF,
     /// cutoff
-    pub cutoff: GLfloat,
+    pub cutoff: VF,
     /// shadow
-    shadow: Option<Shadow>,
+    shadow: Option<Shadow<VF>>,
     /// flags
     pub flags: Flags,
 }
 // ============================================================================
-impl AsRef<Uuid> for Light {
+impl<VF> AsRef<Uuid> for Light<VF>
+where
+    VF: Float,
+{
     fn as_ref(&self) -> &Uuid {
         &self.uuid
     }
 }
 // ============================================================================
-impl AsRef<String> for Light {
+impl<VF> AsRef<String> for Light<VF>
+where
+    VF: Float,
+{
     fn as_ref(&self) -> &String {
         &self.name
     }
 }
 // ============================================================================
-impl Light {
+impl<VF> Light<VF>
+where
+    VF: Float,
+{
     // ========================================================================
     /// fn new
     pub(crate) fn new(
         uuid: Uuid,
         name: String,
-        color: Vector3<GLfloat>,
-        kcklkq: Vector3<GLfloat>,
-        intensity: GLfloat,
-        exponent: GLfloat,
-        cutoff: GLfloat,
-        shadow: Option<Shadow>,
+        color: Vector3<VF>,
+        kcklkq: Vector3<VF>,
+        intensity: VF,
+        exponent: VF,
+        cutoff: VF,
+        shadow: Option<Shadow<VF>>,
         flags: Flags,
     ) -> Result<Self> {
         Ok(Light {
@@ -134,7 +146,7 @@ impl Light {
     }
     // ========================================================================
     /// as_shadow_param
-    pub fn as_shadow_param(&self) -> &DepthMapParam {
+    pub fn as_shadow_param(&self) -> &DepthMapParam<VF> {
         if let Some(ref shadow) = self.shadow {
             shadow.as_ref()
         } else {
@@ -143,7 +155,7 @@ impl Light {
     }
     // ------------------------------------------------------------------------
     /// as_shadow_param_mut
-    pub fn as_shadow_param_mut(&mut self) -> &mut DepthMapParam {
+    pub fn as_shadow_param_mut(&mut self) -> &mut DepthMapParam<VF> {
         if let Some(ref mut shadow) = self.shadow {
             shadow.as_mut()
         } else {
@@ -161,7 +173,7 @@ impl Light {
     }
     // ========================================================================
     /// as_shadow_size
-    pub fn as_shadow_size(&self) -> &[GLint; 2] {
+    pub fn as_shadow_size(&self) -> &[i32; 2] {
         if let Some(ref shadow) = self.shadow {
             shadow.size()
         } else {
@@ -173,8 +185,11 @@ impl Light {
     pub fn shadow_emit(
         &self,
         depth_map_program: &Program,
-        managed_obj: &ManagedValue<Object>,
-    ) -> Result<&Self> {
+        managed_obj: &ManagedValue<Object<VF>>,
+    ) -> Result<&Self>
+    where
+        GLfloat: From<VF>,
+    {
         if let Some(ref shadow) = self.shadow {
             let _ = shadow.emit(depth_map_program, managed_obj)?;
         } else {
@@ -184,7 +199,10 @@ impl Light {
     }
 }
 // ============================================================================
-impl Bind for Light {
+impl<VF> Bind for Light<VF>
+where
+    VF: Float,
+{
     // ========================================================================
     type BindError = Error;
     // ========================================================================

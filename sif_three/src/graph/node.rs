@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/02/25
-//  @date 2018/08/11
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -15,7 +15,7 @@ use std::{cell::RefCell, fmt::Debug};
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
 use sif_manager::{ManagedValue, ManagedWeak};
-use sif_math::{Matrix4x4, Number};
+use sif_math::{Float, Matrix4x4};
 // ----------------------------------------------------------------------------
 use super::super::{trarotsca::TraRotSca, Error, Result};
 // ////////////////////////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@ impl Default for Flags {
 #[derive(Debug, Default, Clone)]
 pub struct Node<V>
 where
-    V: Debug + Number,
+    V: Debug + Float,
 {
     /// uuid
     uuid: Uuid,
@@ -60,7 +60,7 @@ where
 // ============================================================================
 impl<V> AsRef<Uuid> for Node<V>
 where
-    V: Debug + Number,
+    V: Debug + Float,
 {
     fn as_ref(&self) -> &Uuid {
         &self.uuid
@@ -69,7 +69,7 @@ where
 // ============================================================================
 impl<V> AsRef<TraRotSca<V>> for Node<V>
 where
-    V: Debug + Number,
+    V: Debug + Float,
 {
     fn as_ref(&self) -> &TraRotSca<V> {
         &self.trarotsca
@@ -78,7 +78,7 @@ where
 // ----------------------------------------------------------------------------
 impl<V> AsMut<TraRotSca<V>> for Node<V>
 where
-    V: Debug + Number,
+    V: Debug + Float,
 {
     fn as_mut(&mut self) -> &mut TraRotSca<V> {
         self.flags.insert(Flags::DIRTY);
@@ -88,7 +88,7 @@ where
 // ============================================================================
 impl<V> Node<V>
 where
-    V: Debug + Number,
+    V: Debug + Float,
 {
     // ========================================================================
     /// new
@@ -162,20 +162,20 @@ where
 // ============================================================================
 /// trait NodeHolder
 pub trait NodeHolder: Debug {
-    /// Number
-    type Number: Debug + Number;
+    /// Float
+    type Float: Debug + Float;
     // ========================================================================
     /// set_node
-    fn set_node(&mut self, node: Option<ManagedValue<Node<Self::Number>>>);
+    fn set_node(&mut self, node: Option<ManagedValue<Node<Self::Float>>>);
     // ------------------------------------------------------------------------
     /// peek_node
-    fn peek_node(&self) -> &Option<ManagedValue<Node<Self::Number>>>;
+    fn peek_node(&self) -> &Option<ManagedValue<Node<Self::Float>>>;
     // ------------------------------------------------------------------------
     /// has_node
     fn has_node(&self) -> bool;
     // ------------------------------------------------------------------------
     /// as_node
-    fn as_node(&self) -> Result<&RefCell<Node<Self::Number>>>;
+    fn as_node(&self) -> Result<&RefCell<Node<Self::Float>>>;
 }
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -183,7 +183,7 @@ pub trait NodeHolder: Debug {
 #[derive(Debug, Default, Clone)]
 pub struct NodeHolderField<V>
 where
-    V: Debug + Number,
+    V: Debug + Float,
 {
     /// node
     node: Option<ManagedValue<Node<V>>>,
@@ -191,11 +191,11 @@ where
 // ============================================================================
 impl<V> NodeHolder for NodeHolderField<V>
 where
-    V: Debug + Number,
+    V: Debug + Float,
 {
     // ========================================================================
-    /// type Number
-    type Number = V;
+    /// type Float
+    type Float = V;
     // ========================================================================
     /// set_node
     fn set_node(&mut self, node: Option<ManagedValue<Node<V>>>) {
@@ -228,14 +228,14 @@ where
     Self: Debug,
 {
     // ========================================================================
-    /// Number
-    type Number: Debug + Number;
+    /// Float
+    type Float: Debug + Float;
     // ========================================================================
     /// as_node_holder
-    fn as_node_holder(&self) -> &NodeHolderField<Self::Number>;
+    fn as_node_holder(&self) -> &NodeHolderField<Self::Float>;
     // ------------------------------------------------------------------------
     /// as_node_holder_mut
-    fn as_node_holder_mut(&mut self) -> &mut NodeHolderField<Self::Number>;
+    fn as_node_holder_mut(&mut self) -> &mut NodeHolderField<Self::Float>;
 }
 // ============================================================================
 impl<T> NodeHolder for T
@@ -243,13 +243,13 @@ where
     T: AsNodeHolder,
 {
     // ========================================================================
-    type Number = T::Number;
+    type Float = T::Float;
     // ========================================================================
-    fn set_node(&mut self, node: Option<ManagedValue<Node<Self::Number>>>) {
+    fn set_node(&mut self, node: Option<ManagedValue<Node<Self::Float>>>) {
         self.as_node_holder_mut().set_node(node)
     }
     // ------------------------------------------------------------------------
-    fn peek_node(&self) -> &Option<ManagedValue<Node<Self::Number>>> {
+    fn peek_node(&self) -> &Option<ManagedValue<Node<Self::Float>>> {
         self.as_node_holder().peek_node()
     }
     // ------------------------------------------------------------------------
@@ -257,7 +257,7 @@ where
         self.as_node_holder().has_node()
     }
     // ------------------------------------------------------------------------
-    fn as_node(&self) -> Result<&RefCell<Node<Self::Number>>> {
+    fn as_node(&self) -> Result<&RefCell<Node<Self::Float>>> {
         self.as_node_holder().as_node()
     }
 }

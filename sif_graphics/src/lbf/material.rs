@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/08/01
-//  @date 2018/08/11
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -97,7 +97,10 @@ impl<'a, 'b> Material<'a, 'b> {
 // ============================================================================
 impl<'a, 'b> IntoGraphics for Material<'a, 'b> {
     type Target = GraphicsMaterial;
-    type Param = (&'a GraphicsScene, &'b Manager<GraphicsTexture>);
+    type Param = (
+        &'a GraphicsScene<GLfloat, GLint>,
+        &'b Manager<GraphicsTexture>,
+    );
     // ========================================================================
     fn into_graphics(
         self,

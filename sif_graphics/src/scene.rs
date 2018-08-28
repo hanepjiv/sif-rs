@@ -6,14 +6,16 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/27
-//  @date 2018/08/12
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use gl::types::*;
+use std::marker::PhantomData;
+// ----------------------------------------------------------------------------
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
-use sif_manager::Manager;
+use sif_manager::{ManagedValue, Manager};
+use sif_math::{Float, Integer};
 use sif_three::{Armature, Graph};
 // ----------------------------------------------------------------------------
 use super::{
@@ -24,9 +26,13 @@ use super::{
 // ============================================================================
 /// struct Scene
 #[derive(Debug)]
-pub struct Scene {
+pub struct Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
     /// graph
-    graph: Graph<GLfloat>,
+    graph: Graph<VF>,
     /// images
     images: Manager<Image>,
     /// textures
@@ -36,27 +42,33 @@ pub struct Scene {
     /// meshes
     meshes: Manager<Mesh>,
     /// armatures
-    armatures: Manager<Armature<GLfloat>>,
+    armatures: Manager<Armature<VF>>,
     /// models
     models: Manager<Model>,
     /// lights
-    lights: Manager<Light>,
+    lights: Manager<Light<VF>>,
     /// cameras
-    cameras: Manager<Camera>,
+    cameras: Manager<Camera<VF>>,
     /// animations
-    animations: Manager<Animation<GLfloat>>,
+    animations: Manager<Animation<VF>>,
     /// objects
-    objects: Manager<Object>,
+    objects: Manager<Object<VF>>,
     /// animation_drivers
-    animation_drivers: Manager<AnimationDriver>,
+    animation_drivers: Manager<AnimationDriver<VF>>,
+    /// phantom1
+    phantom1: PhantomData<fn() -> VI>,
 }
 // ============================================================================
-impl Scene {
+impl<VF, VI> Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
     // ========================================================================
     /// fn new
     pub fn new(uuid: Uuid) -> Result<Self> {
         Ok(Scene {
-            graph: Graph::<GLfloat>::new(uuid)?,
+            graph: Graph::<VF>::new(uuid)?,
             images: Manager::default(),
             textures: Manager::default(),
             materials: Manager::default(),
@@ -68,23 +80,24 @@ impl Scene {
             animations: Manager::default(),
             objects: Manager::default(),
             animation_drivers: Manager::default(),
+            phantom1: PhantomData::default(),
         })
     }
     // ------------------------------------------------------------------------
     /// fn build
     pub fn build(
-        graph: Graph<GLfloat>,
+        graph: Graph<VF>,
         images: Manager<Image>,
         textures: Manager<Texture>,
         materials: Manager<Material>,
         meshes: Manager<Mesh>,
-        armatures: Manager<Armature<GLfloat>>,
+        armatures: Manager<Armature<VF>>,
         models: Manager<Model>,
-        lights: Manager<Light>,
-        cameras: Manager<Camera>,
-        animations: Manager<Animation<GLfloat>>,
-        objects: Manager<Object>,
-        animation_drivers: Manager<AnimationDriver>,
+        lights: Manager<Light<VF>>,
+        cameras: Manager<Camera<VF>>,
+        animations: Manager<Animation<VF>>,
+        objects: Manager<Object<VF>>,
+        animation_drivers: Manager<AnimationDriver<VF>>,
     ) -> Result<Self> {
         Ok(Scene {
             graph,
@@ -99,6 +112,7 @@ impl Scene {
             animations,
             objects,
             animation_drivers,
+            phantom1: PhantomData::default(),
         })
     }
     // ========================================================================
@@ -123,7 +137,7 @@ impl Scene {
     }
     // ------------------------------------------------------------------------
     /// fn insert_armature
-    pub fn insert_armature(&mut self, v: Armature<GLfloat>) -> Result<Uuid> {
+    pub fn insert_armature(&mut self, v: Armature<VF>) -> Result<Uuid> {
         Ok(self.armatures.insert(v)?)
     }
     // ------------------------------------------------------------------------
@@ -133,74 +147,48 @@ impl Scene {
     }
     // ------------------------------------------------------------------------
     /// fn insert_light
-    pub fn insert_light(&mut self, v: Light) -> Result<Uuid> {
+    pub fn insert_light(&mut self, v: Light<VF>) -> Result<Uuid> {
         Ok(self.lights.insert(v)?)
     }
     // ------------------------------------------------------------------------
     /// fn insert_camera
-    pub fn insert_camera(&mut self, v: Camera) -> Result<Uuid> {
+    pub fn insert_camera(&mut self, v: Camera<VF>) -> Result<Uuid> {
         Ok(self.cameras.insert(v)?)
     }
     // ------------------------------------------------------------------------
     /// fn insert_object
-    pub fn insert_object(&mut self, v: Object) -> Result<Uuid> {
+    pub fn insert_object(&mut self, v: Object<VF>) -> Result<Uuid> {
         Ok(self.objects.insert(v)?)
     }
     // ========================================================================
     /// fn append
-    pub fn append(&mut self, src: &Self) -> Result<&mut Self> {
-        src.graph
-            .root()
-            .as_ref()
-            .borrow_mut()
-            .set_parent(Some(self.graph.root().downgrade()));
-        for (_k, v) in src.graph.iter() {
-            let _ = self.graph.insert(v.clone())?;
-        }
-        for (_k, v) in src.images.iter() {
-            let _ = self.images.insert_managed(v.clone())?;
-        }
-        for (_k, v) in src.textures.iter() {
-            let _ = self.textures.insert_managed(v.clone())?;
-        }
-        for (_k, v) in src.materials.iter() {
-            let _ = self.materials.insert_managed(v.clone())?;
-        }
-        for (_k, v) in src.meshes.iter() {
-            let _ = self.meshes.insert_managed(v.clone())?;
-        }
-        for (_k, v) in src.armatures.iter() {
-            let _ = self.armatures.insert_managed(v.clone())?;
-        }
-        for (_k, v) in src.models.iter() {
-            let _ = self.models.insert_managed(v.clone())?;
-        }
-        for (_k, v) in src.lights.iter() {
-            let _ = self.lights.insert_managed(v.clone())?;
-        }
-        for (_k, v) in src.cameras.iter() {
-            let _ = self.cameras.insert_managed(v.clone())?;
-        }
-        for (_k, v) in src.animations.iter() {
-            let _ = self.animations.insert_managed(v.clone())?;
-        }
-        for (_k, v) in src.objects.iter() {
-            let _ = self.objects.insert_managed(v.clone())?;
-        }
-        for (_k, v) in src.animation_drivers.iter() {
-            let _ = self.animation_drivers.insert_managed(v.clone())?;
-        }
+    pub fn append(&mut self, src: &mut Self) -> Result<&mut Self> {
+        self.graph.append(&mut src.graph);
+        self.images.append(&mut src.images);
+        self.textures.append(&mut src.textures);
+        self.materials.append(&mut src.materials);
+        self.meshes.append(&mut src.meshes);
+        self.armatures.append(&mut src.armatures);
+        self.models.append(&mut src.models);
+        self.lights.append(&mut src.lights);
+        self.cameras.append(&mut src.cameras);
+        self.animations.append(&mut src.animations);
+        self.objects.append(&mut src.objects);
+        self.animation_drivers.append(&mut src.animation_drivers);
         Ok(self)
     }
     // ------------------------------------------------------------------------
     /// fn append_graphics
     pub fn append_graphics<'a>(
         &'a mut self,
-        src: impl IntoGraphics<Target = Scene, Param = (&'a mut Scene, GLint)>,
-        texture_size: GLint,
+        src: impl IntoGraphics<
+            Target = Scene<VF, VI>,
+            Param = (&'a mut Scene<VF, VI>, VI),
+        >,
+        texture_size: VI,
     ) -> Result<&mut Self> {
-        let (src, (slf, _)) = src.into_graphics((self, texture_size))?;
-        slf.append(&src)
+        let (mut src, (slf, _)) = src.into_graphics((self, texture_size))?;
+        slf.append(&mut src)
     }
     // ========================================================================
     /// fn elapsed
@@ -212,7 +200,10 @@ impl Scene {
     }
     // ------------------------------------------------------------------------
     /// fn update
-    pub fn update(&mut self) -> Result<&mut Self> {
+    pub fn update(&mut self) -> Result<&mut Self>
+    where
+        Model: AsRef<Option<ManagedValue<Armature<VF>>>>,
+    {
         for (_, ref v) in self.animation_drivers.iter() {
             let _ = v.as_ref().borrow_mut().update()?;
         }
@@ -224,146 +215,242 @@ impl Scene {
     }
 }
 // ============================================================================
-impl AsRef<Graph<GLfloat>> for Scene {
-    fn as_ref(&self) -> &Graph<GLfloat> {
+impl<VF, VI> AsRef<Graph<VF>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
+    fn as_ref(&self) -> &Graph<VF> {
         &self.graph
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<Graph<GLfloat>> for Scene {
-    fn as_mut(&mut self) -> &mut Graph<GLfloat> {
+impl<VF, VI> AsMut<Graph<VF>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
+    fn as_mut(&mut self) -> &mut Graph<VF> {
         &mut self.graph
     }
 }
 // ============================================================================
-impl AsRef<Manager<Image>> for Scene {
+impl<VF, VI> AsRef<Manager<Image>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
     fn as_ref(&self) -> &Manager<Image> {
         &self.images
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<Manager<Image>> for Scene {
+impl<VF, VI> AsMut<Manager<Image>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
     fn as_mut(&mut self) -> &mut Manager<Image> {
         &mut self.images
     }
 }
 // ============================================================================
-impl AsRef<Manager<Texture>> for Scene {
+impl<VF, VI> AsRef<Manager<Texture>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
     fn as_ref(&self) -> &Manager<Texture> {
         &self.textures
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<Manager<Texture>> for Scene {
+impl<VF, VI> AsMut<Manager<Texture>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
     fn as_mut(&mut self) -> &mut Manager<Texture> {
         &mut self.textures
     }
 }
 // ============================================================================
-impl AsRef<Manager<Material>> for Scene {
+impl<VF, VI> AsRef<Manager<Material>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
     fn as_ref(&self) -> &Manager<Material> {
         &self.materials
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<Manager<Material>> for Scene {
+impl<VF, VI> AsMut<Manager<Material>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
     fn as_mut(&mut self) -> &mut Manager<Material> {
         &mut self.materials
     }
 }
 // ============================================================================
-impl AsRef<Manager<Mesh>> for Scene {
+impl<VF, VI> AsRef<Manager<Mesh>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
     fn as_ref(&self) -> &Manager<Mesh> {
         &self.meshes
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<Manager<Mesh>> for Scene {
+impl<VF, VI> AsMut<Manager<Mesh>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
     fn as_mut(&mut self) -> &mut Manager<Mesh> {
         &mut self.meshes
     }
 }
 // ============================================================================
-impl AsRef<Manager<Armature<GLfloat>>> for Scene {
-    fn as_ref(&self) -> &Manager<Armature<GLfloat>> {
+impl<VF, VI> AsRef<Manager<Armature<VF>>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
+    fn as_ref(&self) -> &Manager<Armature<VF>> {
         &self.armatures
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<Manager<Armature<GLfloat>>> for Scene {
-    fn as_mut(&mut self) -> &mut Manager<Armature<GLfloat>> {
+impl<VF, VI> AsMut<Manager<Armature<VF>>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
+    fn as_mut(&mut self) -> &mut Manager<Armature<VF>> {
         &mut self.armatures
     }
 }
 // ============================================================================
-impl AsRef<Manager<Model>> for Scene {
+impl<VF, VI> AsRef<Manager<Model>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
     fn as_ref(&self) -> &Manager<Model> {
         &self.models
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<Manager<Model>> for Scene {
+impl<VF, VI> AsMut<Manager<Model>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
     fn as_mut(&mut self) -> &mut Manager<Model> {
         &mut self.models
     }
 }
 // ============================================================================
-impl AsRef<Manager<Light>> for Scene {
-    fn as_ref(&self) -> &Manager<Light> {
+impl<VF, VI> AsRef<Manager<Light<VF>>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
+    fn as_ref(&self) -> &Manager<Light<VF>> {
         &self.lights
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<Manager<Light>> for Scene {
-    fn as_mut(&mut self) -> &mut Manager<Light> {
+impl<VF, VI> AsMut<Manager<Light<VF>>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
+    fn as_mut(&mut self) -> &mut Manager<Light<VF>> {
         &mut self.lights
     }
 }
 // ============================================================================
-impl AsRef<Manager<Camera>> for Scene {
-    fn as_ref(&self) -> &Manager<Camera> {
+impl<VF, VI> AsRef<Manager<Camera<VF>>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
+    fn as_ref(&self) -> &Manager<Camera<VF>> {
         &self.cameras
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<Manager<Camera>> for Scene {
-    fn as_mut(&mut self) -> &mut Manager<Camera> {
+impl<VF, VI> AsMut<Manager<Camera<VF>>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
+    fn as_mut(&mut self) -> &mut Manager<Camera<VF>> {
         &mut self.cameras
     }
 }
 // ============================================================================
-impl AsRef<Manager<Animation<GLfloat>>> for Scene {
-    fn as_ref(&self) -> &Manager<Animation<GLfloat>> {
+impl<VF, VI> AsRef<Manager<Animation<VF>>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
+    fn as_ref(&self) -> &Manager<Animation<VF>> {
         &self.animations
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<Manager<Animation<GLfloat>>> for Scene {
-    fn as_mut(&mut self) -> &mut Manager<Animation<GLfloat>> {
+impl<VF, VI> AsMut<Manager<Animation<VF>>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
+    fn as_mut(&mut self) -> &mut Manager<Animation<VF>> {
         &mut self.animations
     }
 }
 // ============================================================================
-impl AsRef<Manager<Object>> for Scene {
-    fn as_ref(&self) -> &Manager<Object> {
+impl<VF, VI> AsRef<Manager<Object<VF>>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
+    fn as_ref(&self) -> &Manager<Object<VF>> {
         &self.objects
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<Manager<Object>> for Scene {
-    fn as_mut(&mut self) -> &mut Manager<Object> {
+impl<VF, VI> AsMut<Manager<Object<VF>>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
+    fn as_mut(&mut self) -> &mut Manager<Object<VF>> {
         &mut self.objects
     }
 }
 // ============================================================================
-impl AsRef<Manager<AnimationDriver>> for Scene {
-    fn as_ref(&self) -> &Manager<AnimationDriver> {
+impl<VF, VI> AsRef<Manager<AnimationDriver<VF>>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
+    fn as_ref(&self) -> &Manager<AnimationDriver<VF>> {
         &self.animation_drivers
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<Manager<AnimationDriver>> for Scene {
-    fn as_mut(&mut self) -> &mut Manager<AnimationDriver> {
+impl<VF, VI> AsMut<Manager<AnimationDriver<VF>>> for Scene<VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
+    fn as_mut(&mut self) -> &mut Manager<AnimationDriver<VF>> {
         &mut self.animation_drivers
     }
 }

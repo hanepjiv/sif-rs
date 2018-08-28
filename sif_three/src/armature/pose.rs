@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/25
-//  @date 2018/08/01
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -15,7 +15,7 @@ use std::{
     slice::{Iter, IterMut},
 };
 // ----------------------------------------------------------------------------
-use sif_math::{Matrix4x4, Number};
+use sif_math::{Float, Matrix4x4};
 // ----------------------------------------------------------------------------
 use super::super::trarotsca::TraRotSca;
 // ////////////////////////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@ impl Default for Flags {
 #[derive(Debug, Clone)]
 pub struct Pose<V>
 where
-    V: Number,
+    V: Float,
 {
     /// matrix
     pub matrix: Vec<Matrix4x4<V>>,
@@ -54,7 +54,7 @@ where
 // ============================================================================
 impl<V> ::std::ops::Index<usize> for Pose<V>
 where
-    V: Number,
+    V: Float,
 {
     type Output = TraRotSca<V>;
     fn index(&self, index: usize) -> &Self::Output {
@@ -64,7 +64,7 @@ where
 // ----------------------------------------------------------------------------
 impl<V> ::std::ops::IndexMut<usize> for Pose<V>
 where
-    V: Number,
+    V: Float,
 {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         self.flags[index].insert(Flags::DIRTY);
@@ -74,7 +74,7 @@ where
 // ============================================================================
 impl<V> Pose<V>
 where
-    V: Number,
+    V: Float,
 {
     // ========================================================================
     /// fn new
@@ -120,7 +120,7 @@ where
 #[derive(Debug)]
 pub struct PoseLocalIterMut<'a, V>
 where
-    V: 'a + Number,
+    V: 'a + Float,
 {
     /// flags
     flags: &'a mut Vec<Flags>,
@@ -130,7 +130,7 @@ where
 // ============================================================================
 impl<'a, V> PoseLocalIterMut<'a, V>
 where
-    V: Number,
+    V: Float,
 {
     // ========================================================================
     /// fn new
@@ -144,7 +144,7 @@ where
 // ============================================================================
 impl<'a, V> Iterator for PoseLocalIterMut<'a, V>
 where
-    V: Number,
+    V: Float,
 {
     type Item = &'a mut TraRotSca<V>;
     fn next(&mut self) -> Option<Self::Item> {

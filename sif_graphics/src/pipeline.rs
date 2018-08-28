@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2018/08/11
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -15,10 +15,10 @@ use std::{
     os::raw::c_void,
 };
 // ----------------------------------------------------------------------------
-use gl::types::*;
+use gl::types::GLfloat;
 // ----------------------------------------------------------------------------
 use sif_manager::ManagedValue;
-use sif_math::{Matrix4x4, Vector3, Vector4};
+use sif_math::{Float, Matrix4x4, Vector3, Vector4};
 use sif_renderer::{Bind, Program, ShaderSrc, Texture as RendererTexture};
 use sif_three::NodeHolder;
 // ----------------------------------------------------------------------------
@@ -116,24 +116,30 @@ impl Default for Flags {
 // ============================================================================
 /// struct PipelineParam
 #[derive(Debug)]
-pub struct PipelineParam {
+pub struct PipelineParam<VF>
+where
+    VF: Float,
+{
     /// camera
-    pub camera: Option<ManagedValue<Object>>,
+    pub camera: Option<ManagedValue<Object<VF>>>,
     /// lights
-    lights: Vec<Option<ManagedValue<Object>>>,
+    lights: Vec<Option<ManagedValue<Object<VF>>>>,
     /// model
-    pub model: Option<ManagedValue<Object>>,
+    pub model: Option<ManagedValue<Object<VF>>>,
     /// ambient
-    pub ambient: ColorIntensity<GLfloat>,
+    pub ambient: ColorIntensity<VF>,
     /// ink
-    pub ink: ColorExponent<GLfloat>,
+    pub ink: ColorExponent<VF>,
     /// rim
-    pub rim: ColorExponent<GLfloat>,
+    pub rim: ColorExponent<VF>,
     /// flags
     pub flags: Flags,
 }
 // ============================================================================
-impl Default for PipelineParam {
+impl<VF> Default for PipelineParam<VF>
+where
+    VF: Float,
+{
     // ========================================================================
     fn default() -> Self {
         PipelineParam {
@@ -143,36 +149,62 @@ impl Default for PipelineParam {
                 None, None, None, None, None, None,
             ],
             model: None,
-            ambient: ColorIntensity::new(1.0, 1.0, 1.0, 0.2),
-            ink: ColorExponent::new(1.0, 1.0, 1.0, 12.0),
-            rim: ColorExponent::new(1.0, 1.0, 1.0, 4.0),
+            ambient: ColorIntensity::new(
+                VF::one(),
+                VF::one(),
+                VF::one(),
+                VF::from(0.2).unwrap(),
+            ),
+            ink: ColorExponent::new(
+                VF::one(),
+                VF::one(),
+                VF::one(),
+                VF::from(12).unwrap(),
+            ),
+            rim: ColorExponent::new(
+                VF::one(),
+                VF::one(),
+                VF::one(),
+                VF::from(4).unwrap(),
+            ),
             flags: Flags::default(),
         }
     }
 }
 // ============================================================================
-impl AsRef<Vec<Option<ManagedValue<Object>>>> for PipelineParam {
-    fn as_ref(&self) -> &Vec<Option<ManagedValue<Object>>> {
+impl<VF> AsRef<Vec<Option<ManagedValue<Object<VF>>>>> for PipelineParam<VF>
+where
+    VF: Float,
+{
+    fn as_ref(&self) -> &Vec<Option<ManagedValue<Object<VF>>>> {
         &self.lights
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<Vec<Option<ManagedValue<Object>>>> for PipelineParam {
-    fn as_mut(&mut self) -> &mut Vec<Option<ManagedValue<Object>>> {
+impl<VF> AsMut<Vec<Option<ManagedValue<Object<VF>>>>> for PipelineParam<VF>
+where
+    VF: Float,
+{
+    fn as_mut(&mut self) -> &mut Vec<Option<ManagedValue<Object<VF>>>> {
         self.flags.insert(Flags::DIRTY_LIGHTS);
         &mut self.lights
     }
 }
 // ============================================================================
-impl PipelineParam {
+impl<VF> PipelineParam<VF>
+where
+    VF: Float,
+{
     // ========================================================================
     /// as_lights
-    pub fn as_lights(&self) -> &Vec<Option<ManagedValue<Object>>> {
+    pub fn as_lights(&self) -> &Vec<Option<ManagedValue<Object<VF>>>> {
         self.as_ref()
     }
     // ------------------------------------------------------------------------
     /// as_lights_mut
-    pub fn as_lights_mut(&mut self) -> &mut Vec<Option<ManagedValue<Object>>> {
+    pub fn as_lights_mut(
+        &mut self,
+    ) -> &mut Vec<Option<ManagedValue<Object<VF>>>> {
         self.as_mut()
     }
 }
@@ -233,37 +265,48 @@ impl Pipeline {
     }
     // ========================================================================
     /// set_matrix4
-    fn set_matrix4<Q>(
+    fn set_matrix4<Q, VF>(
         &self,
         name: &Q,
-        matrix: &Matrix4x4<GLfloat>,
+        matrix: &Matrix4x4<VF>,
     ) -> Result<&Self>
     where
         String: Borrow<Q>,
         Q: ?Sized + Hash + Ord,
+        VF: Float,
+        *const GLfloat: From<*const VF>,
     {
         Program::set_uniform_matrix4fv(
             sif_renderer_program_location!(self.program, name),
             1,
             ::gl::FALSE,
-            matrix.as_ptr(),
+            matrix.as_ptr().into(),
         )?;
         Ok(self)
     }
     // ========================================================================
     /// set_light
-    fn set_light(
+    fn set_light<VF>(
         &self,
         i: usize,
-        opt: &Option<ManagedValue<Object>>,
-        mat4_view: &Matrix4x4<GLfloat>,
-    ) -> Result<&Self> {
+        opt: &Option<ManagedValue<Object<VF>>>,
+        mat4_view: &Matrix4x4<VF>,
+    ) -> Result<&Self>
+    where
+        VF: Float,
+        GLfloat: From<VF>,
+        *const GLfloat: From<*const VF>,
+    {
         if if let Some(ref managed_object) = *opt {
             let obj = managed_object.as_ref().borrow();
             if let ObjectData::Light(ref managed_light) = *obj.as_ref() {
                 {
-                    let pos = *mat4_view
-                        * Vector4::from_vector3(&obj.position()?, 1.0);
+                    let pos =
+                        *mat4_view
+                            * Vector4::from_vector3(
+                                &obj.position()?,
+                                VF::one(),
+                            );
                     Program::set_uniform3fv(
                         sif_renderer_program_location!(
                             self.program,
@@ -271,12 +314,13 @@ impl Pipeline {
                             i
                         ),
                         1,
-                        pos.as_ptr(),
+                        pos.as_ptr().into(),
                     )?;
                 }
                 {
                     let mut dir = Vector3::from(
-                        *mat4_view * Vector4::from_vector3(&obj.front()?, 0.0),
+                        *mat4_view
+                            * Vector4::from_vector3(&obj.front()?, VF::zero()),
                     );
                     let _ = dir.normalize();
                     Program::set_uniform3fv(
@@ -286,7 +330,7 @@ impl Pipeline {
                             i
                         ),
                         1,
-                        dir.as_ptr(),
+                        dir.as_ptr().into(),
                     )?;
                 }
                 {
@@ -324,7 +368,7 @@ impl Pipeline {
                             i
                         ),
                         1,
-                        (l.color * l.intensity).as_ptr(),
+                        (l.color * l.intensity).as_ptr().into(),
                     )?;
 
                     Program::set_uniform1f(
@@ -333,7 +377,7 @@ impl Pipeline {
                             "u_Lights[{}].exponent",
                             i
                         ),
-                        l.exponent,
+                        l.exponent.into(),
                     )?;
                     Program::set_uniform3fv(
                         sif_renderer_program_location!(
@@ -342,7 +386,7 @@ impl Pipeline {
                             i
                         ),
                         1,
-                        l.kcklkq.as_ptr(),
+                        l.kcklkq.as_ptr().into(),
                     )?;
                     Program::set_uniform1f(
                         sif_renderer_program_location!(
@@ -351,9 +395,9 @@ impl Pipeline {
                             i
                         ),
                         if l.flags.contains(light::Flags::SPOT) {
-                            l.cutoff
+                            l.cutoff.into()
                         } else {
-                            -1.0
+                            (-VF::one()).into()
                         },
                     )?;
 
@@ -371,7 +415,7 @@ impl Pipeline {
                                 self.program,
                                 TEXTURE_SHADOWMAP[i]
                             ),
-                            (15 + i) as GLint,
+                            (15 + i) as i32,
                             l.as_shadow_color(),
                         )?;
                         let shadow_param = l.as_shadow_param();
@@ -379,8 +423,10 @@ impl Pipeline {
                             let mat4_proj = Camera::frustum(
                                 shadow_param.near,
                                 shadow_param.far,
-                                Camera::alpha2focus(PI / 180.0 * 90.0),
-                                1.0,
+                                Camera::alpha2focus(
+                                    VF::from(PI / 180.0 * 90.0).unwrap(),
+                                ),
+                                VF::one(),
                             );
                             let mat4_light = {
                                 let n = obj.as_node()?.borrow_mut();
@@ -394,7 +440,7 @@ impl Pipeline {
                                 ),
                                 1,
                                 ::gl::FALSE,
-                                (mat4_proj * mat4_light).as_ptr(),
+                                (mat4_proj * mat4_light).as_ptr().into(),
                             )?;
                         }
                         Program::set_uniform1f(
@@ -403,7 +449,7 @@ impl Pipeline {
                                 "u_Lights[{}].shadow_near",
                                 i
                             ),
-                            shadow_param.near,
+                            shadow_param.near.into(),
                         )?;
                         Program::set_uniform1f(
                             sif_renderer_program_location!(
@@ -411,7 +457,7 @@ impl Pipeline {
                                 "u_Lights[{}].shadow_far",
                                 i
                             ),
-                            shadow_param.far,
+                            shadow_param.far.into(),
                         )?;
                     } else {
                         Program::set_uniform1i(
@@ -444,7 +490,14 @@ impl Pipeline {
     }
     // ========================================================================
     /// emit
-    pub fn emit(&mut self, param: &PipelineParam) -> Result<()> {
+    pub fn emit<VF>(&mut self, param: &PipelineParam<VF>) -> Result<()>
+    where
+        VF: Float,
+        GLfloat: From<VF>,
+        *const GLfloat: From<*const VF>,
+        ::rand::distributions::Standard:
+            ::rand::distributions::Distribution<VF>,
+    {
         self.program.bind_with(|| -> Result<()> {
             {
                 // BayerMatrix
@@ -456,16 +509,16 @@ impl Pipeline {
                     4,
                     &self.bayer_matrix,
                 )?;
-                let mut shift = ::rand::random::<[GLfloat; 2]>();
-                shift[0] *= 16.0;
-                shift[1] *= 16.0;
+                let mut shift = ::rand::random::<[VF; 2]>();
+                shift[0] *= VF::from(16).unwrap();
+                shift[1] *= VF::from(16).unwrap();
                 Program::set_uniform2fv(
                     sif_renderer_program_location!(
                         self.program,
                         "u_AlphaDitherShift"
                     ),
                     1,
-                    shift.as_ptr(),
+                    shift.as_ptr().into(),
                 )?;
             }
             {
@@ -476,7 +529,9 @@ impl Pipeline {
                         "u_Ambient.color"
                     ),
                     1,
-                    (param.ambient.color * param.ambient.intensity).as_ptr(),
+                    (param.ambient.color * param.ambient.intensity)
+                        .as_ptr()
+                        .into(),
                 )?;
                 Program::set_uniform1i(
                     sif_renderer_program_location!(
@@ -495,7 +550,7 @@ impl Pipeline {
                         "u_Ink.color"
                     ),
                     1,
-                    param.ink.color.as_ptr(),
+                    param.ink.color.as_ptr().into(),
                 )?;
                 Program::set_uniform1f(
                     sif_renderer_program_location!(
@@ -503,9 +558,9 @@ impl Pipeline {
                         "u_Ink.exponent"
                     ),
                     if param.flags.contains(Flags::INK) {
-                        param.ink.exponent
+                        param.ink.exponent.into()
                     } else {
-                        0.0
+                        VF::zero().into()
                     },
                 )?;
                 Program::set_uniform3fv(
@@ -514,7 +569,7 @@ impl Pipeline {
                         "u_Rim.color"
                     ),
                     1,
-                    param.rim.color.as_ptr(),
+                    param.rim.color.as_ptr().into(),
                 )?;
                 Program::set_uniform1f(
                     sif_renderer_program_location!(
@@ -522,9 +577,9 @@ impl Pipeline {
                         "u_Rim.exponent"
                     ),
                     if param.flags.contains(Flags::RIM) {
-                        param.rim.exponent
+                        param.rim.exponent.into()
                     } else {
-                        0.0
+                        VF::zero().into()
                     },
                 )?;
             }
@@ -532,7 +587,8 @@ impl Pipeline {
             let view = if let Some(ref m) = param.camera {
                 let obj = &*m.as_ref().borrow();
                 {
-                    let c = AsRef::<RefCell<Camera>>::as_ref(obj).borrow_mut();
+                    let c =
+                        AsRef::<RefCell<Camera<VF>>>::as_ref(obj).borrow_mut();
                     let _ = self
                         .set_matrix4("u_Mat4_Proj", &c.projection_matrix())?;
                 }

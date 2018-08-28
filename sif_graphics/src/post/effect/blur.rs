@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/01/19
-//  @date 2018/05/16
+//  @date 2018/08/28
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -183,7 +183,7 @@ impl Effect for Blur {
                     // weight
                     {
                         let mut weight = self.gaussian[0];
-                        for i in 1..1 + d {
+                        for i in 1..=d {
                             weight += self.gaussian[i as usize] * 2.0;
                         }
                         Program::set_uniform1f(

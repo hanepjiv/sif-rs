@@ -6,13 +6,11 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/04/10
-//  @date 2018/08/14
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use num::Float;
-// ----------------------------------------------------------------------------
-use sif_math::{Matrix4x4, Number, Quaternion, Vector3, Vector4};
+use sif_math::{Float, Matrix4x4, Quaternion, Vector3, Vector4};
 // ----------------------------------------------------------------------------
 use super::{Error, Result};
 // ////////////////////////////////////////////////////////////////////////////
@@ -33,7 +31,7 @@ pub enum TraRotScaType {
 #[derive(Debug, Clone)]
 pub struct TraRotSca<V>
 where
-    V: Number,
+    V: Float,
 {
     // ------------------------------------------------------------------------
     /// rotate
@@ -46,7 +44,7 @@ where
 // ============================================================================
 impl<V> Default for TraRotSca<V>
 where
-    V: Number,
+    V: Float,
 {
     // ========================================================================
     fn default() -> Self {
@@ -60,7 +58,7 @@ where
 // ============================================================================
 impl<V> TraRotSca<V>
 where
-    V: Number,
+    V: Float,
 {
     // ========================================================================
     /// new
@@ -113,7 +111,7 @@ where
 /// new_mat4_tra
 pub fn new_mat4_tra<V>(tx: V, ty: V, tz: V) -> Matrix4x4<V>
 where
-    V: Number,
+    V: Float,
 {
     Matrix4x4::from([
         Vector4::from_no_clean([V::one(), V::zero(), V::zero(), V::zero()]),
@@ -126,7 +124,7 @@ where
 /// new_mat4_rot
 pub fn new_mat4_rot<V>(rx: V, ry: V, rz: V, rw: V) -> Matrix4x4<V>
 where
-    V: Number,
+    V: Float,
 {
     Matrix4x4::from([
         Vector4::from_no_clean([
@@ -154,7 +152,7 @@ where
 /// new_mat4_sca
 pub fn new_mat4_sca<V>(sx: V, sy: V, sz: V) -> Matrix4x4<V>
 where
-    V: Number,
+    V: Float,
 {
     Matrix4x4::from([
         Vector4::from_no_clean([sx, V::zero(), V::zero(), V::zero()]),
@@ -178,7 +176,7 @@ pub fn new_mat4_trarotsca<V>(
     sz: V,
 ) -> Matrix4x4<V>
 where
-    V: Number,
+    V: Float,
 {
     Matrix4x4::from([
         Vector4::from_no_clean([
@@ -217,7 +215,7 @@ pub fn new_mat4_inverse_trarotsca<V>(
     sz: V,
 ) -> Matrix4x4<V>
 where
-    V: Number,
+    V: Float,
 {
     let t0 = Vector4::from_no_clean([
         (V::one() - V::from(2).unwrap() * (ry * ry + rz * rz)) / sx,
@@ -258,7 +256,7 @@ pub fn new_quaternion_rot<V>(
     theta: V,
 ) -> Result<Quaternion<V>>
 where
-    V: Number,
+    V: Float,
 {
     // let pi = ::num::cast::cast::<_, V>(::std::f64::consts::PI).unwrap();
     let l = (x * x) + (y * y) + (z * z);
@@ -267,8 +265,9 @@ where
             "::three::trarotsca::::new_quaternion_rot",
         )))
     } else {
-        let (mut sin, cos) = Float::sin_cos(theta / V::from(2).unwrap());
-        sin /= Float::sqrt(l);
+        let (mut sin, cos) =
+            ::num::Float::sin_cos(theta / V::from(2).unwrap());
+        sin /= ::num::Float::sqrt(l);
         Ok(Quaternion::from([x * sin, y * sin, z * sin, cos]))
     }
 }

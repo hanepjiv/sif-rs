@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/12
-//  @date 2018/08/05
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
@@ -101,18 +101,20 @@ extern crate sif_error;
 pub use sif_error::*;
 // ----------------------------------------------------------------------------
 pub use self::cleanup::Cleanup;
+pub use self::float::Float;
+pub use self::integer::Integer;
 pub use self::interpolation::bezier;
 pub use self::matrix::{
     Matrix2x2, Matrix2x3, Matrix3x2, Matrix3x3, Matrix3x4, Matrix4x3,
     Matrix4x4,
 };
-pub use self::number::Number;
 pub use self::quaternion::Quaternion;
 pub use self::vector::{Vector2, Vector3, Vector4};
 // mod  =======================================================================
 mod cleanup;
+mod float;
+mod integer;
 mod interpolation;
 mod matrix;
-mod number;
 mod quaternion;
 mod vector;

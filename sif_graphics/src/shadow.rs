@@ -6,13 +6,14 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/03/08
-//  @date 2018/05/17
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use gl::types::*;
 // ----------------------------------------------------------------------------
 use sif_manager::ManagedValue;
+use sif_math::Float;
 use sif_renderer::{Bind, Program, Texture};
 // ----------------------------------------------------------------------------
 use super::{
@@ -23,32 +24,47 @@ use super::{
 // ============================================================================
 /// struct Shadow
 #[derive(Debug)]
-pub struct Shadow {
+pub struct Shadow<VF>
+where
+    VF: Float,
+{
     /// param
-    param: DepthMapParam,
+    param: DepthMapParam<VF>,
     /// map
     map: DepthMap,
 }
 // ============================================================================
-impl AsRef<DepthMapParam> for Shadow {
-    fn as_ref(&self) -> &DepthMapParam {
+impl<VF> AsRef<DepthMapParam<VF>> for Shadow<VF>
+where
+    VF: Float,
+{
+    fn as_ref(&self) -> &DepthMapParam<VF> {
         &self.param
     }
 }
 // ----------------------------------------------------------------------------
-impl AsMut<DepthMapParam> for Shadow {
-    fn as_mut(&mut self) -> &mut DepthMapParam {
+impl<VF> AsMut<DepthMapParam<VF>> for Shadow<VF>
+where
+    VF: Float,
+{
+    fn as_mut(&mut self) -> &mut DepthMapParam<VF> {
         &mut self.param
     }
 }
 // ============================================================================
-impl AsRef<DepthMap> for Shadow {
+impl<VF> AsRef<DepthMap> for Shadow<VF>
+where
+    VF: Float,
+{
     fn as_ref(&self) -> &DepthMap {
         &self.map
     }
 }
 // ============================================================================
-impl Shadow {
+impl<VF> Shadow<VF>
+where
+    VF: Float,
+{
     // ========================================================================
     /// new
     pub fn new(width: GLsizei, height: GLsizei) -> Result<Self> {
@@ -64,7 +80,7 @@ impl Shadow {
     }
     // ========================================================================
     /// size
-    pub fn size(&self) -> &[GLint; 2] {
+    pub fn size(&self) -> &[i32; 2] {
         self.map.size()
     }
     // ========================================================================
@@ -72,14 +88,20 @@ impl Shadow {
     pub fn emit(
         &self,
         depth_map_program: &Program,
-        managed_obj: &ManagedValue<Object>,
-    ) -> Result<&Self> {
+        managed_obj: &ManagedValue<Object<VF>>,
+    ) -> Result<&Self>
+    where
+        GLfloat: From<VF>,
+    {
         let _ = self.map.emit(depth_map_program, &self.param, managed_obj)?;
         Ok(self)
     }
 }
 // ============================================================================
-impl Bind for Shadow {
+impl<VF> Bind for Shadow<VF>
+where
+    VF: Float,
+{
     // ========================================================================
     type BindError = Error;
     // ========================================================================

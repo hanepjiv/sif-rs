@@ -6,16 +6,16 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/23
-//  @date 2018/07/31
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use std::{borrow::Borrow, fmt::Debug, hash::Hash, iter::IntoIterator};
+use std::{borrow::Borrow, hash::Hash, iter::IntoIterator};
 // ----------------------------------------------------------------------------
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
 use sif_manager::{ManagedValue, Manager, ManagerIter, ManagerIterMut};
-use sif_math::Number;
+use sif_math::Float;
 // ----------------------------------------------------------------------------
 use super::{Error, Result};
 // ----------------------------------------------------------------------------
@@ -38,7 +38,7 @@ type GraphIterMut<'a, V> = ManagerIterMut<'a, Node<V>>;
 #[derive(Debug, Clone)]
 pub struct Graph<V>
 where
-    V: Debug + Number,
+    V: Float,
 {
     /// uuid
     uuid: Uuid,
@@ -50,7 +50,7 @@ where
 // ============================================================================
 impl<V> AsRef<Uuid> for Graph<V>
 where
-    V: Debug + Number,
+    V: Float,
 {
     fn as_ref(&self) -> &Uuid {
         &self.uuid
@@ -59,7 +59,7 @@ where
 // ============================================================================
 impl<V> AsRef<Manager<Node<V>>> for Graph<V>
 where
-    V: Debug + Number,
+    V: Float,
 {
     fn as_ref(&self) -> &Manager<Node<V>> {
         &self.nodes
@@ -68,7 +68,7 @@ where
 // ----------------------------------------------------------------------------
 impl<V> AsMut<Manager<Node<V>>> for Graph<V>
 where
-    V: Debug + Number,
+    V: Float,
 {
     fn as_mut(&mut self) -> &mut Manager<Node<V>> {
         &mut self.nodes
@@ -77,7 +77,7 @@ where
 // ============================================================================
 impl<V> Graph<V>
 where
-    V: Debug + Number,
+    V: Float,
 {
     // ========================================================================
     /// new
@@ -167,11 +167,21 @@ where
             flags.remove(NodeFlags::DIRTY | NodeFlags::UPDATED);
         }
     }
+    // ========================================================================
+    /// append
+    pub fn append(&mut self, other: &mut Self) {
+        other
+            .root()
+            .as_ref()
+            .borrow_mut()
+            .set_parent(Some(self.root().downgrade()));
+        self.nodes.append(&mut other.nodes)
+    }
 }
 // ============================================================================
 impl<'a, V> IntoIterator for &'a Graph<V>
 where
-    V: Debug + Number,
+    V: Float,
 {
     type Item = <GraphIter<'a, V> as IntoIterator>::Item;
     type IntoIter = GraphIter<'a, V>;
@@ -183,7 +193,7 @@ where
 // ----------------------------------------------------------------------------
 impl<'a, V> IntoIterator for &'a mut Graph<V>
 where
-    V: Debug + Number,
+    V: Float,
 {
     type Item = <GraphIterMut<'a, V> as IntoIterator>::Item;
     type IntoIter = GraphIterMut<'a, V>;

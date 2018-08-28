@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/02
-//  @date 2018/08/05
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -67,13 +67,13 @@ pub struct LBFScene<'a, 'b> {
     /// lights
     lights: Vec<LBFLight>,
     /// cameras
-    cameras: Vec<Camera>,
+    cameras: Vec<Camera<GLfloat>>,
     /// animations
     animations: Vec<Animation<GLfloat>>,
     /// objects
     objects: Vec<LBFObject<'a, 'b>>,
     /// animation_drivers
-    animation_drivers: Vec<LBFAnimationDriver<'a, 'b>>,
+    animation_drivers: Vec<LBFAnimationDriver<'a, 'b, GLfloat, GLint>>,
 }
 // ============================================================================
 impl<'a, 'b> LBFScene<'a, 'b> {
@@ -87,8 +87,8 @@ impl<'a, 'b> LBFScene<'a, 'b> {
 }
 // ============================================================================
 impl<'a, 'b> IntoGraphics for LBFScene<'a, 'b> {
-    type Target = GraphicsScene;
-    type Param = (&'a mut GraphicsScene, GLint);
+    type Target = GraphicsScene<GLfloat, GLint>;
+    type Param = (&'a mut GraphicsScene<GLfloat, GLint>, GLint);
     // ========================================================================
     fn into_graphics(
         mut self,

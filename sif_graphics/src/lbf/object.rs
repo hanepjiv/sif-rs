@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/06/13
-//  @date 2018/08/05
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -82,13 +82,13 @@ impl<'a, 'b> AsRef<String> for Object<'a, 'b> {
 }
 // ============================================================================
 impl<'a, 'b> IntoGraphics for Object<'a, 'b> {
-    type Target = GraphicsObject;
+    type Target = GraphicsObject<GLfloat>;
     type Param = (
-        &'a GraphicsScene,
+        &'a GraphicsScene<GLfloat, GLint>,
         &'b mut Graph<GLfloat>,
         &'b Manager<GraphicsModel>,
-        &'b Manager<GraphicsLight>,
-        &'b Manager<Camera>,
+        &'b Manager<GraphicsLight<GLfloat>>,
+        &'b Manager<Camera<GLfloat>>,
     );
     // ========================================================================
     fn into_graphics(
@@ -130,7 +130,7 @@ impl<'a, 'b> IntoGraphics for Object<'a, 'b> {
                     if let Some(x) = lights.get(uuid) {
                         Some(x)
                     } else {
-                        AsRef::<Manager<GraphicsLight>>::as_ref(scene)
+                        AsRef::<Manager<GraphicsLight<GLfloat>>>::as_ref(scene)
                             .get(uuid)
                     }
                 }.map(|m| {
@@ -147,7 +147,8 @@ impl<'a, 'b> IntoGraphics for Object<'a, 'b> {
                     if let Some(x) = cameras.get(uuid) {
                         Some(x)
                     } else {
-                        AsRef::<Manager<Camera>>::as_ref(scene).get(uuid)
+                        AsRef::<Manager<Camera<GLfloat>>>::as_ref(scene)
+                            .get(uuid)
                     }
                 }.map(|m| {
                     GraphicsObject::new(

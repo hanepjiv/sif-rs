@@ -6,11 +6,11 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/19
-//  @date 2018/08/11
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use sif_math::{Matrix4x4, Number, Vector3};
+use sif_math::{Float, Matrix4x4, Vector3};
 // ----------------------------------------------------------------------------
 use super::super::new_mat4_tra;
 // ////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@ use super::super::new_mat4_tra;
 #[derive(Debug, Default, Clone)]
 pub struct Bone<V>
 where
-    V: Number,
+    V: Float,
 {
     /// name
     name: String,
@@ -31,7 +31,7 @@ where
 // ============================================================================
 impl<V> Bone<V>
 where
-    V: Number,
+    V: Float,
 {
     // ========================================================================
     /// new
@@ -60,7 +60,7 @@ where
 // ============================================================================
 impl<V> AsRef<str> for Bone<V>
 where
-    V: Number,
+    V: Float,
 {
     fn as_ref(&self) -> &str {
         self.name.as_str()

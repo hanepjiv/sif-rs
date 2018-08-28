@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/06/13
-//  @date 2018/08/05
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -81,12 +81,14 @@ pub(crate) fn from_str<'a, 'b>(
     let armatures = Vec::<Armature<GLfloat>>::from_lua(tbl.get("armatures")?)?;
     let models = Vec::<LBFModel>::from_lua(tbl.get("models")?)?;
     let lights = Vec::<LBFLight>::from_lua(tbl.get("lights")?)?;
-    let cameras = Vec::<Camera>::from_lua(tbl.get("cameras")?)?;
+    let cameras = Vec::<Camera<GLfloat>>::from_lua(tbl.get("cameras")?)?;
     let animations =
         Vec::<Animation<GLfloat>>::from_lua(tbl.get("animations")?)?;
     let objects = Vec::<LBFObject>::from_lua(tbl.get("objects")?)?;
     let animation_drivers =
-        Vec::<LBFAnimationDriver>::from_lua(tbl.get("animation_drivers")?)?;
+        Vec::<LBFAnimationDriver<GLfloat, GLint>>::from_lua(
+            tbl.get("animation_drivers")?,
+        )?;
 
     Ok(LBFScene {
         images,

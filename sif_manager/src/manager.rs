@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/02/27
-//  @date 2018/08/06
+//  @date 2018/08/21
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -168,6 +168,15 @@ where
         self.0.get(uuid)
     }
     // ========================================================================
+    /// contains_key
+    pub fn contains_key<U>(&self, uuid: &U) -> bool
+    where
+        Uuid: Borrow<U>,
+        U: ?Sized + Hash + Ord,
+    {
+        self.0.contains_key(uuid)
+    }
+    // ========================================================================
     /// remove
     pub fn remove<U>(&mut self, uuid: &U) -> Option<ManagedValue<T>>
     where
@@ -177,13 +186,9 @@ where
         self.0.remove(uuid)
     }
     // ========================================================================
-    /// contains_key
-    pub fn contains_key<U>(&self, uuid: &U) -> bool
-    where
-        Uuid: Borrow<U>,
-        U: ?Sized + Hash + Ord,
-    {
-        self.0.contains_key(uuid)
+    /// append
+    pub fn append(&mut self, other: &mut Self) {
+        self.0.append(&mut other.0)
     }
 }
 // ============================================================================

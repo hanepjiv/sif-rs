@@ -6,11 +6,16 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2018/06/18
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use super::{Cleanup, Error, Number, Result, Vector2, Vector3, Vector4};
+use std::ops::{
+    Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Sub,
+    SubAssign,
+};
+// ----------------------------------------------------------------------------
+use super::{Cleanup, Error, Float, Result, Vector2, Vector3, Vector4};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// matrix_define!
@@ -19,11 +24,11 @@ macro_rules! matrix_define {
         // ====================================================================
         /// struct $name
         #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-        pub struct $name<V: Number>([$vector<V>; $n]);
+        pub struct $name<V: Float>([$vector<V>; $n]);
         // ====================================================================
         impl<V> From<[$vector<V>; $n]> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             fn from(inner: [$vector<V>; $n]) -> Self {
                 let mut m = $name(inner);
@@ -31,9 +36,9 @@ macro_rules! matrix_define {
             }
         }
         // ====================================================================
-        impl<V> ::std::ops::Index<usize> for $name<V>
+        impl<V> Index<usize> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             type Output = $vector<V>;
             fn index(&self, index: usize) -> &Self::Output {
@@ -41,18 +46,18 @@ macro_rules! matrix_define {
             }
         }
         // ====================================================================
-        impl<V> ::std::ops::IndexMut<usize> for $name<V>
+        impl<V> IndexMut<usize> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             fn index_mut(&mut self, index: usize) -> &mut Self::Output {
                 &mut self.0[index]
             }
         }
         // ====================================================================
-        impl<V> ::std::ops::Add<V> for $name<V>
+        impl<V> Add<V> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             type Output = Self;
             fn add(self, rhs: V) -> Self::Output {
@@ -64,9 +69,9 @@ macro_rules! matrix_define {
             }
         }
         // --------------------------------------------------------------------
-        impl<V> ::std::ops::AddAssign<V> for $name<V>
+        impl<V> AddAssign<V> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             fn add_assign(&mut self, rhs: V) {
                 for i in 0..$n {
@@ -75,9 +80,9 @@ macro_rules! matrix_define {
             }
         }
         // ====================================================================
-        impl<V> ::std::ops::Sub<V> for $name<V>
+        impl<V> Sub<V> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             type Output = Self;
             fn sub(self, rhs: V) -> Self::Output {
@@ -89,9 +94,9 @@ macro_rules! matrix_define {
             }
         }
         // --------------------------------------------------------------------
-        impl<V> ::std::ops::SubAssign<V> for $name<V>
+        impl<V> SubAssign<V> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             fn sub_assign(&mut self, rhs: V) {
                 for i in 0..$n {
@@ -100,9 +105,9 @@ macro_rules! matrix_define {
             }
         }
         // ====================================================================
-        impl<V> ::std::ops::Mul<V> for $name<V>
+        impl<V> Mul<V> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             type Output = Self;
             fn mul(self, rhs: V) -> Self::Output {
@@ -114,9 +119,9 @@ macro_rules! matrix_define {
             }
         }
         // --------------------------------------------------------------------
-        impl<V> ::std::ops::MulAssign<V> for $name<V>
+        impl<V> MulAssign<V> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             fn mul_assign(&mut self, rhs: V) {
                 for i in 0..$n {
@@ -125,9 +130,9 @@ macro_rules! matrix_define {
             }
         }
         // ====================================================================
-        impl<V> ::std::ops::Div<V> for $name<V>
+        impl<V> Div<V> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             type Output = Self;
             fn div(self, rhs: V) -> Self::Output {
@@ -139,9 +144,9 @@ macro_rules! matrix_define {
             }
         }
         // --------------------------------------------------------------------
-        impl<V> ::std::ops::DivAssign<V> for $name<V>
+        impl<V> DivAssign<V> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             fn div_assign(&mut self, rhs: V) {
                 for i in 0..$n {
@@ -150,9 +155,9 @@ macro_rules! matrix_define {
             }
         }
         // ====================================================================
-        impl<V> ::std::ops::Mul<$name<V>> for $name<V>
+        impl<V> Mul<$name<V>> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             type Output = Self;
             fn mul(self, rhs: $name<V>) -> Self::Output {
@@ -168,9 +173,9 @@ macro_rules! matrix_define {
             }
         }
         // --------------------------------------------------------------------
-        impl<V> ::std::ops::MulAssign<$name<V>> for $name<V>
+        impl<V> MulAssign<$name<V>> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             fn mul_assign(&mut self, rhs: $name<V>) {
                 *self = *self * rhs;
@@ -179,7 +184,7 @@ macro_rules! matrix_define {
         // ====================================================================
         impl<V> $name<V>
         where
-            V: Number,
+            V: Float,
         {
             // ================================================================
             /// size
@@ -383,7 +388,7 @@ matrix_define!(Matrix3x3(Vector3; 3));
 // ============================================================================
 impl<V> Default for Matrix3x3<V>
 where
-    V: Number,
+    V: Float,
 {
     fn default() -> Self {
         Matrix3x3::from_no_clean([
@@ -405,7 +410,7 @@ matrix_define!(Matrix4x4(Vector4; 4));
 // ============================================================================
 impl<V> Default for Matrix4x4<V>
 where
-    V: Number,
+    V: Float,
 {
     fn default() -> Self {
         Matrix4x4::from_no_clean([
@@ -437,9 +442,9 @@ where
     }
 }
 // ============================================================================
-impl<V> ::std::ops::Mul<Vector4<V>> for Matrix4x4<V>
+impl<V> Mul<Vector4<V>> for Matrix4x4<V>
 where
-    V: Number,
+    V: Float,
 {
     type Output = Vector4<V>;
     fn mul(self, rhs: Vector4<V>) -> Self::Output {

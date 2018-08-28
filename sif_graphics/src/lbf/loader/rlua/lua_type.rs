@@ -6,17 +6,17 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/06/13
-//  @date 2018/08/11
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use std::{collections::BTreeMap, fmt::Debug, hash::Hash, path::PathBuf};
 // ----------------------------------------------------------------------------
 use gl::types::*;
-use rlua::{Integer, Value};
+use rlua::Value;
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
-use sif_math::{Number, Quaternion, Vector3, Vector4};
+use sif_math::{Float, Integer, Quaternion, Vector3, Vector4};
 use sif_three::{Armature, Bone, TraRotSca};
 // ----------------------------------------------------------------------------
 use super::{
@@ -52,12 +52,34 @@ pub(crate) trait LuaType: ::std::marker::Sized {
     fn from_lua(v: Value) -> Result<Self>;
 }
 // ============================================================================
-impl LuaType for Integer {
+impl LuaType for ::rlua::Integer {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
             Value::Integer(x) => Ok(x),
             _ => {
                 Err(Error::Type("<Integer as LuaType>::from_lua".to_string()))
+            }
+        }
+    }
+}
+// ============================================================================
+impl LuaType for GLint {
+    fn from_lua(v: Value) -> Result<Self> {
+        match v {
+            Value::Integer(x) => Ok(x as Self),
+            Value::Number(x) => Ok(x as Self),
+            _ => Err(Error::Type("<GLint as LuaType>::from_lua".to_string())),
+        }
+    }
+}
+// ----------------------------------------------------------------------------
+impl LuaType for GLfloat {
+    fn from_lua(v: Value) -> Result<Self> {
+        match v {
+            Value::Integer(x) => Ok(x as Self),
+            Value::Number(x) => Ok(x as Self),
+            _ => {
+                Err(Error::Type("<GLfloat as LuaType>::from_lua".to_string()))
             }
         }
     }
@@ -126,7 +148,7 @@ where
             Value::Nil => Ok(Self::default()),
             Value::Table(tbl) => {
                 let mut x = Self::default();
-                for pairs in tbl.pairs::<Integer, Value>() {
+                for pairs in tbl.pairs::<::rlua::Integer, Value>() {
                     let (_k, t) = pairs?;
                     x.push(T::from_lua(t)?);
                 }
@@ -208,32 +230,10 @@ impl LuaType for Uuid {
     }
 }
 // ============================================================================
-impl LuaType for GLint {
-    fn from_lua(v: Value) -> Result<Self> {
-        match v {
-            Value::Integer(x) => Ok(x as Self),
-            Value::Number(x) => Ok(x as Self),
-            _ => Err(Error::Type("<GLint as LuaType>::from_lua".to_string())),
-        }
-    }
-}
-// ----------------------------------------------------------------------------
-impl LuaType for GLfloat {
-    fn from_lua(v: Value) -> Result<Self> {
-        match v {
-            Value::Integer(x) => Ok(x as Self),
-            Value::Number(x) => Ok(x as Self),
-            _ => {
-                Err(Error::Type("<GLfloat as LuaType>::from_lua".to_string()))
-            }
-        }
-    }
-}
-// ============================================================================
 impl<T> LuaType for Vector3<T>
 where
     Vector3<T>: 'static,
-    T: 'static + Number + LuaType,
+    T: 'static + Float + LuaType,
 {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
@@ -252,7 +252,7 @@ where
 impl<T> LuaType for Vector4<T>
 where
     Vector4<T>: 'static,
-    T: 'static + Number + LuaType,
+    T: 'static + Float + LuaType,
 {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
@@ -272,7 +272,7 @@ where
 impl<T> LuaType for Quaternion<T>
 where
     Quaternion<T>: 'static,
-    T: 'static + Number + LuaType,
+    T: 'static + Float + LuaType,
 {
     fn from_lua(v: Value) -> Result<Self> {
         Vector4::from_lua(v).map(Self::from)
@@ -281,7 +281,7 @@ where
 // ----------------------------------------------------------------------------
 impl<T> LuaType for TraRotSca<T>
 where
-    T: 'static + Number + LuaType,
+    T: 'static + Float + LuaType,
 {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
@@ -473,7 +473,7 @@ impl LuaType for LBFPolygon {
 // ----------------------------------------------------------------------------
 impl<V> LuaType for Bone<V>
 where
-    V: 'static + Number + LuaType,
+    V: 'static + Float + LuaType,
 {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
@@ -498,7 +498,7 @@ where
 // ----------------------------------------------------------------------------
 impl<V> LuaType for Armature<V>
 where
-    V: 'static + Number + LuaType,
+    V: 'static + Float + LuaType,
 {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
@@ -507,9 +507,9 @@ where
                 String::from_lua(tbl.get("name")?)?,
                 Vec::<Bone<V>>::from_lua(tbl.get("bones")?)?,
             )),
-            _ => Err(Error::Type(
-                "<Armature<T> as LuaType>::from_lua".to_string(),
-            )),
+            _ => {
+                Err(Error::Type("<Armature as LuaType>::from_lua".to_string()))
+            }
         }
     }
 }
@@ -568,7 +568,10 @@ impl LuaType for LBFLight {
     }
 }
 // ----------------------------------------------------------------------------
-impl LuaType for Camera {
+impl<V> LuaType for Camera<V>
+where
+    V: Float + LuaType,
+{
     fn from_lua(v: Value) -> Result<Self> {
         match v {
             Value::Table(tbl) => {
@@ -576,23 +579,21 @@ impl LuaType for Camera {
                     "FRUSTUM" => Ok(Camera::new_frustum(
                         Uuid::from_lua(tbl.get("uuid")?)?,
                         String::from_lua(tbl.get("name")?)?,
-                        GLfloat::from_lua(tbl.get("near")?)?,
-                        GLfloat::from_lua(tbl.get("far")?)?,
-                        Camera::alpha2focus(GLfloat::from_lua(
-                            tbl.get("alpha")?,
-                        )?),
-                        GLfloat::from_lua(tbl.get("aspect")?)?,
+                        V::from_lua(tbl.get("near")?)?,
+                        V::from_lua(tbl.get("far")?)?,
+                        Camera::alpha2focus(V::from_lua(tbl.get("alpha")?)?),
+                        V::from_lua(tbl.get("aspect")?)?,
                     )),
                     "ORTHO" => Ok(Camera::new_ortho(
                         Uuid::from_lua(tbl.get("uuid")?)?,
                         String::from_lua(tbl.get("name")?)?,
-                        GLfloat::from_lua(tbl.get("near")?)?,
-                        GLfloat::from_lua(tbl.get("far")?)?,
-                        GLfloat::from_lua(tbl.get("width")?)?,
-                        GLfloat::from_lua(tbl.get("height")?)?,
+                        V::from_lua(tbl.get("near")?)?,
+                        V::from_lua(tbl.get("far")?)?,
+                        V::from_lua(tbl.get("width")?)?,
+                        V::from_lua(tbl.get("height")?)?,
                     )),
                     _ => Err(Error::Type(
-                        "<Camera as LuaType>::from_lua".to_string(),
+                        "<Camera<VF, VI> as LuaType>::from_lua".to_string(),
                     )),
                 }
             }
@@ -603,7 +604,7 @@ impl LuaType for Camera {
 // ----------------------------------------------------------------------------
 impl<V> LuaType for Animation<V>
 where
-    V: 'static + Number + LuaType,
+    V: 'static + Float + LuaType,
 {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
@@ -643,7 +644,7 @@ impl LuaType for Interpolation {
 // ----------------------------------------------------------------------------
 impl<V> LuaType for Curve<V>
 where
-    V: 'static + Number + LuaType,
+    V: 'static + Float + LuaType,
 {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
@@ -688,7 +689,7 @@ where
 // ----------------------------------------------------------------------------
 impl<V> LuaType for Keyframe<V>
 where
-    V: 'static + Number + LuaType,
+    V: 'static + Float + LuaType,
 {
     fn from_lua(v: Value) -> Result<Self> {
         match v {
@@ -736,7 +737,11 @@ impl<'a, 'b> LuaType for LBFObject<'a, 'b> {
     }
 }
 // ----------------------------------------------------------------------------
-impl<'a, 'b> LuaType for LBFAnimationDriver<'a, 'b> {
+impl<'a, 'b, VF, VI> LuaType for LBFAnimationDriver<'a, 'b, VF, VI>
+where
+    VF: Float,
+    VI: Integer,
+{
     fn from_lua(v: Value) -> Result<Self> {
         match v {
             Value::Table(tbl) => Ok(Self::new(

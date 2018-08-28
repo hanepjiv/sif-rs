@@ -6,13 +6,13 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/23
-//  @date 2018/08/03
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
-use sif_math::Number;
+use sif_math::Float;
 // ----------------------------------------------------------------------------
 use super::{Error, Result};
 // ----------------------------------------------------------------------------
@@ -29,7 +29,7 @@ mod pose;
 #[derive(Debug, Clone)]
 pub struct Armature<V>
 where
-    V: Number,
+    V: Float,
 {
     /// uuid
     uuid: Uuid,
@@ -41,7 +41,7 @@ where
 // ============================================================================
 impl<V> Armature<V>
 where
-    V: Number,
+    V: Float,
 {
     // ========================================================================
     /// fn new
@@ -118,7 +118,7 @@ where
 // ============================================================================
 impl<V> AsRef<Uuid> for Armature<V>
 where
-    V: Number,
+    V: Float,
 {
     fn as_ref(&self) -> &Uuid {
         &self.uuid
@@ -127,7 +127,7 @@ where
 // ============================================================================
 impl<V> AsRef<String> for Armature<V>
 where
-    V: Number,
+    V: Float,
 {
     fn as_ref(&self) -> &String {
         &self.name
@@ -136,7 +136,7 @@ where
 // ============================================================================
 impl<V> AsRef<Vec<Bone<V>>> for Armature<V>
 where
-    V: Number,
+    V: Float,
 {
     fn as_ref(&self) -> &Vec<Bone<V>> {
         &self.bones
@@ -145,7 +145,7 @@ where
 // ----------------------------------------------------------------------------
 impl<V> AsMut<Vec<Bone<V>>> for Armature<V>
 where
-    V: Number,
+    V: Float,
 {
     fn as_mut(&mut self) -> &mut Vec<Bone<V>> {
         &mut self.bones

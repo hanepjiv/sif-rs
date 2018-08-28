@@ -6,24 +6,24 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/12
-//  @date 2018/08/11
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use num::traits::identities::one;
-use sif_math::{Number, Vector3};
+use sif_math::{Float, Vector3};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// struct ColorIntensity
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
-pub struct ColorIntensity<V: Number> {
+pub struct ColorIntensity<V: Float> {
     /// color
     pub color: Vector3<V>,
     /// intensity [0.0 - 1.0]
     pub intensity: V,
 }
 // ============================================================================
-impl<V: Number> Default for ColorIntensity<V> {
+impl<V: Float> Default for ColorIntensity<V> {
     fn default() -> Self {
         ColorIntensity {
             color: Vector3::new(one(), one(), one()),
@@ -32,7 +32,7 @@ impl<V: Number> Default for ColorIntensity<V> {
     }
 }
 // ============================================================================
-impl<V: Number> ColorIntensity<V> {
+impl<V: Float> ColorIntensity<V> {
     // ========================================================================
     /// new
     pub fn new(r: V, g: V, b: V, intensity: V) -> Self {
@@ -51,14 +51,14 @@ impl<V: Number> ColorIntensity<V> {
 // ============================================================================
 /// struct ColorExponent
 #[derive(Debug, Default, Clone, Copy, PartialEq, PartialOrd)]
-pub struct ColorExponent<V: Number> {
+pub struct ColorExponent<V: Float> {
     /// color
     pub color: Vector3<V>,
     /// exponent
     pub exponent: V,
 }
 // ============================================================================
-impl<V: Number> ColorExponent<V> {
+impl<V: Float> ColorExponent<V> {
     // ========================================================================
     /// new
     pub fn new(r: V, g: V, b: V, exponent: V) -> Self {

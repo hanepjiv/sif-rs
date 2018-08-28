@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/08/01
-//  @date 2018/08/11
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -78,7 +78,7 @@ impl<'a, 'b> Model<'a, 'b> {
 impl<'a, 'b> IntoGraphics for Model<'a, 'b> {
     type Target = GraphicsModel;
     type Param = (
-        &'a GraphicsScene,
+        &'a GraphicsScene<GLfloat, GLint>,
         &'b Manager<GraphicsMesh>,
         &'b Manager<GraphicsMaterial>,
         &'b Manager<Armature<GLfloat>>,

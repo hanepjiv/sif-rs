@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/06/13
-//  @date 2018/08/05
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -72,7 +72,7 @@ impl Light {
 }
 // ============================================================================
 impl IntoGraphics for Light {
-    type Target = GraphicsLight;
+    type Target = GraphicsLight<GLfloat>;
     type Param = GLint;
     // ========================================================================
     fn into_graphics(

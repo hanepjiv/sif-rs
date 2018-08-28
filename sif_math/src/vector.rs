@@ -6,11 +6,16 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2018/06/16
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-use super::{Cleanup, Number};
+use std::ops::{
+    Add, AddAssign, Div, DivAssign, Index, IndexMut, Mul, MulAssign, Sub,
+    SubAssign,
+};
+// ----------------------------------------------------------------------------
+use super::{Cleanup, Float};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 /// vector_define!
@@ -22,11 +27,11 @@ macro_rules! vector_define {
         #[derive(
             Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash,
         )]
-        pub struct $name<V: Number>([V; $n]);
+        pub struct $name<V: Float>([V; $n]);
         // ====================================================================
         impl<V> From<[V; $n]> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             fn from(src: [V; $n]) -> Self {
                 *$name(src).cleanup()
@@ -35,7 +40,7 @@ macro_rules! vector_define {
         // ====================================================================
         impl<'a, V> From<&'a [V]> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             fn from(src: &'a [V]) -> Self {
                 let mut inner = <[V; $n]>::default();
@@ -44,9 +49,9 @@ macro_rules! vector_define {
             }
         }
         // ====================================================================
-        impl<V> ::std::ops::Index<usize> for $name<V>
+        impl<V> Index<usize> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             type Output = V;
             fn index(&self, index: usize) -> &Self::Output {
@@ -54,18 +59,18 @@ macro_rules! vector_define {
             }
         }
         // --------------------------------------------------------------------
-        impl<V> ::std::ops::IndexMut<usize> for $name<V>
+        impl<V> IndexMut<usize> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             fn index_mut(&mut self, index: usize) -> &mut Self::Output {
                 &mut self.0[index]
             }
         }
         // ====================================================================
-        impl<V> ::std::ops::Add<V> for $name<V>
+        impl<V> Add<V> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             type Output = Self;
             fn add(self, rhs: V) -> Self::Output {
@@ -77,9 +82,9 @@ macro_rules! vector_define {
             }
         }
         // --------------------------------------------------------------------
-        impl<V> ::std::ops::AddAssign<V> for $name<V>
+        impl<V> AddAssign<V> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             fn add_assign(&mut self, rhs: V) {
                 for i in 0..$n {
@@ -88,9 +93,9 @@ macro_rules! vector_define {
             }
         }
         // ====================================================================
-        impl<V> ::std::ops::Sub<V> for $name<V>
+        impl<V> Sub<V> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             type Output = Self;
             fn sub(self, rhs: V) -> Self::Output {
@@ -102,9 +107,9 @@ macro_rules! vector_define {
             }
         }
         // --------------------------------------------------------------------
-        impl<V> ::std::ops::SubAssign<V> for $name<V>
+        impl<V> SubAssign<V> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             fn sub_assign(&mut self, rhs: V) {
                 for i in 0..$n {
@@ -113,9 +118,9 @@ macro_rules! vector_define {
             }
         }
         // ====================================================================
-        impl<V> ::std::ops::Mul<V> for $name<V>
+        impl<V> Mul<V> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             type Output = Self;
             fn mul(self, rhs: V) -> Self::Output {
@@ -127,9 +132,9 @@ macro_rules! vector_define {
             }
         }
         // --------------------------------------------------------------------
-        impl<V> ::std::ops::MulAssign<V> for $name<V>
+        impl<V> MulAssign<V> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             fn mul_assign(&mut self, rhs: V) {
                 for i in 0..$n {
@@ -138,9 +143,9 @@ macro_rules! vector_define {
             }
         }
         // ====================================================================
-        impl<V> ::std::ops::Div<V> for $name<V>
+        impl<V> Div<V> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             type Output = Self;
             fn div(self, rhs: V) -> Self::Output {
@@ -152,9 +157,9 @@ macro_rules! vector_define {
             }
         }
         // --------------------------------------------------------------------
-        impl<V> ::std::ops::DivAssign<V> for $name<V>
+        impl<V> DivAssign<V> for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             fn div_assign(&mut self, rhs: V) {
                 for i in 0..$n {
@@ -163,9 +168,9 @@ macro_rules! vector_define {
             }
         }
         // ====================================================================
-        impl<V> ::std::ops::Add for $name<V>
+        impl<V> Add for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             type Output = Self;
             fn add(self, rhs: Self) -> Self::Output {
@@ -177,9 +182,9 @@ macro_rules! vector_define {
             }
         }
         // --------------------------------------------------------------------
-        impl<V> ::std::ops::AddAssign for $name<V>
+        impl<V> AddAssign for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             fn add_assign(&mut self, rhs: Self) {
                 for i in 0..$n {
@@ -188,9 +193,9 @@ macro_rules! vector_define {
             }
         }
         // ====================================================================
-        impl<V> ::std::ops::Sub for $name<V>
+        impl<V> Sub for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             type Output = Self;
             fn sub(self, rhs: Self) -> Self::Output {
@@ -202,9 +207,9 @@ macro_rules! vector_define {
             }
         }
         // --------------------------------------------------------------------
-        impl<V> ::std::ops::SubAssign for $name<V>
+        impl<V> SubAssign for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             fn sub_assign(&mut self, rhs: Self) {
                 for i in 0..$n {
@@ -213,9 +218,9 @@ macro_rules! vector_define {
             }
         }
         // ====================================================================
-        impl<V> ::std::ops::Mul for $name<V>
+        impl<V> Mul for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             type Output = Self;
             fn mul(self, rhs: Self) -> Self::Output {
@@ -227,9 +232,9 @@ macro_rules! vector_define {
             }
         }
         // --------------------------------------------------------------------
-        impl<V> ::std::ops::MulAssign for $name<V>
+        impl<V> MulAssign for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             fn mul_assign(&mut self, rhs: Self) {
                 for i in 0..$n {
@@ -238,9 +243,9 @@ macro_rules! vector_define {
             }
         }
         // ====================================================================
-        impl<V> ::std::ops::Div for $name<V>
+        impl<V> Div for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             type Output = Self;
             fn div(self, rhs: Self) -> Self::Output {
@@ -252,9 +257,9 @@ macro_rules! vector_define {
             }
         }
         // --------------------------------------------------------------------
-        impl<V> ::std::ops::DivAssign for $name<V>
+        impl<V> DivAssign for $name<V>
         where
-            V: Number,
+            V: Float,
         {
             fn div_assign(&mut self, rhs: Self) {
                 for i in 0..$n {
@@ -265,7 +270,7 @@ macro_rules! vector_define {
         // ====================================================================
         impl<V> $name<V>
         where
-            V: Number,
+            V: Float,
         {
             // ================================================================
             /// size
@@ -361,7 +366,7 @@ macro_rules! vector_define {
 // ============================================================================
 vector_define!(Vector2, 2);
 // ============================================================================
-impl<V: Number> Vector2<V> {
+impl<V: Float> Vector2<V> {
     // ========================================================================
     /// new
     pub fn new(x: V, y: V) -> Self {
@@ -369,13 +374,13 @@ impl<V: Number> Vector2<V> {
     }
 }
 // ============================================================================
-impl<V: Number> From<Vector3<V>> for Vector2<V> {
+impl<V: Float> From<Vector3<V>> for Vector2<V> {
     fn from(src: Vector3<V>) -> Self {
         Vector2::new(src[0], src[1])
     }
 }
 // ============================================================================
-impl<V: Number> From<Vector4<V>> for Vector2<V> {
+impl<V: Float> From<Vector4<V>> for Vector2<V> {
     fn from(src: Vector4<V>) -> Self {
         Vector2::new(src[0], src[1])
     }
@@ -384,7 +389,7 @@ impl<V: Number> From<Vector4<V>> for Vector2<V> {
 // ============================================================================
 vector_define!(Vector3, 3);
 // ============================================================================
-impl<V: Number> Vector3<V> {
+impl<V: Float> Vector3<V> {
     // ========================================================================
     /// new
     pub fn new(x: V, y: V, z: V) -> Self {
@@ -416,7 +421,7 @@ impl<V: Number> Vector3<V> {
     }
 }
 // ============================================================================
-impl<V: Number> From<Vector4<V>> for Vector3<V> {
+impl<V: Float> From<Vector4<V>> for Vector3<V> {
     fn from(src: Vector4<V>) -> Self {
         Vector3::new(src[0], src[1], src[2])
     }
@@ -425,7 +430,7 @@ impl<V: Number> From<Vector4<V>> for Vector3<V> {
 // ============================================================================
 vector_define!(Vector4, 4);
 // ============================================================================
-impl<V: Number> Vector4<V> {
+impl<V: Float> Vector4<V> {
     // ========================================================================
     /// new
     pub fn new(x: V, y: V, z: V, w: V) -> Self {

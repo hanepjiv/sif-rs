@@ -6,14 +6,14 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/13
-//  @date 2018/08/13
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use gl::types::*;
 // ----------------------------------------------------------------------------
 use sif_manager::ManagedValue;
-use sif_math::Matrix4x4;
+use sif_math::{Float, Matrix4x4};
 use sif_renderer::{gl_result, Bind, Program, ShaderSrc, Texture};
 use sif_three::NodeHolder;
 // ----------------------------------------------------------------------------
@@ -104,22 +104,28 @@ void main(void) {
 // ============================================================================
 /// struct DepthMapParam
 #[derive(Debug, Clone, Copy)]
-pub struct DepthMapParam {
+pub struct DepthMapParam<VF>
+where
+    VF: Float,
+{
     /// near
-    pub near: GLfloat,
+    pub near: VF,
     /// far
-    pub far: GLfloat,
+    pub far: VF,
     /// projection * view matrix
-    pub mat4_proj_view: Matrix4x4<GLfloat>,
+    pub mat4_proj_view: Matrix4x4<VF>,
 }
 // ============================================================================
-impl Default for DepthMapParam {
+impl<VF> Default for DepthMapParam<VF>
+where
+    VF: Float,
+{
     // ========================================================================
     fn default() -> Self {
         DepthMapParam {
-            near: 1.0,
-            far: 100.0,
-            mat4_proj_view: Matrix4x4::<GLfloat>::default(),
+            near: VF::one(),
+            far: VF::from(100).unwrap(),
+            mat4_proj_view: Matrix4x4::<VF>::default(),
         }
     }
 }
@@ -167,20 +173,24 @@ impl DepthMap {
     }
     // ========================================================================
     /// emit
-    pub fn emit(
+    pub fn emit<VF>(
         &self,
         program: &Program,
-        param: &DepthMapParam,
-        managed_obj: &ManagedValue<Object>,
-    ) -> Result<&Self> {
+        param: &DepthMapParam<VF>,
+        managed_obj: &ManagedValue<Object<VF>>,
+    ) -> Result<&Self>
+    where
+        VF: Float,
+        GLfloat: From<VF>,
+    {
         program.bind_with(|| {
             Program::set_uniform1f(
                 sif_renderer_program_location!(program, "u_Near"),
-                param.near,
+                param.near.into(),
             )?;
             Program::set_uniform1f(
                 sif_renderer_program_location!(program, "u_Far"),
-                param.far,
+                param.far.into(),
             )?;
             let mut obj = managed_obj.as_ref().borrow_mut();
             if let Ok(rc) = obj.as_node() {
@@ -192,7 +202,8 @@ impl DepthMap {
                     ),
                     1,
                     ::gl::FALSE,
-                    (param.mat4_proj_view * *node.as_matrix()).as_ptr(),
+                    (param.mat4_proj_view * *node.as_matrix()).as_ptr()
+                        as *const GLfloat,
                 )?;
             }
             obj.draw_silhouette(program)?;

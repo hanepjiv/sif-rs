@@ -6,16 +6,16 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/08/02
-//  @date 2018/08/05
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use std::marker::PhantomData;
 // ----------------------------------------------------------------------------
-use gl::types::*;
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
 use sif_manager::{ManagedValue, Manager};
+use sif_math::{Float, Integer};
 // ----------------------------------------------------------------------------
 use super::{
     Animation, Armature, Error, GraphicsAnimationDriver, GraphicsModel,
@@ -25,7 +25,11 @@ use super::{
 // ============================================================================
 /// struct Driver
 #[derive(Debug, Clone)]
-pub(crate) struct Driver<'a, 'b> {
+pub(crate) struct Driver<'a, 'b, VF, VI>
+where
+    VF: 'a + 'b + Float,
+    VI: 'a + 'b + Integer,
+{
     /// uuid
     uuid: Uuid,
     /// name
@@ -38,21 +42,37 @@ pub(crate) struct Driver<'a, 'b> {
     phantom0: PhantomData<&'a ()>,
     /// phantom1
     phantom1: PhantomData<&'b ()>,
+    /// phantom2
+    phantom2: PhantomData<fn() -> VF>,
+    /// phantom3
+    phantom3: PhantomData<fn() -> VI>,
 }
 // ============================================================================
-impl<'a, 'b> AsRef<Uuid> for Driver<'a, 'b> {
+impl<'a, 'b, VF, VI> AsRef<Uuid> for Driver<'a, 'b, VF, VI>
+where
+    VF: 'a + 'b + Float,
+    VI: 'a + 'b + Integer,
+{
     fn as_ref(&self) -> &Uuid {
         &self.uuid
     }
 }
 // ============================================================================
-impl<'a, 'b> AsRef<String> for Driver<'a, 'b> {
+impl<'a, 'b, VF, VI> AsRef<String> for Driver<'a, 'b, VF, VI>
+where
+    VF: 'a + 'b + Float,
+    VI: 'a + 'b + Integer,
+{
     fn as_ref(&self) -> &String {
         &self.name
     }
 }
 // ============================================================================
-impl<'a, 'b> Driver<'a, 'b> {
+impl<'a, 'b, VF, VI> Driver<'a, 'b, VF, VI>
+where
+    VF: 'a + 'b + Float,
+    VI: 'a + 'b + Integer,
+{
     /// fn new
     pub fn new(
         uuid: impl Into<Uuid>,
@@ -67,20 +87,24 @@ impl<'a, 'b> Driver<'a, 'b> {
             object: object.into(),
             phantom0: PhantomData::default(),
             phantom1: PhantomData::default(),
+            phantom2: PhantomData::default(),
+            phantom3: PhantomData::default(),
         }
     }
 }
 // ============================================================================
-impl<'a, 'b> IntoGraphics for Driver<'a, 'b>
+impl<'a, 'b, VF, VI> IntoGraphics for Driver<'a, 'b, VF, VI>
 where
-    GraphicsScene: AsRef<Manager<Animation<GLfloat>>>,
-    GraphicsModel: AsRef<Option<ManagedValue<Armature<GLfloat>>>>,
+    VF: 'a + 'b + Float,
+    VI: 'a + 'b + Integer,
+    GraphicsScene<VF, VI>: AsRef<Manager<Animation<VF>>>,
+    GraphicsModel: AsRef<Option<ManagedValue<Armature<VF>>>>,
 {
-    type Target = GraphicsAnimationDriver;
+    type Target = GraphicsAnimationDriver<VF>;
     type Param = (
-        &'a GraphicsScene,
-        &'b Manager<Animation<GLfloat>>,
-        &'b Manager<GraphicsObject>,
+        &'a GraphicsScene<VF, VI>,
+        &'b Manager<Animation<VF>>,
+        &'b Manager<GraphicsObject<VF>>,
     );
     // ========================================================================
     fn into_graphics(
@@ -95,7 +119,7 @@ where
                     if let Some(x) = animations.get(&self.animation) {
                         Some(x)
                     } else {
-                        AsRef::<Manager<Animation<GLfloat>>>::as_ref(scene)
+                        AsRef::<Manager<Animation<VF>>>::as_ref(scene)
                             .get(&self.animation)
                     }
                 } {
@@ -113,7 +137,7 @@ where
                     if let Some(x) = objects.get(&self.object) {
                         Some(x)
                     } else {
-                        AsRef::<Manager<GraphicsObject>>::as_ref(scene)
+                        AsRef::<Manager<GraphicsObject<VF>>>::as_ref(scene)
                             .get(&self.object)
                     }
                 } {

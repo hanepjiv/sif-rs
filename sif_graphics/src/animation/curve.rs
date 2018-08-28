@@ -6,11 +6,11 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/07/30
-//  @date 2018/08/06
+//  @date 2018/08/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
-use sif_math::Number;
+use sif_math::Float;
 // ----------------------------------------------------------------------------
 use super::{Interpolation, Keyframe};
 // ////////////////////////////////////////////////////////////////////////////
@@ -40,26 +40,26 @@ pub enum CurveType {
 // ============================================================================
 /// struct Curve
 #[derive(Debug, Clone)]
-pub struct Curve<V: Number> {
+pub struct Curve<V: Float> {
     /// type_
     type_: CurveType,
     /// keyframes
     keyframes: Vec<Keyframe<V>>,
 }
 // ============================================================================
-impl<V: Number> AsRef<CurveType> for Curve<V> {
+impl<V: Float> AsRef<CurveType> for Curve<V> {
     fn as_ref(&self) -> &CurveType {
         &self.type_
     }
 }
 // ============================================================================
-impl<V: Number> AsRef<Vec<Keyframe<V>>> for Curve<V> {
+impl<V: Float> AsRef<Vec<Keyframe<V>>> for Curve<V> {
     fn as_ref(&self) -> &Vec<Keyframe<V>> {
         &self.keyframes
     }
 }
 // ============================================================================
-impl<V: Number> Curve<V> {
+impl<V: Float> Curve<V> {
     // ========================================================================
     /// fn new
     pub fn new(type_: CurveType, keyframe: &[Keyframe<V>]) -> Self {
