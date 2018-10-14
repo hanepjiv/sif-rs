@@ -6,18 +6,21 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/05/12
-//  @date 2018/08/11
+//  @date 2018/10/14
 
 // ////////////////////////////////////////////////////////////////////////////
 // attribute  =================================================================
-// rustc 1.28.0 (9634041f0 2018-07-30)
+// rustc 1.29.2 (17a9dc751 2018-10-05)
 #![deny(
     absolute_paths_not_starting_with_crate,
     anonymous_parameters,
+    async_idents,
     bare_trait_objects,
+    ellipsis_inclusive_range_patterns,
     missing_copy_implementations,
     missing_debug_implementations,
     missing_docs,
+    question_mark_macro_sep,
     unstable_features,
     unused_extern_crates,
     unused_import_braces,
@@ -44,6 +47,7 @@
     private_in_public,
     private_no_mangle_fns,
     private_no_mangle_statics,
+    proc_macro_derive_resolution_fallback,
     safe_packed_borrows,
     stable_features,
     trivial_bounds,
@@ -51,7 +55,7 @@
     tyvar_behind_raw_pointer,
     unconditional_recursion,
     unions_with_drop_fields,
-    unknown_lints,
+    unnameable_test_functions,
     unreachable_code,
     unreachable_patterns,
     unstable_name_collisions,
@@ -68,12 +72,14 @@
     unused_parens,
     unused_unsafe,
     unused_variables,
+    where_clauses_object_safety,
     while_true,
     const_err,
     duplicate_macro_exports,
     exceeding_bitshifts,
     incoherent_fundamental_impls,
     invalid_type_param_default,
+    irrefutable_let_patterns,
     legacy_constructor_visibility,
     legacy_directory_ownership,
     missing_fragment_specifier,
@@ -84,7 +90,13 @@
     safe_extern_statics,
     unknown_crate_types
 )]
-#![warn(dead_code, renamed_and_removed_lints, unreachable_pub)]
+#![warn(
+    dead_code,
+    macro_use_extern_crate,
+    renamed_and_removed_lints,
+    unknown_lints,
+    unreachable_pub
+)]
 #![allow(
     box_pointers,
     elided_lifetimes_in_paths,

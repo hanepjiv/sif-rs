@@ -17,7 +17,6 @@
     async_idents,
     bare_trait_objects,
     ellipsis_inclusive_range_patterns,
-    macro_use_extern_crate,
     missing_copy_implementations,
     missing_debug_implementations,
     missing_docs,
@@ -56,7 +55,6 @@
     tyvar_behind_raw_pointer,
     unconditional_recursion,
     unions_with_drop_fields,
-    unknown_lints,
     unnameable_test_functions,
     unreachable_code,
     unreachable_patterns,
@@ -92,7 +90,13 @@
     safe_extern_statics,
     unknown_crate_types
 )]
-#![warn(dead_code, renamed_and_removed_lints, unreachable_pub)]
+#![warn(
+    dead_code,
+    macro_use_extern_crate,
+    renamed_and_removed_lints,
+    unknown_lints,
+    unreachable_pub
+)]
 #![allow(
     box_pointers,
     elided_lifetimes_in_paths,
