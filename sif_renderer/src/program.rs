@@ -732,7 +732,8 @@ impl Drop for Program {
         gl_result(|| -> Result<()> {
             unsafe { ::gl::DeleteProgram(self.id) }
             Ok(())
-        }).expect("Program::drop");
+        })
+        .expect("Program::drop");
     }
 }
 // ============================================================================

@@ -123,8 +123,10 @@ impl<'a, 'b> IntoGraphics for Material<'a, 'b> {
                         format!(
                             "lbf::Material: texture not found {:?}",
                             *uuid,
-                        ).to_string(),
-                    ).into());
+                        )
+                        .to_string(),
+                    )
+                    .into());
                 }
             } else {
                 new_textures.push(None);

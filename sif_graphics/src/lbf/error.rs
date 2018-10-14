@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/03
-//  @date 2018/08/01
+//  @date 2018/09/11
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -55,9 +55,9 @@ impl From<super::loader::LoaderError> for Error {
     }
 }
 // ============================================================================
-impl From<::uuid::ParseError> for Error {
+impl From<::uuid::parser::ParseError> for Error {
     // ========================================================================
-    fn from(e: ::uuid::ParseError) -> Self {
+    fn from(e: ::uuid::parser::ParseError) -> Self {
         Error::UuidParse(format!("{}", e))
     }
 }

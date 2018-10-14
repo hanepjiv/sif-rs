@@ -14,4 +14,4 @@ repository              = "https://github.com/hanepjiv/sif-rs.git"
 publish                 = false
 # =============================================================================
 [dependencies]
-uuid                    = { default-features = false, version = "^0.6" }
+uuid                    = { default-features = false, version = "^0.7" }

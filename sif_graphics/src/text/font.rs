@@ -237,7 +237,8 @@ impl<'a, 'b> Font<'a, 'b> {
                             "graphics::text::font::update: self.textures.last"
                                 .to_string(),
                         )
-                    })?.sub_image_2d(
+                    })?
+                    .sub_image_2d(
                         0,
                         self.cursor.0,
                         self.cursor.1,

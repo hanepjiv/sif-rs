@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/06/13
-//  @date 2018/08/27
+//  @date 2018/10/14
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -63,7 +63,7 @@ pub(crate) fn from_str<'a, 'b>(
 
     let lua = Lua::new();
 
-    let tbl = lua.eval::<Table>(src.as_ref(), path.as_ref().to_str())?;
+    let tbl = lua.eval(src.as_ref(), path.as_ref().to_str())?;
 
     let _ = get_current(&tbl)?;
 
@@ -74,7 +74,8 @@ pub(crate) fn from_str<'a, 'b>(
                 let _ = im.set_path_base(path_base);
             }
             x
-        }).collect();
+        })
+        .collect();
     let textures = Vec::<LBFTexture>::from_lua(tbl.get("textures")?)?;
     let materials = Vec::<LBFMaterial>::from_lua(tbl.get("materials")?)?;
     let meshes = Vec::<LBFMesh>::from_lua(tbl.get("meshes")?)?;

@@ -110,7 +110,8 @@ impl Drop for Frame {
                 ::gl::DeleteFramebuffers(1, &self.id);
             }
             Ok(())
-        }).expect("Frame::drop");
+        })
+        .expect("Frame::drop");
     }
 }
 // ============================================================================

@@ -94,9 +94,11 @@ impl<'a, 'b> IntoGraphics for Texture<'a, 'b> {
             } else {
                 AsRef::<Manager<Image>>::as_ref(scene).get(&self.image)
             }
-        }.ok_or_else(|| {
+        }
+        .ok_or_else(|| {
             Error::OptNone("lbf::Texture: into_graphics".to_string())
-        })?.as_ref()
+        })?
+        .as_ref()
         .borrow();
         if let Image::File(ref img) = *image {
             match *img.as_dimension() {
@@ -118,7 +120,8 @@ impl<'a, 'b> IntoGraphics for Texture<'a, 'b> {
         } else {
             Err(Error::ImageUnknown(
                 "lbf::Texture: into_graphics: unknown image".to_string(),
-            ).into())
+            )
+            .into())
         }
     }
 }

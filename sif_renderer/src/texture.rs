@@ -209,7 +209,8 @@ impl Drop for Texture {
                 ::gl::DeleteTextures(1, &self.id);
             }
             Ok(())
-        }).expect("Texture::drop");
+        })
+        .expect("Texture::drop");
     }
 }
 // ============================================================================

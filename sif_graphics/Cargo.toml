@@ -45,7 +45,7 @@ sif_renderer            = { default-features = false, path="../sif_renderer" }
 sif_three               = { default-features = false, path="../sif_three" }
 # -----------------------------------------------------------------------------
 [dependencies.rlua]
-version                 = "^0.14"
+version                 = "^0.15"
 default-features        = false
 optional                = true
 # -----------------------------------------------------------------------------
@@ -60,6 +60,6 @@ default-features        = false
 features                = ["ttf"]
 # -----------------------------------------------------------------------------
 [dependencies.uuid]
-version                 = "^0.6"
+version                 = "^0.7"
 default-features        = false
 features                = ["v4"]

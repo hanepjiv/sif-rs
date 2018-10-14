@@ -32,4 +32,4 @@ jpeg_rayon              = ["image/jpeg_rayon"]
 [dependencies]
 gl                      = { default-features = false, version = "^0.10" }
 log                     = { default-features = false, version = "^0.4" }
-image                   = { default-features = false, version = "^0.19" }
+image                   = { default-features = false, version = "^0.20" }

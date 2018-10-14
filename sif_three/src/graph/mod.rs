@@ -91,7 +91,8 @@ where
                     "three::graph::Graph::new: nodes.get(\"{}\")",
                     uuid
                 ))
-            })?.clone();
+            })?
+            .clone();
         Ok(Graph { uuid, nodes, root })
     }
     // ========================================================================

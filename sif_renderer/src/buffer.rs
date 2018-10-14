@@ -149,7 +149,8 @@ impl Drop for Buffer {
         gl_result(|| -> Result<()> {
             unsafe { ::gl::DeleteBuffers(1, &self.id) }
             Ok(())
-        }).expect("Buffer::drop");
+        })
+        .expect("Buffer::drop");
     }
 }
 // ============================================================================

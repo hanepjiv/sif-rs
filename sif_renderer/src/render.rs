@@ -61,7 +61,8 @@ impl Drop for Render {
                 ::gl::DeleteRenderbuffers(1, &self.id);
             }
             Ok(())
-        }).expect("Render::drop");
+        })
+        .expect("Render::drop");
     }
 }
 // ============================================================================

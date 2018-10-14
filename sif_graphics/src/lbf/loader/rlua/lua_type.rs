@@ -632,7 +632,8 @@ impl LuaType for Interpolation {
                     format!(
                         "<Interpolation as LuaType>::from_lua: {}",
                         x.to_str()?
-                    ).to_string(),
+                    )
+                    .to_string(),
                 )),
             },
             _ => Err(Error::Type(

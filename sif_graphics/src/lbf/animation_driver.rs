@@ -130,8 +130,10 @@ where
                             "lbf::AnimationDriver: into_graphics: \
                              animation.get: {}",
                             self.animation,
-                        ).to_string(),
-                    ).into());
+                        )
+                        .to_string(),
+                    )
+                    .into());
                 },
                 if let Some(x) = {
                     if let Some(x) = objects.get(&self.object) {
@@ -148,8 +150,10 @@ where
                             "lbf::AnimationDriver: into_graphics: \
                              object.get: {}",
                             self.object
-                        ).to_string(),
-                    ).into());
+                        )
+                        .to_string(),
+                    )
+                    .into());
                 },
             )?,
             (scene, animations, objects),

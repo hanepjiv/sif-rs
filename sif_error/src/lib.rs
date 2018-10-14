@@ -82,7 +82,7 @@
     parenthesized_params_in_types_and_modules,
     pub_use_of_private_extern_crate,
     safe_extern_statics,
-    unknown_crate_types,
+    unknown_crate_types
 )]
 #![warn(dead_code, renamed_and_removed_lints, unreachable_pub)]
 #![allow(

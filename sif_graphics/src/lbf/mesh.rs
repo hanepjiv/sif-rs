@@ -275,7 +275,8 @@ impl IntoGraphics for Mesh {
                         "{}({}): lbf::Mesh: degenerate face",
                         file!(),
                         line!()
-                    )).into());
+                    ))
+                    .into());
                 }
 
                 let p_nor = *p.cross(&q).normalize();

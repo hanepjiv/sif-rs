@@ -103,8 +103,10 @@ impl<'a, 'b> IntoGraphics for Model<'a, 'b> {
                     format!(
                         "lbf::Model: into_graphics: mesh not found {}",
                         uuid
-                    ).to_string(),
-                ).into());
+                    )
+                    .to_string(),
+                )
+                .into());
             }
         }
 
@@ -124,8 +126,10 @@ impl<'a, 'b> IntoGraphics for Model<'a, 'b> {
                     format!(
                         "lbf::Model: into_graphics: material not found {}",
                         uuid
-                    ).to_string(),
-                ).into());
+                    )
+                    .to_string(),
+                )
+                .into());
             }
         }
 
@@ -144,8 +148,10 @@ impl<'a, 'b> IntoGraphics for Model<'a, 'b> {
                     format!(
                         "lbf::Model: into_graphics: armature not found {}",
                         uuid
-                    ).to_string(),
-                ).into());
+                    )
+                    .to_string(),
+                )
+                .into());
             }
         } else {
             None

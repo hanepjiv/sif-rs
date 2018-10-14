@@ -94,6 +94,7 @@ impl Drop for Shader {
                 ::gl::DeleteShader(self.id);
             }
             Ok(())
-        }).expect("Shader::drop");
+        })
+        .expect("Shader::drop");
     }
 }

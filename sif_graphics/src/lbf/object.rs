@@ -110,7 +110,8 @@ impl<'a, 'b> IntoGraphics for Object<'a, 'b> {
                         AsRef::<Manager<GraphicsModel>>::as_ref(scene)
                             .get(uuid)
                     }
-                }.map(|m| {
+                }
+                .map(|m| {
                     let armature_len = (*m.as_ref().borrow()).armature_len();
                     let pose = if 0 < armature_len {
                         Some(Pose::<GLfloat>::new(armature_len))
@@ -133,7 +134,8 @@ impl<'a, 'b> IntoGraphics for Object<'a, 'b> {
                         AsRef::<Manager<GraphicsLight<GLfloat>>>::as_ref(scene)
                             .get(uuid)
                     }
-                }.map(|m| {
+                }
+                .map(|m| {
                     GraphicsObject::new(
                         *AsRef::<Uuid>::as_ref(&self),
                         AsRef::<String>::as_ref(&self).as_str(),
@@ -150,7 +152,8 @@ impl<'a, 'b> IntoGraphics for Object<'a, 'b> {
                         AsRef::<Manager<Camera<GLfloat>>>::as_ref(scene)
                             .get(uuid)
                     }
-                }.map(|m| {
+                }
+                .map(|m| {
                     GraphicsObject::new(
                         *AsRef::<Uuid>::as_ref(&self),
                         AsRef::<String>::as_ref(&self).as_str(),
@@ -192,8 +195,10 @@ impl<'a, 'b> IntoGraphics for Object<'a, 'b> {
                 format!(
                     "lbf::Object: into_graphics: {}({})",
                     self.name, self.data_type
-                ).to_string(),
-            ).into())
+                )
+                .to_string(),
+            )
+            .into())
         }
     }
 }

@@ -212,7 +212,8 @@ impl Material {
                         prog,
                         MATERIAL_TEXTURE_FLAGS[i]
                     )
-                }).collect::<Vec<_>>();
+                })
+                .collect::<Vec<_>>();
             for (i, texture) in self.textures.iter().enumerate() {
                 if let Some(ref managed) = texture {
                     let tex = managed.as_ref().borrow();
