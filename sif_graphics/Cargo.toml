@@ -34,7 +34,7 @@ lbf-rlua-builtin-lua    = ["rlua/builtin-lua"]
 # =============================================================================
 [dependencies]
 bitflags                = { default-features = false, version = "^1.0" }
-gl                      = { default-features = false, version = "^0.11" }
+gl                      = { default-features = false, version = "^0.12" }
 log                     = { default-features = false, version = "^0.4" }
 num                     = { default-features = false, version = "^0.2" }
 # -----------------------------------------------------------------------------
@@ -45,17 +45,17 @@ sif_renderer            = { default-features = false, path="../sif_renderer" }
 sif_three               = { default-features = false, path="../sif_three" }
 # -----------------------------------------------------------------------------
 [dependencies.rlua]
-version                 = "^0.15"
+version                 = "^0.16"
 default-features        = false
 optional                = true
 # -----------------------------------------------------------------------------
 [dependencies.rand]
-version                 = "^0.5"
+version                 = "^0.7"
 default-features        = false
 features                = ["std"]
 # -----------------------------------------------------------------------------
 [dependencies.sdl2]
-version                 = "^0.31"
+version                 = "^0.32"
 default-features        = false
 features                = ["ttf"]
 # -----------------------------------------------------------------------------

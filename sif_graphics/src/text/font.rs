@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/27
-//  @date 2018/08/03
+//  @date 2019/07/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // const  =====================================================================
@@ -47,23 +47,23 @@ mod private {
 pub trait FontReserve: private::SealedFontReserve + ::std::fmt::Debug {
     // ========================================================================
     /// reserve
-    fn reserve(&self, layer: &mut Font);
+    fn reserve(&self, layer: &mut Font<'_, '_>);
 }
 // ============================================================================
 impl FontReserve for char {
-    fn reserve(&self, layer: &mut Font) {
+    fn reserve(&self, layer: &mut Font<'_, '_>) {
         layer.reserve_char(*self)
     }
 }
 // ============================================================================
 impl FontReserve for str {
-    fn reserve(&self, layer: &mut Font) {
+    fn reserve(&self, layer: &mut Font<'_, '_>) {
         layer.reserve_str(self)
     }
 }
 // ============================================================================
 impl FontReserve for String {
-    fn reserve(&self, layer: &mut Font) {
+    fn reserve(&self, layer: &mut Font<'_, '_>) {
         layer.reserve_str(self)
     }
 }
@@ -90,7 +90,7 @@ pub struct Font<'a, 'b> {
 }
 // ============================================================================
 impl<'a, 'b> Debug for Font<'a, 'b> {
-    fn fmt(&self, f: &mut Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> ::std::fmt::Result {
         write!(f, "graphics::text::Font{{ uuid: {:?}, .. }}", self.uuid)
     }
 }

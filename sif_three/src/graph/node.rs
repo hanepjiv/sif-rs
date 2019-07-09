@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/02/25
-//  @date 2018/08/27
+//  @date 2019/05/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -20,7 +20,6 @@ use sif_math::{Float, Matrix4x4};
 use super::super::{trarotsca::TraRotSca, Error, Result};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// Flags
 bitflags! {
     #[allow(missing_docs)]
     pub struct Flags: u32 {

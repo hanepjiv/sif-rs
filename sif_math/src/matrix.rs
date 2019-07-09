@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/19
-//  @date 2018/08/27
+//  @date 2019/07/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -312,15 +312,15 @@ macro_rules! matrix_define {
                     }
 
                     r[o] /= m[o][o];
-                    m[o] /= m[o][o];
+                    m[o] = m[o] / m[o][o];
 
                     for i in 0..o {
-                        r[i] -= r[o] * m[i][o];
-                        m[i] -= m[o] * m[i][o];
+                        r[i] = r[i] - (r[o] * m[i][o]);
+                        m[i] = m[i] - (m[o] * m[i][o]);
                     }
                     for i in o + 1..$n {
-                        r[i] -= r[o] * m[i][o];
-                        m[i] -= m[o] * m[i][o];
+                        r[i] = r[i] - (r[o] * m[i][o]);
+                        m[i] = m[i] - (m[o] * m[i][o]);
                     }
                 }
                 Ok(r)
@@ -339,9 +339,9 @@ macro_rules! matrix_define {
                         continue;
                     }
                     for j in o + 1..$vector::<V>::size() {
-                        m[o][j] /= m[o][o];
+                        m[o][j] = m[o][j] / m[o][o];
                         for i in o + 1..$n {
-                            m[i][j] -= m[o][j] * m[i][o];
+                            m[i][j] = m[i][j] - (m[o][j] * m[i][o]);
                         }
                     }
                 }

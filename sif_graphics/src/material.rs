@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2018/08/12
+//  @date 2019/05/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -36,7 +36,6 @@ pub(crate) const MATERIAL_TEXTURE_NAMES: [&str; MATERIAL_MAX_TEXTURE] = [
 ];
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// Flags
 #[allow(missing_docs)]
 bitflags! {
     #[allow(missing_docs)]

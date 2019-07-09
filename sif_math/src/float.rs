@@ -50,4 +50,5 @@ impl<T> Float for T where
         + ::num::traits::Zero
         + ::num::traits::One
         + ::num::Float
-{}
+{
+}

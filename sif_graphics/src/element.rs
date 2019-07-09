@@ -6,38 +6,37 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/12
-//  @date 2018/06/21
+//  @date 2019/05/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// Element
 bitflags! {
     #[allow(missing_docs)]
     pub struct Element: i32 {
-        #[allow(missing_docs)]
-        const REND_             = -1i32;
-        #[allow(missing_docs)]
-        const BEGIN_            =  0i32;
-        // --------------------------------------------------------------------
-        #[allow(missing_docs)]
-        const POSITION          =  Self::BEGIN_.bits;
-        #[allow(missing_docs)]
-        const NORMAL            =  1i32;
-        #[allow(missing_docs)]
-        const COORD             =  2i32;
-        #[allow(missing_docs)]
-        const BONE              =  3i32;
-        #[allow(missing_docs)]
-        const WEIGHT            =  4i32;
-        #[allow(missing_docs)]
-        const TANGENT           =  5i32;
-        // --------------------------------------------------------------------
-        #[allow(missing_docs)]
-        const END_              =  6i32;
-        #[allow(missing_docs)]
-        const RBEGIN_           =  Self::END_.bits - 1i32;
-        #[allow(missing_docs)]
-        const SIZE_             =  Self::END_.bits - Self::BEGIN_.bits;
+    #[allow(missing_docs)]
+    const REND_                 = -1i32;
+    #[allow(missing_docs)]
+    const BEGIN_                =  0i32;
+    // --------------------------------------------------------------------
+    #[allow(missing_docs)]
+    const POSITION              =  Self::BEGIN_.bits;
+    #[allow(missing_docs)]
+    const NORMAL                =  1i32;
+    #[allow(missing_docs)]
+    const COORD                 =  2i32;
+    #[allow(missing_docs)]
+    const BONE                  =  3i32;
+    #[allow(missing_docs)]
+    const WEIGHT                =  4i32;
+    #[allow(missing_docs)]
+    const TANGENT               =  5i32;
+    // --------------------------------------------------------------------
+    #[allow(missing_docs)]
+    const END_                  =  6i32;
+    #[allow(missing_docs)]
+    const RBEGIN_               =  Self::END_.bits - 1i32;
+    #[allow(missing_docs)]
+    const SIZE_                 =  Self::END_.bits - Self::BEGIN_.bits;
     }
 }
 // ============================================================================

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/24
-//  @date 2018/08/27
+//  @date 2019/05/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
@@ -21,7 +21,6 @@ use super::{post::DepthMapParam, Error, Object, Result, Shadow};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 #[allow(missing_docs)]
-/// struct Flags
 bitflags! {
     #[allow(missing_docs)]
     pub struct Flags: u32 {

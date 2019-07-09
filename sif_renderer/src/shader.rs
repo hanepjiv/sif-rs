@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2018/05/09
+//  @date 2019/07/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -45,7 +45,7 @@ pub struct Shader {
 impl Shader {
     // ========================================================================
     /// new
-    pub fn new(src: &ShaderSrc) -> Result<Self> {
+    pub fn new(src: &ShaderSrc<'_>) -> Result<Self> {
         let id = gl_result(|| -> StdResult<GLuint, ()> {
             Ok(unsafe { ::gl::CreateShader(src.type_) })
         })?;

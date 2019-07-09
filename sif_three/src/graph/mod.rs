@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/23
-//  @date 2018/08/27
+//  @date 2019/07/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -97,12 +97,12 @@ where
     }
     // ========================================================================
     /// iter
-    pub fn iter(&self) -> GraphIter<V> {
+    pub fn iter(&self) -> GraphIter<'_, V> {
         self.nodes.iter()
     }
     // ------------------------------------------------------------------------
     /// iter_mut
-    pub fn iter_mut(&mut self) -> GraphIterMut<V> {
+    pub fn iter_mut(&mut self) -> GraphIterMut<'_, V> {
         self.nodes.iter_mut()
     }
     // ========================================================================

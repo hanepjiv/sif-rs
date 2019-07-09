@@ -50,4 +50,5 @@ impl<T> Integer for T where
         + ::num::traits::Zero
         + ::num::traits::One
         + ::num::Integer
-{}
+{
+}

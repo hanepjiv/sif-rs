@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2018/08/01
+//  @date 2019/07/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -34,7 +34,7 @@ pub struct Program {
 impl Program {
     // ========================================================================
     /// new
-    pub fn new(srcs: &[ShaderSrc]) -> Result<Self> {
+    pub fn new(srcs: &[ShaderSrc<'_>]) -> Result<Self> {
         let id = gl_result(|| -> Result<GLuint> {
             Ok(unsafe { ::gl::CreateProgram() })
         })?;

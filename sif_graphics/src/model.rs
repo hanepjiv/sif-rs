@@ -120,8 +120,11 @@ impl Model {
     fn draw_impl(
         &mut self,
         prog: &Program,
-        mut func: impl FnMut(&mut Mesh, &Program, &[ManagedValue<Material>])
-            -> Result<()>,
+        mut func: impl FnMut(
+            &mut Mesh,
+            &Program,
+            &[ManagedValue<Material>],
+        ) -> Result<()>,
     ) -> Result<()> {
         for managed in &self.meshes {
             let mut mesh = managed.as_ref().borrow_mut();

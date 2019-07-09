@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2018/08/27
+//  @date 2019/05/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -81,7 +81,6 @@ const TEXTURE_SHADOWMAP: [&str; PIPELINE_MAX_LIGHT] = [
 ];
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// Flags
 bitflags! {
     #[allow(missing_docs)]
     pub struct Flags: u32 {
@@ -301,12 +300,8 @@ impl Pipeline {
             let obj = managed_object.as_ref().borrow();
             if let ObjectData::Light(ref managed_light) = *obj.as_ref() {
                 {
-                    let pos =
-                        *mat4_view
-                            * Vector4::from_vector3(
-                                &obj.position()?,
-                                VF::one(),
-                            );
+                    let pos = *mat4_view
+                        * Vector4::from_vector3(&obj.position()?, VF::one());
                     Program::set_uniform3fv(
                         sif_renderer_program_location!(
                             self.program,

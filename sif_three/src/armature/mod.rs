@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/23
-//  @date 2018/08/27
+//  @date 2019/07/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -92,19 +92,19 @@ where
                 {
                     // update
                     let bone = &self.bones[c];
-                    pose.matrix[c] = pose.matrix[p];
-                    pose.matrix[c] *= bone.offset_matrix();
-                    pose.matrix[c] *= pose[c].matrix();
-                    pose.matrix[c] *= bone.inverse_offset_matrix();
+                    pose.matrix[c] = pose.matrix[p]
+                        * bone.offset_matrix()
+                        * pose[c].matrix()
+                        * bone.inverse_offset_matrix();
                 }
             } else {
                 if !pose.flags[c].contains(PoseFlags::DIRTY) {
                     continue;
                 }
                 let bone = &self.bones[c];
-                pose.matrix[c] = bone.offset_matrix();
-                pose.matrix[c] *= pose[c].matrix();
-                pose.matrix[c] *= bone.inverse_offset_matrix();
+                pose.matrix[c] = bone.offset_matrix()
+                    * pose[c].matrix()
+                    * bone.inverse_offset_matrix();
             }
             pose.flags[c].remove(PoseFlags::DIRTY);
             pose.flags[c].insert(PoseFlags::UPDATED);

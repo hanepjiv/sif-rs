@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/27
-//  @date 2018/08/03
+//  @date 2019/07/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -39,23 +39,23 @@ mod private {
 pub trait LayerAppend: private::SealedLayerAppend + ::std::fmt::Debug {
     // ========================================================================
     /// append
-    fn append(&self, layer: &mut Layer);
+    fn append(&self, layer: &mut Layer<'_, '_>);
 }
 // ============================================================================
 impl LayerAppend for char {
-    fn append(&self, layer: &mut Layer) {
+    fn append(&self, layer: &mut Layer<'_, '_>) {
         layer.append_char(*self)
     }
 }
 // ============================================================================
 impl LayerAppend for str {
-    fn append(&self, layer: &mut Layer) {
+    fn append(&self, layer: &mut Layer<'_, '_>) {
         layer.append_str(self)
     }
 }
 // ============================================================================
 impl LayerAppend for String {
-    fn append(&self, layer: &mut Layer) {
+    fn append(&self, layer: &mut Layer<'_, '_>) {
         layer.append_str(self)
     }
 }

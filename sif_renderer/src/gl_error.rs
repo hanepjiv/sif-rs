@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2018/06/22
+//  @date 2019/07/09
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -36,7 +36,7 @@ where
     E: Debug + Clone + PartialOrd + PartialEq,
 {
     // ========================================================================
-    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
         <Self as ::std::fmt::Debug>::fmt(self, f)
     }
 }
@@ -110,7 +110,9 @@ pub fn info_log(type_: GLenum, id: GLuint, state: GLenum) -> Result<()> {
                 unsafe {
                     let loglen = get_iv(type_, id, ::gl::INFO_LOG_LENGTH)?;
                     if 0 >= loglen {
-                        return Err(Error::Renderer("0 >= loglen".to_string()));
+                        return Err(Error::Renderer(
+                            "0 >= loglen".to_string(),
+                        ));
                     }
                     let mut log = vec![0u8; loglen as usize];
                     let mut length = 0;

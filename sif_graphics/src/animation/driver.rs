@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2018/08/01
-//  @date 2018/08/27
+//  @date 2019/05/27
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -19,7 +19,6 @@ use sif_three::{Armature, Bone, Node, NodeHolder, TraRotSca, TraRotScaType};
 use super::{Animation, Curve, CurveType, Error, Object, ObjectData, Result};
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
-/// Flags
 bitflags! { pub struct Flags: u32 {
     const ACTIVE                = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
     const DIRTY                 = 0b0000_0000_0000_0000_0000_0000_0001_0000u32;
@@ -172,7 +171,8 @@ where
                 if let Some(managed_armature) =
                     AsRef::<Option<ManagedValue<Armature<V>>>>::as_ref(
                         &*managed_model.as_ref().borrow(),
-                    ) {
+                    )
+                {
                     let armature = &*managed_armature.as_ref().borrow();
                     for (i, bone) in AsRef::<Vec<Bone<V>>>::as_ref(armature)
                         .iter()
