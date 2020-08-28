@@ -6,17 +6,20 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2019/05/27
+//  @date 2020/03/19
 
 // ////////////////////////////////////////////////////////////////////////////
 // ============================================================================
 use std::mem::size_of;
 // ----------------------------------------------------------------------------
+use bitflags::bitflags;
 use gl::types::*;
+use log::error;
 use uuid::Uuid;
 // ----------------------------------------------------------------------------
+use sif_error::unwrap;
 use sif_manager::ManagedValue;
-use sif_renderer::{Buffer, Program};
+use sif_renderer::{sif_renderer_program_location, Buffer, Program};
 // ----------------------------------------------------------------------------
 use super::Material;
 // ============================================================================

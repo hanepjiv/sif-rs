@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/10
-//  @date 2019/07/09
+//  @date 2020/03/19
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -57,18 +57,7 @@ impl ::std::fmt::Display for Error {
 // ============================================================================
 impl StdError for Error {
     // ========================================================================
-    fn description(&self) -> &str {
-        match *self {
-            Error::OptNone(_) => "::physics::OptNone",
-            Error::NoNode => "::physics::NoNode",
-            Error::InvalidPose => "::physics::InvalidPose",
-            Error::IO(ref e) => e.description(),
-            Error::SifManager(ref e) => e.description(),
-            Error::SifMath(ref e) => e.description(),
-        }
-    }
-    // ========================================================================
-    fn cause(&self) -> Option<&dyn StdError> {
+    fn source(&self) -> Option<&(dyn StdError + 'static)> {
         match *self {
             Error::OptNone(_) => None,
             Error::NoNode => None,

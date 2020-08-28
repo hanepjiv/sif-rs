@@ -6,16 +6,20 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/06/20
-//  @date 2018/08/03
+//  @date 2020/03/19
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use std::{mem::size_of, result::Result as StdResult};
 // ----------------------------------------------------------------------------
+use bitflags::bitflags;
 use gl::types::*;
 // ----------------------------------------------------------------------------
 use sif_math::Matrix4x4;
-use sif_renderer::{gl_result, Bind, Buffer, Program, ShaderSrc, Texture};
+use sif_renderer::{
+    gl_result, sif_renderer_program_location, Bind, Buffer, Program,
+    ShaderSrc, Texture,
+};
 // ----------------------------------------------------------------------------
 use super::Result;
 // ////////////////////////////////////////////////////////////////////////////
@@ -24,8 +28,8 @@ use super::Result;
 bitflags! {
     #[allow(missing_docs, unreachable_pub)]
     pub struct Flags: u32 {
-        #[allow(missing_docs, unreachable_pub)]
-        const DIRTY             = 0b0000_0000_0000_0000_0000_0000_0001_0000u32;
+    #[allow(missing_docs, unreachable_pub)]
+    const DIRTY         = 0b0000_0000_0000_0000_0000_0000_0001_0000u32;
     }
 }
 // ////////////////////////////////////////////////////////////////////////////

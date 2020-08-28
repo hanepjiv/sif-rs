@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/23
-//  @date 2018/08/27
+//  @date 2020/03/19
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -17,7 +17,7 @@ use uuid::Uuid;
 // ----------------------------------------------------------------------------
 use sif_manager::ManagedValue;
 use sif_math::{Float, Vector3, Vector4};
-use sif_renderer::Program;
+use sif_renderer::{sif_renderer_program_location, Program};
 use sif_three::{Armature, AsNodeHolder, NodeHolder, NodeHolderField, Pose};
 // ----------------------------------------------------------------------------
 use super::{

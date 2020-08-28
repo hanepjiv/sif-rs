@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/13
-//  @date 2018/08/27
+//  @date 2020/03/19
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -14,7 +14,10 @@ use gl::types::*;
 // ----------------------------------------------------------------------------
 use sif_manager::ManagedValue;
 use sif_math::{Float, Matrix4x4};
-use sif_renderer::{gl_result, Bind, Program, ShaderSrc, Texture};
+use sif_renderer::{
+    gl_result, sif_renderer_program_location, Bind, Program, ShaderSrc,
+    Texture,
+};
 use sif_three::NodeHolder;
 // ----------------------------------------------------------------------------
 use super::{super::Object, Error, Result, Screen};

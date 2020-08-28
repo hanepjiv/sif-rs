@@ -6,14 +6,16 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/05/28
-//  @date 2019/05/27
+//  @date 2020/03/19
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use std::mem::size_of;
 // ----------------------------------------------------------------------------
+use bitflags::bitflags;
 use gl::types::*;
 // ----------------------------------------------------------------------------
+use sif_error::unwrap;
 use sif_manager::ManagedValue;
 use sif_renderer::{gl_result, Buffer, Program};
 // ----------------------------------------------------------------------------

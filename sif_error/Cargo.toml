@@ -1,6 +1,7 @@
 # -*- mode:toml; coding:utf-8-unix; -*-
 # =============================================================================
 [package]
+edition                 = "2018"
 name                    = "sif_error"
 version                 = "0.1.0"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]

@@ -6,13 +6,14 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/08
-//  @date 2019/07/09
+//  @date 2020/03/19
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
 use std::collections::BTreeMap;
 // ----------------------------------------------------------------------------
 use gl::types::*;
+use log::info;
 // ----------------------------------------------------------------------------
 use super::{
     gl_result, info_log, Bind, Buffer, Error, Result, Shader, ShaderSrc,
@@ -80,6 +81,7 @@ impl Program {
             })?;
 
             for i in 0..active as GLuint {
+                #[allow(trivial_casts)]
                 let name = gl_result(|| -> Result<String> {
                     let mut name = vec![0u8; max_length as usize];
                     let mut length = 0;
@@ -770,9 +772,9 @@ impl Bind for Program {
 #[macro_export]
 macro_rules! sif_renderer_program_location {
     ($e:expr, $name:expr)               => {
-        unwrap!($e.location($name))
+        sif_error::unwrap!($e.location($name))
     };
     ($e:expr, $fmt:expr, $($args:tt)+)  => {
-        unwrap!($e.location(&format!($fmt, $($args)+)), $fmt, $($args)+)
+       sif_error::unwrap!($e.location(&format!($fmt, $($args)+)), $fmt, $($args)+)
     };
 }

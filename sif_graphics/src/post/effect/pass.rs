@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/13
-//  @date 2018/08/12
+//  @date 2020/03/19
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -14,7 +14,10 @@ use std::result::Result as StdResult;
 // ----------------------------------------------------------------------------
 use gl::types::*;
 // ----------------------------------------------------------------------------
-use sif_renderer::{gl_result, Bind, Frame, Program, ShaderSrc, Texture};
+use sif_renderer::{
+    gl_result, sif_renderer_program_location, Bind, Frame, Program, ShaderSrc,
+    Texture,
+};
 // ----------------------------------------------------------------------------
 use super::{
     super::square_buffer::{SquareBuffer, UNIFORM, VERSION, VERTEX},

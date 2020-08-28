@@ -1,6 +1,7 @@
 # -*- mode:toml; coding:utf-8-unix; -*-
 # =============================================================================
 [package]
+edition                 = "2018"
 name                    = "sif_renderer"
 version                 = "0.1.0"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
@@ -14,12 +15,12 @@ repository              = "https://github.com/hanepjiv/sif-rs.git"
 publish                 = false
 # =============================================================================
 [features]
-default                 = ["png_codec"]
+default                 = ["png"]
 # -----------------------------------------------------------------------------
-gif_codec               = ["image/gif_codec"]
+gif                     = ["image/gif"]
 jpeg                    = ["image/jpeg"]
 ico                     = ["image/ico"]
-png_codec               = ["image/png_codec"]
+png                     = ["image/png"]
 pnm                     = ["image/pnm"]
 tga                     = ["image/tga"]
 tiff                    = ["image/tiff"]
@@ -30,6 +31,8 @@ dxt                     = ["image/dxt"]
 jpeg_rayon              = ["image/jpeg_rayon"]
 # =============================================================================
 [dependencies]
-gl                      = { default-features = false, version = "^0.12" }
+gl                      = { default-features = false, version = "^0.14" }
 log                     = { default-features = false, version = "^0.4" }
-image                   = { default-features = false, version = "^0.21" }
+image                   = { default-features = false, version = "^0.23" }
+# -----------------------------------------------------------------------------
+sif_error               = { default-features = false, path="../sif_error" }

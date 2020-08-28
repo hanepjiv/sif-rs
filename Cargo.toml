@@ -1,8 +1,9 @@
 # -*- mode:toml; coding:utf-8-unix; -*-
 # =============================================================================
 [package]
+edition                 = "2018"
 name                    = "sif"
-version                 = "0.6.0-alpha.7"
+version                 = "0.6.1-alpha.2"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
 license                 = "MIT/Apache-2.0"
 keywords                = ["subsystem", "game", "math", "graphics"]
@@ -14,15 +15,15 @@ repository              = "https://github.com/hanepjiv/sif-rs.git"
 publish                 = false
 # =============================================================================
 [features]
-default                 = [ "png_codec",
+default                 = [ "png",
                             "lbf-rlua",
                             "lbf-rlua-builtin-lua",
                             ]
 # -----------------------------------------------------------------------------
-gif_codec               = ["sif_graphics/gif_codec"]
+gif                     = ["sif_graphics/gif"]
 jpeg                    = ["sif_graphics/jpeg"]
 ico                     = ["sif_graphics/ico"]
-png_codec               = ["sif_graphics/png_codec"]
+png                     = ["sif_graphics/png"]
 pnm                     = ["sif_graphics/pnm"]
 tga                     = ["sif_graphics/tga"]
 tiff                    = ["sif_graphics/tiff"]

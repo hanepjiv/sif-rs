@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/03
-//  @date 2019/07/09
+//  @date 2020/03/19
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -42,8 +42,8 @@ pub enum Error {
     Model(String),
     /// Object
     Object(String),
-    /// UuidParse
-    UuidParse(String),
+    /// Uuid
+    Uuid(String),
     /// IO
     IO(String),
 }
@@ -55,10 +55,10 @@ impl From<super::loader::LoaderError> for Error {
     }
 }
 // ============================================================================
-impl From<::uuid::parser::ParseError> for Error {
+impl From<::uuid::Error> for Error {
     // ========================================================================
-    fn from(e: ::uuid::parser::ParseError) -> Self {
-        Error::UuidParse(format!("{}", e))
+    fn from(e: ::uuid::Error) -> Self {
+        Error::Uuid(format!("{}", e))
     }
 }
 // ============================================================================
@@ -93,7 +93,7 @@ impl StdError for Error {
             Error::Elem(_) => "LBF elem error",
             Error::Model(_) => "LBF model error",
             Error::Object(_) => "LBF object error",
-            Error::UuidParse(_) => "LBF uuid parse error",
+            Error::Uuid(_) => "LBF uuid error",
             Error::IO(_) => "LBF io error",
         }
     }
@@ -113,7 +113,7 @@ impl StdError for Error {
             Error::Elem(_) => None,
             Error::Model(_) => None,
             Error::Object(_) => None,
-            Error::UuidParse(_) => None,
+            Error::Uuid(_) => None,
             Error::IO(_) => None,
         }
     }

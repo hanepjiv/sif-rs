@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/04/18
-//  @date 2019/05/27
+//  @date 2020/03/19
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -15,11 +15,15 @@ use std::{
     os::raw::c_void,
 };
 // ----------------------------------------------------------------------------
+use bitflags::bitflags;
 use gl::types::GLfloat;
 // ----------------------------------------------------------------------------
 use sif_manager::ManagedValue;
 use sif_math::{Float, Matrix4x4, Vector3, Vector4};
-use sif_renderer::{Bind, Program, ShaderSrc, Texture as RendererTexture};
+use sif_renderer::{
+    sif_renderer_program_location, Bind, Program, ShaderSrc,
+    Texture as RendererTexture,
+};
 use sif_three::NodeHolder;
 // ----------------------------------------------------------------------------
 use super::{

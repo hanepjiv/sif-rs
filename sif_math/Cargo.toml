@@ -1,6 +1,7 @@
 # -*- mode:toml; coding:utf-8-unix; -*-
 # =============================================================================
 [package]
+edition                 = "2018"
 name                    = "sif_math"
 version                 = "0.1.0"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
@@ -18,5 +19,5 @@ sif_error               = { default-features = false, path = "../sif_error" }
 # -----------------------------------------------------------------------------
 [dependencies.num]
 default-features        = false
-version                 = "^0.2"
+version                 = "^0.3"
 features                = ["std"]

@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2017/02/25
-//  @date 2019/07/09
+//  @date 2020/08/28
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -14,6 +14,8 @@ use std::{
     iter::{Enumerate, Iterator},
     slice::{Iter, IterMut},
 };
+// ----------------------------------------------------------------------------
+use bitflags::bitflags;
 // ----------------------------------------------------------------------------
 use sif_math::{Float, Matrix4x4};
 // ----------------------------------------------------------------------------
@@ -24,10 +26,10 @@ use super::super::trarotsca::TraRotSca;
 bitflags! {
     #[allow(missing_docs)]
     pub struct Flags: u32 {
-        #[allow(missing_docs)]
-        const DIRTY     = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
-        #[allow(missing_docs)]
-        const UPDATED   = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
+    #[allow(missing_docs)]
+    const DIRTY = 0b0000_0000_0000_0000_0000_0000_0000_0001u32;
+    #[allow(missing_docs)]
+    const UPDATED       = 0b0000_0000_0000_0000_0000_0000_0000_0010u32;
     }
 }
 // ============================================================================
@@ -120,7 +122,7 @@ where
 #[derive(Debug)]
 pub struct PoseLocalIterMut<'a, V>
 where
-    V: 'a + Float,
+    V: Float,
 {
     /// flags
     flags: &'a mut Vec<Flags>,

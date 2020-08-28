@@ -6,7 +6,7 @@
 //  @author hanepjiv <hanepjiv@gmail.com>
 //  @copyright The MIT License (MIT) / Apache License Version 2.0
 //  @since 2016/12/10
-//  @date 2019/07/09
+//  @date 2020/03/19
 
 // ////////////////////////////////////////////////////////////////////////////
 // use  =======================================================================
@@ -117,34 +117,7 @@ impl ::std::fmt::Display for Error {
 // ============================================================================
 impl StdError for Error {
     // ========================================================================
-    fn description(&self) -> &str {
-        match *self {
-            Error::OptNone(_) => "sif::graphics::Error::OptNone",
-            Error::InvalidArg(_) => "sif::graphics::Error::InvalidArg",
-            Error::InvalidEnum => "sif::graphics::Error::InvalidImage",
-            Error::InvalidImage => "sif::graphics::Error::InvalidImage",
-            Error::ManagedNotFound(_) => {
-                "sif::graphics::Error::ManagedNotFound"
-            }
-            Error::Path(_) => "sif::graphics::Error::Path",
-            Error::Mesh(_) => "sif::graphics::Error::Mesh",
-            Error::Light(_) => "sif::graphics::Error::Light",
-            Error::Object(_) => "sif::graphics::Error::Object",
-            Error::AnimationDriver(_) => {
-                "sif::graphics::Error::AnimationDriver"
-            }
-            Error::LBF(ref e) => e.description(),
-            Error::IO(_) => "sif::graphics::Error::IO",
-            Error::Sif(ref e) => e.description(),
-            Error::SifManager(ref e) => e.description(),
-            Error::SifThree(ref e) => e.description(),
-            Error::SifRenderer(ref e) => e.description(),
-            Error::GL(_) => "sif::graphics::Error::GL",
-            Error::SDL2TTFFont(_) => "sif::graphics::Error::SDL2TTFFont",
-        }
-    }
-    // ========================================================================
-    fn cause(&self) -> Option<&dyn StdError> {
+    fn source(&self) -> Option<&(dyn StdError + 'static)> {
         match *self {
             Error::OptNone(_) => None,
             Error::InvalidArg(_) => None,

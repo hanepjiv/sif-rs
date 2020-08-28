@@ -1,6 +1,7 @@
 # -*- mode:toml; coding:utf-8-unix; -*-
 # =============================================================================
 [package]
+edition                 = "2018"
 name                    = "sif_manager"
 version                 = "0.1.0"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
@@ -14,4 +15,4 @@ repository              = "https://github.com/hanepjiv/sif-rs.git"
 publish                 = false
 # =============================================================================
 [dependencies]
-uuid                    = { default-features = false, version = "^0.7" }
+uuid                    = { default-features = false, version = "^0.8" }

@@ -1,6 +1,7 @@
 # -*- mode:toml; coding:utf-8-unix; -*-
 # =============================================================================
 [package]
+edition                 = "2018"
 name                    = "sif_three"
 version                 = "0.1.0"
 authors                 = ["hanepjiv <hanepjiv@gmail.com>"]
@@ -15,8 +16,8 @@ publish                 = false
 # =============================================================================
 [dependencies]
 bitflags                = { default-features = false, version = "^1.0" }
-num                     = { default-features = false, version = "^0.2" }
-uuid                    = { default-features = false, version = "^0.7" }
+num                     = { default-features = false, version = "^0.3" }
+uuid                    = { default-features = false, version = "^0.8" }
 # -----------------------------------------------------------------------------
 sif_manager             = { default-features = false, path="../sif_manager" }
 sif_math                = { default-features = false, path="../sif_math" }
